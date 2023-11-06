@@ -98,7 +98,7 @@ func main() {
 				})
 				m, err := client.SendMessage(&tdlib.SendMessageRequest{
 					ChatId: chatId,
-					ReplyTo: &tdlib.MessageReplyToMessage{
+					ReplyTo: &tdlib.InputMessageReplyToMessage{
 						ChatId:    chatId,
 						MessageId: msgId,
 					},
@@ -120,7 +120,7 @@ func main() {
 				})
 				m, err := client.SendMessageAlbum(&tdlib.SendMessageAlbumRequest{
 					ChatId: chatId,
-					ReplyTo: &tdlib.MessageReplyToMessage{
+					ReplyTo: &tdlib.InputMessageReplyToMessage{
 						ChatId:    chatId,
 						MessageId: msgId,
 					},
