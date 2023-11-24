@@ -211,7 +211,7 @@ func (client *Client) Send(req Request) (*Response, error) {
 					if err2 != nil {
 						return response, nil
 					}
-					response.Data = bytes.Replace(response.Data, []byte("{\"@type\":\"messageSendingStatePending\"}"), []byte("{\"@type\":\"updateMessageSendSucceeded\"}"), 1)
+					response.Data = bytes.Replace(response.Data, []byte("\"@type\":\"messageSendingStatePending\""), []byte("\"@type\":\"updateMessageSendSucceeded\""), 1)
 					response.Data = bytes.Replace(response.Data, []byte("\"id\":"+strconv.FormatInt(m.Id, 10)), []byte("\"id\":"+strconv.FormatInt(m2.Message.Id, 10)), 1)
 					return response, nil
 				case <-time.After(1 * time.Second):
