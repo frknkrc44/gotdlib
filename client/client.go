@@ -19,7 +19,6 @@ type Client struct {
 	listenerStore   *listenerStore
 	catchersStore   *sync.Map
 	successMsgStore *sync.Map
-	forwardMsgStore *sync.Map
 	updatesTimeout  time.Duration
 	catchTimeout    time.Duration
 }
@@ -75,7 +74,6 @@ func NewClient(authorizationStateHandler AuthorizationStateHandler, options ...O
 		listenerStore:   newListenerStore(),
 		catchersStore:   &sync.Map{},
 		successMsgStore: &sync.Map{},
-		forwardMsgStore: &sync.Map{},
 	}
 
 	client.extraGenerator = UuidV4Generator()
@@ -115,10 +113,6 @@ func (client *Client) processResponse(response *Response) {
 		sendVal, sOk := client.successMsgStore.Load(typ.(*UpdateMessageSendSucceeded).OldMessageId)
 		if sOk {
 			sendVal.(chan *Response) <- response
-		}
-		forwardVal, fOk := client.forwardMsgStore.Load(typ.(*UpdateMessageSendSucceeded).OldMessageId)
-		if fOk {
-			forwardVal.(chan *Response) <- response
 		}
 	}
 
