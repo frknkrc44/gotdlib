@@ -21,6 +21,7 @@ type Client struct {
 	successMsgStore *sync.Map
 	updatesTimeout  time.Duration
 	catchTimeout    time.Duration
+	DisablePatch    bool
 }
 
 type Option func(*Client)
@@ -40,6 +41,12 @@ func WithCatchTimeout(timeout time.Duration) Option {
 func WithProxy(req *AddProxyRequest) Option {
 	return func(client *Client) {
 		client.AddProxy(req)
+	}
+}
+
+func WithoutSendMessagePatch() Option {
+	return func(client *Client) {
+		client.DisablePatch = true
 	}
 }
 
@@ -184,7 +191,7 @@ func (client *Client) Send(req Request) (*Response, error) {
 
 	select {
 	case response := <-catcher:
-		if response.Type != "error" && req.Type == "sendMessage" {
+		if !client.DisablePatch && response.Type != "error" && req.Type == "sendMessage" {
 			m, err := UnmarshalMessage(response.Data)
 			if err != nil {
 				return nil, err
