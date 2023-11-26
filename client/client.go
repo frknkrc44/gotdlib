@@ -116,7 +116,7 @@ func (client *Client) processResponse(response *Response) {
 		return
 	}
 
-	if typ.GetType() == (&UpdateMessageSendSucceeded{}).GetType() {
+	if !client.DisablePatch && typ.GetType() == (&UpdateMessageSendSucceeded{}).GetType() {
 		sendVal, sOk := client.successMsgStore.Load(typ.(*UpdateMessageSendSucceeded).OldMessageId)
 		if sOk {
 			sendVal.(chan *Response) <- response
