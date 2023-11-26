@@ -134,7 +134,18 @@ func (client *Client) processResponse(response *Response) {
 	needGc := false
 	for _, listener := range client.listenerStore.Listeners() {
 		if listener.IsActive() && listener.Updates != nil && typ.GetType() == listener.Filter.GetType() { // All updates go to Updates channel if type == filter
-			listener.Updates <- typ
+			// Make some delay to UpdateMessageSendSucceeded listener
+			// This can make UpdateMessageSendSucceeded response later than sendMessage response.
+			// This may help a bot developer to map temporary message id to actual message id easily.
+			// Cause an event listener slower than sendMessage response, so you have enough time to do mapping stuff.
+			if typ.GetType() == (&UpdateMessageSendSucceeded{}).GetType() {
+				go func(listener *Listener, typ Type) {
+					time.Sleep(5 * time.Millisecond)
+					listener.Updates <- typ
+				}(listener, typ)
+			} else {
+				listener.Updates <- typ
+			}
 		} else if listener.IsActive() && listener.RawUpdates != nil { // All updates go to RawUpdates channel if filter is empty
 			listener.RawUpdates <- typ
 		} else if !listener.IsActive() { // GC inactive listener
