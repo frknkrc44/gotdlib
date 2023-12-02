@@ -1160,6 +1160,9 @@ func UnmarshalMessageSponsorType(data json.RawMessage) (MessageSponsorType, erro
     case TypeMessageSponsorTypeBot:
         return UnmarshalMessageSponsorTypeBot(data)
 
+    case TypeMessageSponsorTypeWebApp:
+        return UnmarshalMessageSponsorTypeWebApp(data)
+
     case TypeMessageSponsorTypePublicChannel:
         return UnmarshalMessageSponsorTypePublicChannel(data)
 
@@ -2535,6 +2538,9 @@ func UnmarshalMessageContent(data json.RawMessage) (MessageContent, error) {
     case TypeMessagePremiumGiveaway:
         return UnmarshalMessagePremiumGiveaway(data)
 
+    case TypeMessagePremiumGiveawayCompleted:
+        return UnmarshalMessagePremiumGiveawayCompleted(data)
+
     case TypeMessageContactRegistered:
         return UnmarshalMessageContactRegistered(data)
 
@@ -3233,6 +3239,74 @@ func UnmarshalListOfStoryList(dataList []json.RawMessage) ([]StoryList, error) {
 
     for _, data := range dataList {
         entity, err := UnmarshalStoryList(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
+func UnmarshalStoryOrigin(data json.RawMessage) (StoryOrigin, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeStoryOriginPublicStory:
+        return UnmarshalStoryOriginPublicStory(data)
+
+    case TypeStoryOriginHiddenUser:
+        return UnmarshalStoryOriginHiddenUser(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfStoryOrigin(dataList []json.RawMessage) ([]StoryOrigin, error) {
+    list := []StoryOrigin{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalStoryOrigin(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
+func UnmarshalStoryPublicForward(data json.RawMessage) (StoryPublicForward, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeStoryPublicForwardMessage:
+        return UnmarshalStoryPublicForwardMessage(data)
+
+    case TypeStoryPublicForwardStory:
+        return UnmarshalStoryPublicForwardStory(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfStoryPublicForward(dataList []json.RawMessage) ([]StoryPublicForward, error) {
+    list := []StoryPublicForward{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalStoryPublicForward(data)
         if err != nil {
             return nil, err
         }
@@ -4101,6 +4175,9 @@ func UnmarshalPremiumLimitType(data json.RawMessage) (PremiumLimitType, error) {
     case TypePremiumLimitTypeStorySuggestedReactionAreaCount:
         return UnmarshalPremiumLimitTypeStorySuggestedReactionAreaCount(data)
 
+    case TypePremiumLimitTypeSimilarChatCount:
+        return UnmarshalPremiumLimitTypeSimilarChatCount(data)
+
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
     }
@@ -4182,6 +4259,9 @@ func UnmarshalPremiumFeature(data json.RawMessage) (PremiumFeature, error) {
 
     case TypePremiumFeatureAccentColor:
         return UnmarshalPremiumFeatureAccentColor(data)
+
+    case TypePremiumFeatureBackgroundForBoth:
+        return UnmarshalPremiumFeatureBackgroundForBoth(data)
 
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
@@ -6088,6 +6168,40 @@ func UnmarshalListOfStatisticalGraph(dataList []json.RawMessage) ([]StatisticalG
     return list, nil
 }
 
+func UnmarshalChatStatisticsObjectType(data json.RawMessage) (ChatStatisticsObjectType, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeChatStatisticsObjectTypeMessage:
+        return UnmarshalChatStatisticsObjectTypeMessage(data)
+
+    case TypeChatStatisticsObjectTypeStory:
+        return UnmarshalChatStatisticsObjectTypeStory(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfChatStatisticsObjectType(dataList []json.RawMessage) ([]ChatStatisticsObjectType, error) {
+    list := []ChatStatisticsObjectType{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalChatStatisticsObjectType(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
 func UnmarshalChatStatistics(data json.RawMessage) (ChatStatistics, error) {
     var meta meta
 
@@ -6334,6 +6448,9 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateChatIsMarkedAsUnread:
         return UnmarshalUpdateChatIsMarkedAsUnread(data)
 
+    case TypeUpdateChatViewAsTopics:
+        return UnmarshalUpdateChatViewAsTopics(data)
+
     case TypeUpdateChatBlockList:
         return UnmarshalUpdateChatBlockList(data)
 
@@ -6493,6 +6610,9 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateAccentColors:
         return UnmarshalUpdateAccentColors(data)
 
+    case TypeUpdateProfileAccentColors:
+        return UnmarshalUpdateProfileAccentColors(data)
+
     case TypeUpdateLanguagePackStrings:
         return UnmarshalUpdateLanguagePackStrings(data)
 
@@ -6519,6 +6639,9 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
 
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(data)
+
+    case TypeUpdateSpeechRecognitionTrial:
+        return UnmarshalUpdateSpeechRecognitionTrial(data)
 
     case TypeUpdateDiceEmojis:
         return UnmarshalUpdateDiceEmojis(data)
@@ -7625,6 +7748,22 @@ func UnmarshalAccentColor(data json.RawMessage) (*AccentColor, error) {
     return &resp, err
 }
 
+func UnmarshalProfileAccentColors(data json.RawMessage) (*ProfileAccentColors, error) {
+    var resp ProfileAccentColors
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalProfileAccentColor(data json.RawMessage) (*ProfileAccentColor, error) {
+    var resp ProfileAccentColor
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalEmojiStatus(data json.RawMessage) (*EmojiStatus, error) {
     var resp EmojiStatus
 
@@ -8217,6 +8356,22 @@ func UnmarshalMessageSendingStateFailed(data json.RawMessage) (*MessageSendingSt
     return &resp, err
 }
 
+func UnmarshalTextQuote(data json.RawMessage) (*TextQuote, error) {
+    var resp TextQuote
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalInputTextQuote(data json.RawMessage) (*InputTextQuote, error) {
+    var resp InputTextQuote
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalMessageReplyToMessage(data json.RawMessage) (*MessageReplyToMessage, error) {
     var resp MessageReplyToMessage
 
@@ -8395,6 +8550,14 @@ func UnmarshalMessageSourceOther(data json.RawMessage) (*MessageSourceOther, err
 
 func UnmarshalMessageSponsorTypeBot(data json.RawMessage) (*MessageSponsorTypeBot, error) {
     var resp MessageSponsorTypeBot
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalMessageSponsorTypeWebApp(data json.RawMessage) (*MessageSponsorTypeWebApp, error) {
+    var resp MessageSponsorTypeWebApp
 
     err := json.Unmarshal(data, &resp)
 
@@ -10801,6 +10964,14 @@ func UnmarshalMessagePremiumGiveaway(data json.RawMessage) (*MessagePremiumGivea
     return &resp, err
 }
 
+func UnmarshalMessagePremiumGiveawayCompleted(data json.RawMessage) (*MessagePremiumGiveawayCompleted, error) {
+    var resp MessagePremiumGiveawayCompleted
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalMessageContactRegistered(data json.RawMessage) (*MessageContactRegistered, error) {
     var resp MessageContactRegistered
 
@@ -11809,6 +11980,30 @@ func UnmarshalStoryListArchive(data json.RawMessage) (*StoryListArchive, error) 
     return &resp, err
 }
 
+func UnmarshalStoryOriginPublicStory(data json.RawMessage) (*StoryOriginPublicStory, error) {
+    var resp StoryOriginPublicStory
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStoryOriginHiddenUser(data json.RawMessage) (*StoryOriginHiddenUser, error) {
+    var resp StoryOriginHiddenUser
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStoryRepostInfo(data json.RawMessage) (*StoryRepostInfo, error) {
+    var resp StoryRepostInfo
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalStoryInteractionInfo(data json.RawMessage) (*StoryInteractionInfo, error) {
     var resp StoryInteractionInfo
 
@@ -11833,6 +12028,14 @@ func UnmarshalStories(data json.RawMessage) (*Stories, error) {
     return &resp, err
 }
 
+func UnmarshalStoryFullId(data json.RawMessage) (*StoryFullId, error) {
+    var resp StoryFullId
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalStoryInfo(data json.RawMessage) (*StoryInfo, error) {
     var resp StoryInfo
 
@@ -11843,6 +12046,30 @@ func UnmarshalStoryInfo(data json.RawMessage) (*StoryInfo, error) {
 
 func UnmarshalChatActiveStories(data json.RawMessage) (*ChatActiveStories, error) {
     var resp ChatActiveStories
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStoryPublicForwardMessage(data json.RawMessage) (*StoryPublicForwardMessage, error) {
+    var resp StoryPublicForwardMessage
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStoryPublicForwardStory(data json.RawMessage) (*StoryPublicForwardStory, error) {
+    var resp StoryPublicForwardStory
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStoryPublicForwards(data json.RawMessage) (*StoryPublicForwards, error) {
+    var resp StoryPublicForwards
 
     err := json.Unmarshal(data, &resp)
 
@@ -13281,6 +13508,14 @@ func UnmarshalPremiumLimitTypeStorySuggestedReactionAreaCount(data json.RawMessa
     return &resp, err
 }
 
+func UnmarshalPremiumLimitTypeSimilarChatCount(data json.RawMessage) (*PremiumLimitTypeSimilarChatCount, error) {
+    var resp PremiumLimitTypeSimilarChatCount
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalPremiumFeatureIncreasedLimits(data json.RawMessage) (*PremiumFeatureIncreasedLimits, error) {
     var resp PremiumFeatureIncreasedLimits
 
@@ -13419,6 +13654,14 @@ func UnmarshalPremiumFeatureChatBoost(data json.RawMessage) (*PremiumFeatureChat
 
 func UnmarshalPremiumFeatureAccentColor(data json.RawMessage) (*PremiumFeatureAccentColor, error) {
     var resp PremiumFeatureAccentColor
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPremiumFeatureBackgroundForBoth(data json.RawMessage) (*PremiumFeatureBackgroundForBoth, error) {
+    var resp PremiumFeatureBackgroundForBoth
 
     err := json.Unmarshal(data, &resp)
 
@@ -16025,8 +16268,24 @@ func UnmarshalStatisticalGraphError(data json.RawMessage) (*StatisticalGraphErro
     return &resp, err
 }
 
-func UnmarshalChatStatisticsMessageInteractionInfo(data json.RawMessage) (*ChatStatisticsMessageInteractionInfo, error) {
-    var resp ChatStatisticsMessageInteractionInfo
+func UnmarshalChatStatisticsObjectTypeMessage(data json.RawMessage) (*ChatStatisticsObjectTypeMessage, error) {
+    var resp ChatStatisticsObjectTypeMessage
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalChatStatisticsObjectTypeStory(data json.RawMessage) (*ChatStatisticsObjectTypeStory, error) {
+    var resp ChatStatisticsObjectTypeStory
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalChatStatisticsInteractionInfo(data json.RawMessage) (*ChatStatisticsInteractionInfo, error) {
+    var resp ChatStatisticsInteractionInfo
 
     err := json.Unmarshal(data, &resp)
 
@@ -16075,6 +16334,14 @@ func UnmarshalChatStatisticsChannel(data json.RawMessage) (*ChatStatisticsChanne
 
 func UnmarshalMessageStatistics(data json.RawMessage) (*MessageStatistics, error) {
     var resp MessageStatistics
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStoryStatistics(data json.RawMessage) (*StoryStatistics, error) {
+    var resp StoryStatistics
 
     err := json.Unmarshal(data, &resp)
 
@@ -16475,6 +16742,14 @@ func UnmarshalUpdateChatIsTranslatable(data json.RawMessage) (*UpdateChatIsTrans
 
 func UnmarshalUpdateChatIsMarkedAsUnread(data json.RawMessage) (*UpdateChatIsMarkedAsUnread, error) {
     var resp UpdateChatIsMarkedAsUnread
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateChatViewAsTopics(data json.RawMessage) (*UpdateChatViewAsTopics, error) {
+    var resp UpdateChatViewAsTopics
 
     err := json.Unmarshal(data, &resp)
 
@@ -16905,6 +17180,14 @@ func UnmarshalUpdateAccentColors(data json.RawMessage) (*UpdateAccentColors, err
     return &resp, err
 }
 
+func UnmarshalUpdateProfileAccentColors(data json.RawMessage) (*UpdateProfileAccentColors, error) {
+    var resp UpdateProfileAccentColors
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalUpdateLanguagePackStrings(data json.RawMessage) (*UpdateLanguagePackStrings, error) {
     var resp UpdateLanguagePackStrings
 
@@ -16971,6 +17254,14 @@ func UnmarshalUpdateActiveEmojiReactions(data json.RawMessage) (*UpdateActiveEmo
 
 func UnmarshalUpdateDefaultReactionType(data json.RawMessage) (*UpdateDefaultReactionType, error) {
     var resp UpdateDefaultReactionType
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateSpeechRecognitionTrial(data json.RawMessage) (*UpdateSpeechRecognitionTrial, error) {
+    var resp UpdateSpeechRecognitionTrial
 
     err := json.Unmarshal(data, &resp)
 
@@ -17622,6 +17913,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeAccentColor:
         return UnmarshalAccentColor(data)
 
+    case TypeProfileAccentColors:
+        return UnmarshalProfileAccentColors(data)
+
+    case TypeProfileAccentColor:
+        return UnmarshalProfileAccentColor(data)
+
     case TypeEmojiStatus:
         return UnmarshalEmojiStatus(data)
 
@@ -17844,6 +18141,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeMessageSendingStateFailed:
         return UnmarshalMessageSendingStateFailed(data)
 
+    case TypeTextQuote:
+        return UnmarshalTextQuote(data)
+
+    case TypeInputTextQuote:
+        return UnmarshalInputTextQuote(data)
+
     case TypeMessageReplyToMessage:
         return UnmarshalMessageReplyToMessage(data)
 
@@ -17912,6 +18215,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeMessageSponsorTypeBot:
         return UnmarshalMessageSponsorTypeBot(data)
+
+    case TypeMessageSponsorTypeWebApp:
+        return UnmarshalMessageSponsorTypeWebApp(data)
 
     case TypeMessageSponsorTypePublicChannel:
         return UnmarshalMessageSponsorTypePublicChannel(data)
@@ -18813,6 +19119,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeMessagePremiumGiveaway:
         return UnmarshalMessagePremiumGiveaway(data)
 
+    case TypeMessagePremiumGiveawayCompleted:
+        return UnmarshalMessagePremiumGiveawayCompleted(data)
+
     case TypeMessageContactRegistered:
         return UnmarshalMessageContactRegistered(data)
 
@@ -19191,6 +19500,15 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeStoryListArchive:
         return UnmarshalStoryListArchive(data)
 
+    case TypeStoryOriginPublicStory:
+        return UnmarshalStoryOriginPublicStory(data)
+
+    case TypeStoryOriginHiddenUser:
+        return UnmarshalStoryOriginHiddenUser(data)
+
+    case TypeStoryRepostInfo:
+        return UnmarshalStoryRepostInfo(data)
+
     case TypeStoryInteractionInfo:
         return UnmarshalStoryInteractionInfo(data)
 
@@ -19200,11 +19518,23 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeStories:
         return UnmarshalStories(data)
 
+    case TypeStoryFullId:
+        return UnmarshalStoryFullId(data)
+
     case TypeStoryInfo:
         return UnmarshalStoryInfo(data)
 
     case TypeChatActiveStories:
         return UnmarshalChatActiveStories(data)
+
+    case TypeStoryPublicForwardMessage:
+        return UnmarshalStoryPublicForwardMessage(data)
+
+    case TypeStoryPublicForwardStory:
+        return UnmarshalStoryPublicForwardStory(data)
+
+    case TypeStoryPublicForwards:
+        return UnmarshalStoryPublicForwards(data)
 
     case TypeChatBoostSourceGiftCode:
         return UnmarshalChatBoostSourceGiftCode(data)
@@ -19743,6 +20073,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypePremiumLimitTypeStorySuggestedReactionAreaCount:
         return UnmarshalPremiumLimitTypeStorySuggestedReactionAreaCount(data)
 
+    case TypePremiumLimitTypeSimilarChatCount:
+        return UnmarshalPremiumLimitTypeSimilarChatCount(data)
+
     case TypePremiumFeatureIncreasedLimits:
         return UnmarshalPremiumFeatureIncreasedLimits(data)
 
@@ -19796,6 +20129,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypePremiumFeatureAccentColor:
         return UnmarshalPremiumFeatureAccentColor(data)
+
+    case TypePremiumFeatureBackgroundForBoth:
+        return UnmarshalPremiumFeatureBackgroundForBoth(data)
 
     case TypePremiumStoryFeaturePriorityOrder:
         return UnmarshalPremiumStoryFeaturePriorityOrder(data)
@@ -20772,8 +21108,14 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeStatisticalGraphError:
         return UnmarshalStatisticalGraphError(data)
 
-    case TypeChatStatisticsMessageInteractionInfo:
-        return UnmarshalChatStatisticsMessageInteractionInfo(data)
+    case TypeChatStatisticsObjectTypeMessage:
+        return UnmarshalChatStatisticsObjectTypeMessage(data)
+
+    case TypeChatStatisticsObjectTypeStory:
+        return UnmarshalChatStatisticsObjectTypeStory(data)
+
+    case TypeChatStatisticsInteractionInfo:
+        return UnmarshalChatStatisticsInteractionInfo(data)
 
     case TypeChatStatisticsMessageSenderInfo:
         return UnmarshalChatStatisticsMessageSenderInfo(data)
@@ -20792,6 +21134,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeMessageStatistics:
         return UnmarshalMessageStatistics(data)
+
+    case TypeStoryStatistics:
+        return UnmarshalStoryStatistics(data)
 
     case TypePoint:
         return UnmarshalPoint(data)
@@ -20942,6 +21287,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeUpdateChatIsMarkedAsUnread:
         return UnmarshalUpdateChatIsMarkedAsUnread(data)
+
+    case TypeUpdateChatViewAsTopics:
+        return UnmarshalUpdateChatViewAsTopics(data)
 
     case TypeUpdateChatBlockList:
         return UnmarshalUpdateChatBlockList(data)
@@ -21102,6 +21450,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUpdateAccentColors:
         return UnmarshalUpdateAccentColors(data)
 
+    case TypeUpdateProfileAccentColors:
+        return UnmarshalUpdateProfileAccentColors(data)
+
     case TypeUpdateLanguagePackStrings:
         return UnmarshalUpdateLanguagePackStrings(data)
 
@@ -21128,6 +21479,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(data)
+
+    case TypeUpdateSpeechRecognitionTrial:
+        return UnmarshalUpdateSpeechRecognitionTrial(data)
 
     case TypeUpdateDiceEmojis:
         return UnmarshalUpdateDiceEmojis(data)

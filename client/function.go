@@ -1313,7 +1313,7 @@ type GetRepliedMessageRequest struct {
     MessageId int64 `json:"message_id"`
 }
 
-// Returns information about a message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground and topic messages without replied message respectively
+// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground and topic messages without non-bundled replied message respectively
 func (client *Client) GetRepliedMessage(req *GetRepliedMessageRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -1727,6 +1727,61 @@ func (client *Client) SearchChatsNearby(req *SearchChatsNearbyRequest) (*ChatsNe
     }
 
     return UnmarshalChatsNearby(result.Data)
+}
+
+type GetChatSimilarChatsRequest struct { 
+    // Identifier of the target chat; must be an identifier of a channel chat
+    ChatId int64 `json:"chat_id"`
+}
+
+// Returns a list of chats similar to the given chat
+func (client *Client) GetChatSimilarChats(req *GetChatSimilarChatsRequest) (*Chats, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getChatSimilarChats",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalChats(result.Data)
+}
+
+type GetChatSimilarChatCountRequest struct { 
+    // Identifier of the target chat; must be an identifier of a channel chat
+    ChatId int64 `json:"chat_id"`
+    // Pass true to get the number of chats without sending network requests, or -1 if the number of chats is unknown locally
+    ReturnLocal bool `json:"return_local"`
+}
+
+// Returns approximate number of chats similar to the given chat
+func (client *Client) GetChatSimilarChatCount(req *GetChatSimilarChatCountRequest) (*Count, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getChatSimilarChatCount",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "return_local": req.ReturnLocal,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalCount(result.Data)
 }
 
 type GetTopChatsRequest struct { 
@@ -2949,7 +3004,7 @@ type RecognizeSpeechRequest struct {
     MessageId int64 `json:"message_id"`
 }
 
-// Recognizes speech in a video note or a voice note message. The message must be successfully sent and must not be scheduled. May return an error with a message "MSG_VOICE_TOO_LONG" if media duration is too big to be recognized
+// Recognizes speech in a video note or a voice note message. The message must be successfully sent, must not be scheduled, and must be from a non-secret chat
 func (client *Client) RecognizeSpeech(req *RecognizeSpeechRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -3263,7 +3318,7 @@ type ResendMessagesRequest struct {
     // Identifiers of the messages to resend. Message identifiers must be in a strictly increasing order
     MessageIds []int64 `json:"message_ids"`
     // New manually chosen quote from the message to be replied; pass null if none. Ignored if more than one message is re-sent, or if messageSendingStateFailed.need_another_reply_quote == false
-    Quote *FormattedText `json:"quote"`
+    Quote *InputTextQuote `json:"quote"`
 }
 
 // Resends messages which failed to send. Can be called only for messages for which messageSendingStateFailed.can_retry is true and after specified in messageSendingStateFailed.retry_after time passed. If a message is re-sent, the corresponding failed to send message is deleted. Returns the sent messages in the same order as the message identifiers passed in message_ids. If a message can't be re-sent, null will be returned instead of the message
@@ -7270,15 +7325,17 @@ func (client *Client) SetChatPermissions(req *SetChatPermissionsRequest) (*Ok, e
 type SetChatBackgroundRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // The input background to use; pass null to create a new filled background or to remove the current background
+    // The input background to use; pass null to create a new filled background
     Background InputBackground `json:"background"`
-    // Background type; pass null to remove the current background
+    // Background type; pass null to use default background type for the chosen background
     Type BackgroundType `json:"type"`
     // Dimming of the background in dark themes, as a percentage; 0-100
     DarkThemeDimming int32 `json:"dark_theme_dimming"`
+    // Pass true to set background only for self; pass false to set background for both chat users. Background can be set for both users only by Telegram Premium users and if set background isn't of the type inputBackgroundPrevious
+    OnlyForSelf bool `json:"only_for_self"`
 }
 
-// Changes the background in a specific chat. Supported only in private and secret chats with non-deleted users
+// Sets the background in a specific chat. Supported only in private and secret chats with non-deleted users
 func (client *Client) SetChatBackground(req *SetChatBackgroundRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7289,6 +7346,36 @@ func (client *Client) SetChatBackground(req *SetChatBackgroundRequest) (*Ok, err
             "background": req.Background,
             "type": req.Type,
             "dark_theme_dimming": req.DarkThemeDimming,
+            "only_for_self": req.OnlyForSelf,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type DeleteChatBackgroundRequest struct { 
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // Pass true to restore previously set background. Can be used only in private and secret chats with non-deleted users if userFullInfo.set_chat_background == true. Supposed to be used from messageChatSetBackground messages with the currently set background that was set for both sides by the other user
+    RestorePrevious bool `json:"restore_previous"`
+}
+
+// Deletes background in a specific chat
+func (client *Client) DeleteChatBackground(req *DeleteChatBackgroundRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteChatBackground",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "restore_previous": req.RestorePrevious,
         },
     })
     if err != nil {
@@ -7421,6 +7508,35 @@ func (client *Client) ToggleChatHasProtectedContent(req *ToggleChatHasProtectedC
     return UnmarshalOk(result.Data)
 }
 
+type ToggleChatViewAsTopicsRequest struct { 
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // New value of view_as_topics
+    ViewAsTopics bool `json:"view_as_topics"`
+}
+
+// Changes the view_as_topics setting of a forum chat
+func (client *Client) ToggleChatViewAsTopics(req *ToggleChatViewAsTopicsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "toggleChatViewAsTopics",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "view_as_topics": req.ViewAsTopics,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type ToggleChatIsTranslatableRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
@@ -7428,7 +7544,7 @@ type ToggleChatIsTranslatableRequest struct {
     IsTranslatable bool `json:"is_translatable"`
 }
 
-// Changes the translatable state of a chat; for Telegram Premium users only
+// Changes the translatable state of a chat
 func (client *Client) ToggleChatIsTranslatable(req *ToggleChatIsTranslatableRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7511,7 +7627,7 @@ func (client *Client) ToggleChatDefaultDisableNotification(req *ToggleChatDefaul
 type SetChatAvailableReactionsRequest struct { 
     // Identifier of the chat
     ChatId int64 `json:"chat_id"`
-    // Reactions available in the chat. All emoji reactions must be active
+    // Reactions available in the chat. All explicitly specified emoji reactions must be active. Up to the chat's boost level custom emoji reactions can be explicitly specified
     AvailableReactions ChatAvailableReactions `json:"available_reactions"`
 }
 
@@ -8561,6 +8677,8 @@ type SendStoryRequest struct {
     PrivacySettings StoryPrivacySettings `json:"privacy_settings"`
     // Period after which the story is moved to archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400 for Telegram Premium users, and 86400 otherwise
     ActivePeriod int32 `json:"active_period"`
+    // Full identifier of the original story, which content was used to create the story
+    FromStoryFullId *StoryFullId `json:"from_story_full_id"`
     // Pass true to keep the story accessible after expiration
     IsPinned bool `json:"is_pinned"`
     // Pass true if the content of the story must be protected from forwarding and screenshotting
@@ -8580,6 +8698,7 @@ func (client *Client) SendStory(req *SendStoryRequest) (*Story, error) {
             "caption": req.Caption,
             "privacy_settings": req.PrivacySettings,
             "active_period": req.ActivePeriod,
+            "from_story_full_id": req.FromStoryFullId,
             "is_pinned": req.IsPinned,
             "protect_content": req.ProtectContent,
         },
@@ -9104,6 +9223,41 @@ func (client *Client) ActivateStoryStealthMode() (*Ok, error) {
     return UnmarshalOk(result.Data)
 }
 
+type GetStoryPublicForwardsRequest struct { 
+    // The identifier of the sender of the story
+    StorySenderChatId int64 `json:"story_sender_chat_id"`
+    // The identifier of the story
+    StoryId int32 `json:"story_id"`
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of messages and stories to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned objects is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Returns forwards of a story as a message to public chats and reposts by public channels. Can be used only if the story is posted on behalf of the current user or story.can_get_statistics == true. For optimal performance, the number of returned messages and stories is chosen by TDLib
+func (client *Client) GetStoryPublicForwards(req *GetStoryPublicForwardsRequest) (*StoryPublicForwards, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStoryPublicForwards",
+        },
+        Data: map[string]interface{}{
+            "story_sender_chat_id": req.StorySenderChatId,
+            "story_id": req.StoryId,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStoryPublicForwards(result.Data)
+}
+
 // Returns the list of available chat boost slots for the current user
 func (client *Client) GetAvailableChatBoostSlots() (*ChatBoostSlots, error) {
     result, err := client.Send(Request{
@@ -9562,7 +9716,7 @@ type PreliminaryUploadFileRequest struct {
     Priority int32 `json:"priority"`
 }
 
-// Preliminary uploads a file to the cloud before sending it in a message, which can be useful for uploading of being recorded voice and video notes. Updates updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it will be sent in a message
+// Preliminary uploads a file to the cloud before sending it in a message, which can be useful for uploading of being recorded voice and video notes. Updates updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it is sent in a message
 func (client *Client) PreliminaryUploadFile(req *PreliminaryUploadFileRequest) (*File, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10946,7 +11100,7 @@ type ToggleGroupCallEnabledStartNotificationRequest struct {
     EnabledStartNotification bool `json:"enabled_start_notification"`
 }
 
-// Toggles whether the current user will receive a notification when the group call will start; scheduled group calls only
+// Toggles whether the current user will receive a notification when the group call starts; scheduled group calls only
 func (client *Client) ToggleGroupCallEnabledStartNotification(req *ToggleGroupCallEnabledStartNotificationRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -12438,17 +12592,20 @@ func (client *Client) SearchInstalledStickerSets(req *SearchInstalledStickerSets
 }
 
 type SearchStickerSetsRequest struct { 
+    // Type of the sticker sets to return
+    StickerType StickerType `json:"sticker_type"`
     // Query to search for
     Query string `json:"query"`
 }
 
-// Searches for ordinary sticker sets by looking for specified query in their title and name. Excludes installed sticker sets from the results
+// Searches for sticker sets by looking for specified query in their title and name. Excludes installed sticker sets from the results
 func (client *Client) SearchStickerSets(req *SearchStickerSetsRequest) (*StickerSets, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "searchStickerSets",
         },
         Data: map[string]interface{}{
+            "sticker_type": req.StickerType,
             "query": req.Query,
         },
     })
@@ -13224,6 +13381,35 @@ func (client *Client) SetAccentColor(req *SetAccentColorRequest) (*Ok, error) {
         Data: map[string]interface{}{
             "accent_color_id": req.AccentColorId,
             "background_custom_emoji_id": req.BackgroundCustomEmojiId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetProfileAccentColorRequest struct { 
+    // Identifier of the accent color to use for profile; pass -1 if none
+    ProfileAccentColorId int32 `json:"profile_accent_color_id"`
+    // Identifier of a custom emoji to be shown in the on the user's profile photo background; 0 if none
+    ProfileBackgroundCustomEmojiId JsonInt64 `json:"profile_background_custom_emoji_id"`
+}
+
+// Changes accent color and background custom emoji for profile of the current user; for Telegram Premium users only
+func (client *Client) SetProfileAccentColor(req *SetProfileAccentColorRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setProfileAccentColor",
+        },
+        Data: map[string]interface{}{
+            "profile_accent_color_id": req.ProfileAccentColorId,
+            "profile_background_custom_emoji_id": req.ProfileBackgroundCustomEmojiId,
         },
     })
     if err != nil {
@@ -16096,6 +16282,38 @@ func (client *Client) GetMessagePublicForwards(req *GetMessagePublicForwardsRequ
     }
 
     return UnmarshalFoundMessages(result.Data)
+}
+
+type GetStoryStatisticsRequest struct { 
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // Story identifier
+    StoryId int32 `json:"story_id"`
+    // Pass true if a dark theme is used by the application
+    IsDark bool `json:"is_dark"`
+}
+
+// Returns detailed statistics about a story. Can be used only if story.can_get_statistics == true
+func (client *Client) GetStoryStatistics(req *GetStoryStatisticsRequest) (*StoryStatistics, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStoryStatistics",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "story_id": req.StoryId,
+            "is_dark": req.IsDark,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStoryStatistics(result.Data)
 }
 
 type GetStatisticalGraphRequest struct { 
@@ -19270,6 +19488,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateChatIsMarkedAsUnread:
         return UnmarshalUpdateChatIsMarkedAsUnread(result.Data)
 
+    case TypeUpdateChatViewAsTopics:
+        return UnmarshalUpdateChatViewAsTopics(result.Data)
+
     case TypeUpdateChatBlockList:
         return UnmarshalUpdateChatBlockList(result.Data)
 
@@ -19429,6 +19650,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateAccentColors:
         return UnmarshalUpdateAccentColors(result.Data)
 
+    case TypeUpdateProfileAccentColors:
+        return UnmarshalUpdateProfileAccentColors(result.Data)
+
     case TypeUpdateLanguagePackStrings:
         return UnmarshalUpdateLanguagePackStrings(result.Data)
 
@@ -19455,6 +19679,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(result.Data)
+
+    case TypeUpdateSpeechRecognitionTrial:
+        return UnmarshalUpdateSpeechRecognitionTrial(result.Data)
 
     case TypeUpdateDiceEmojis:
         return UnmarshalUpdateDiceEmojis(result.Data)
