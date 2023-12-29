@@ -1313,7 +1313,7 @@ type GetRepliedMessageRequest struct {
     MessageId int64 `json:"message_id"`
 }
 
-// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground and topic messages without non-bundled replied message respectively
+// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, the giveaway message, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground, messagePremiumGiveawayCompleted and topic messages without non-bundled replied message respectively
 func (client *Client) GetRepliedMessage(req *GetRepliedMessageRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -1782,6 +1782,35 @@ func (client *Client) GetChatSimilarChatCount(req *GetChatSimilarChatCountReques
     }
 
     return UnmarshalCount(result.Data)
+}
+
+type OpenChatSimilarChatRequest struct { 
+    // Identifier of the original chat, which similar chats were requested
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the opened chat
+    OpenedChatId int64 `json:"opened_chat_id"`
+}
+
+// Informs TDLib that a chat was opened from the list of similar chats. The method is independent from openChat and closeChat methods
+func (client *Client) OpenChatSimilarChat(req *OpenChatSimilarChatRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "openChatSimilarChat",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "opened_chat_id": req.OpenedChatId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
 }
 
 type GetTopChatsRequest struct { 
@@ -4414,6 +4443,41 @@ func (client *Client) RemoveMessageReaction(req *RemoveMessageReactionRequest) (
     return UnmarshalOk(result.Data)
 }
 
+type SetMessageReactionsRequest struct { 
+    // Identifier of the chat to which the message belongs
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // Types of the reaction to set
+    ReactionTypes []ReactionType `json:"reaction_types"`
+    // Pass true if the reactions are added with a big animation
+    IsBig bool `json:"is_big"`
+}
+
+// Sets reactions on a message; for bots only
+func (client *Client) SetMessageReactions(req *SetMessageReactionsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setMessageReactions",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reaction_types": req.ReactionTypes,
+            "is_big": req.IsBig,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type GetMessageAddedReactionsRequest struct { 
     // Identifier of the chat to which the message belongs
     ChatId int64 `json:"chat_id"`
@@ -5105,30 +5169,30 @@ func (client *Client) GetLoginUrl(req *GetLoginUrlRequest) (*HttpUrl, error) {
     return UnmarshalHttpUrl(result.Data)
 }
 
-type ShareUserWithBotRequest struct { 
+type ShareUsersWithBotRequest struct { 
     // Identifier of the chat with the bot
     ChatId int64 `json:"chat_id"`
     // Identifier of the message with the button
     MessageId int64 `json:"message_id"`
     // Identifier of the button
     ButtonId int32 `json:"button_id"`
-    // Identifier of the shared user
-    SharedUserId int64 `json:"shared_user_id"`
-    // Pass true to check that the user can be shared by the button instead of actually sharing them
+    // Identifiers of the shared users
+    SharedUserIds []int64 `json:"shared_user_ids"`
+    // Pass true to check that the users can be shared by the button instead of actually sharing them
     OnlyCheck bool `json:"only_check"`
 }
 
-// Shares a user after pressing a keyboardButtonTypeRequestUser button with the bot
-func (client *Client) ShareUserWithBot(req *ShareUserWithBotRequest) (*Ok, error) {
+// Shares users after pressing a keyboardButtonTypeRequestUsers button with the bot
+func (client *Client) ShareUsersWithBot(req *ShareUsersWithBotRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "shareUserWithBot",
+            Type: "shareUsersWithBot",
         },
         Data: map[string]interface{}{
             "chat_id": req.ChatId,
             "message_id": req.MessageId,
             "button_id": req.ButtonId,
-            "shared_user_id": req.SharedUserId,
+            "shared_user_ids": req.SharedUserIds,
             "only_check": req.OnlyCheck,
         },
     })
@@ -6100,6 +6164,9 @@ func (client *Client) GetInternalLinkType(req *GetInternalLinkTypeRequest) (Inte
 
     case TypeInternalLinkTypePremiumFeatures:
         return UnmarshalInternalLinkTypePremiumFeatures(result.Data)
+
+    case TypeInternalLinkTypePremiumGift:
+        return UnmarshalInternalLinkTypePremiumGift(result.Data)
 
     case TypeInternalLinkTypePremiumGiftCode:
         return UnmarshalInternalLinkTypePremiumGiftCode(result.Data)
@@ -7235,13 +7302,13 @@ func (client *Client) SetChatPhoto(req *SetChatPhotoRequest) (*Ok, error) {
 type SetChatAccentColorRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // Identifier of the accent color to use
+    // Identifier of the accent color to use. The chat must have at least accentColor.min_chat_boost_level boost level to pass the corresponding color
     AccentColorId int32 `json:"accent_color_id"`
-    // Identifier of a custom emoji to be shown on the reply header background; 0 if none
+    // Identifier of a custom emoji to be shown on the reply header and link preview background; 0 if none. Use chatBoostLevelFeatures.can_set_background_custom_emoji to check whether a custom emoji can be set
     BackgroundCustomEmojiId JsonInt64 `json:"background_custom_emoji_id"`
 }
 
-// Changes accent color and background custom emoji of a chat. Supported only for channels with getOption("channel_custom_accent_color_boost_level_min") boost level. Requires can_change_info administrator right
+// Changes accent color and background custom emoji of a chat. Requires can_change_info administrator right
 func (client *Client) SetChatAccentColor(req *SetChatAccentColorRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7251,6 +7318,38 @@ func (client *Client) SetChatAccentColor(req *SetChatAccentColorRequest) (*Ok, e
             "chat_id": req.ChatId,
             "accent_color_id": req.AccentColorId,
             "background_custom_emoji_id": req.BackgroundCustomEmojiId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetChatProfileAccentColorRequest struct { 
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the accent color to use for profile; pass -1 if none. The chat must have at least profileAccentColor.min_chat_boost_level boost level to pass the corresponding color
+    ProfileAccentColorId int32 `json:"profile_accent_color_id"`
+    // Identifier of a custom emoji to be shown on the chat's profile photo background; 0 if none. Use chatBoostLevelFeatures.can_set_profile_background_custom_emoji to check whether a custom emoji can be set
+    ProfileBackgroundCustomEmojiId JsonInt64 `json:"profile_background_custom_emoji_id"`
+}
+
+// Changes accent color and background custom emoji for profile of a chat. Requires can_change_info administrator right
+func (client *Client) SetChatProfileAccentColor(req *SetChatProfileAccentColorRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setChatProfileAccentColor",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "profile_accent_color_id": req.ProfileAccentColorId,
+            "profile_background_custom_emoji_id": req.ProfileBackgroundCustomEmojiId,
         },
     })
     if err != nil {
@@ -7280,6 +7379,35 @@ func (client *Client) SetChatMessageAutoDeleteTime(req *SetChatMessageAutoDelete
         Data: map[string]interface{}{
             "chat_id": req.ChatId,
             "message_auto_delete_time": req.MessageAutoDeleteTime,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetChatEmojiStatusRequest struct { 
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // New emoji status; pass null to remove emoji status
+    EmojiStatus *EmojiStatus `json:"emoji_status"`
+}
+
+// Changes the emoji status of a chat. Use chatBoostLevelFeatures.can_set_emoji_status to check whether an emoji status can be set. Requires can_change_info administrator right
+func (client *Client) SetChatEmojiStatus(req *SetChatEmojiStatusRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setChatEmojiStatus",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "emoji_status": req.EmojiStatus,
         },
     })
     if err != nil {
@@ -7325,17 +7453,17 @@ func (client *Client) SetChatPermissions(req *SetChatPermissionsRequest) (*Ok, e
 type SetChatBackgroundRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // The input background to use; pass null to create a new filled background
+    // The input background to use; pass null to create a new filled or chat theme background
     Background InputBackground `json:"background"`
-    // Background type; pass null to use default background type for the chosen background
+    // Background type; pass null to use default background type for the chosen background; backgroundTypeChatTheme isn't supported for private and secret chats. Use chatBoostLevelFeatures.chat_theme_background_count and chatBoostLevelFeatures.can_set_custom_background to check whether the background type can be set in the boosted chat
     Type BackgroundType `json:"type"`
-    // Dimming of the background in dark themes, as a percentage; 0-100
+    // Dimming of the background in dark themes, as a percentage; 0-100. Applied only to Wallpaper and Fill types of background
     DarkThemeDimming int32 `json:"dark_theme_dimming"`
-    // Pass true to set background only for self; pass false to set background for both chat users. Background can be set for both users only by Telegram Premium users and if set background isn't of the type inputBackgroundPrevious
+    // Pass true to set background only for self; pass false to set background for all chat users. Always false for backgrounds set in boosted chats. Background can be set for both users only by Telegram Premium users and if set background isn't of the type inputBackgroundPrevious
     OnlyForSelf bool `json:"only_for_self"`
 }
 
-// Sets the background in a specific chat. Supported only in private and secret chats with non-deleted users
+// Sets the background in a specific chat. Supported only in private and secret chats with non-deleted users, and in chats with sufficient boost level and can_change_info administrator right
 func (client *Client) SetChatBackground(req *SetChatBackgroundRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9128,31 +9256,34 @@ func (client *Client) SetStoryReaction(req *SetStoryReactionRequest) (*Ok, error
     return UnmarshalOk(result.Data)
 }
 
-type GetStoryViewersRequest struct { 
+type GetStoryInteractionsRequest struct { 
     // Story identifier
     StoryId int32 `json:"story_id"`
-    // Query to search for in names and usernames of the viewers; may be empty to get all relevant viewers
+    // Query to search for in names, usernames and titles; may be empty to get all relevant interactions
     Query string `json:"query"`
-    // Pass true to get only contacts; pass false to get all relevant viewers
+    // Pass true to get only interactions by contacts; pass false to get all relevant interactions
     OnlyContacts bool `json:"only_contacts"`
-    // Pass true to get viewers with reaction first; pass false to get viewers sorted just by view_date
+    // Pass true to get forwards and reposts first, then reactions, then other views; pass false to get interactions sorted just by interaction date
+    PreferForwards bool `json:"prefer_forwards"`
+    // Pass true to get interactions with reaction first; pass false to get interactions sorted just by interaction date. Ignored if prefer_forwards == true
     PreferWithReaction bool `json:"prefer_with_reaction"`
     // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
     Offset string `json:"offset"`
-    // The maximum number of story viewers to return
+    // The maximum number of story interactions to return
     Limit int32 `json:"limit"`
 }
 
-// Returns viewers of a story. The method can be called only for stories posted on behalf of the current user
-func (client *Client) GetStoryViewers(req *GetStoryViewersRequest) (*StoryViewers, error) {
+// Returns interactions with a story. The method can be called only for stories posted on behalf of the current user
+func (client *Client) GetStoryInteractions(req *GetStoryInteractionsRequest) (*StoryInteractions, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "getStoryViewers",
+            Type: "getStoryInteractions",
         },
         Data: map[string]interface{}{
             "story_id": req.StoryId,
             "query": req.Query,
             "only_contacts": req.OnlyContacts,
+            "prefer_forwards": req.PreferForwards,
             "prefer_with_reaction": req.PreferWithReaction,
             "offset": req.Offset,
             "limit": req.Limit,
@@ -9166,7 +9297,48 @@ func (client *Client) GetStoryViewers(req *GetStoryViewersRequest) (*StoryViewer
         return nil, buildResponseError(result.Data)
     }
 
-    return UnmarshalStoryViewers(result.Data)
+    return UnmarshalStoryInteractions(result.Data)
+}
+
+type GetChatStoryInteractionsRequest struct { 
+    // The identifier of the sender of the story
+    StorySenderChatId int64 `json:"story_sender_chat_id"`
+    // Story identifier
+    StoryId int32 `json:"story_id"`
+    // Pass the default heart reaction or a suggested reaction type to receive only interactions with the specified reaction type; pass null to receive all interactions
+    ReactionType ReactionType `json:"reaction_type"`
+    // Pass true to get forwards and reposts first, then reactions, then other views; pass false to get interactions sorted just by interaction date
+    PreferForwards bool `json:"prefer_forwards"`
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of story interactions to return
+    Limit int32 `json:"limit"`
+}
+
+// Returns interactions with a story posted in a chat. Can be used only if story is posted on behalf of a chat and the user is an administrator in the chat
+func (client *Client) GetChatStoryInteractions(req *GetChatStoryInteractionsRequest) (*StoryInteractions, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getChatStoryInteractions",
+        },
+        Data: map[string]interface{}{
+            "story_sender_chat_id": req.StorySenderChatId,
+            "story_id": req.StoryId,
+            "reaction_type": req.ReactionType,
+            "prefer_forwards": req.PreferForwards,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStoryInteractions(result.Data)
 }
 
 type ReportStoryRequest struct { 
@@ -9235,7 +9407,7 @@ type GetStoryPublicForwardsRequest struct {
 }
 
 // Returns forwards of a story as a message to public chats and reposts by public channels. Can be used only if the story is posted on behalf of the current user or story.can_get_statistics == true. For optimal performance, the number of returned messages and stories is chosen by TDLib
-func (client *Client) GetStoryPublicForwards(req *GetStoryPublicForwardsRequest) (*StoryPublicForwards, error) {
+func (client *Client) GetStoryPublicForwards(req *GetStoryPublicForwardsRequest) (*PublicForwards, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "getStoryPublicForwards",
@@ -9255,7 +9427,52 @@ func (client *Client) GetStoryPublicForwards(req *GetStoryPublicForwardsRequest)
         return nil, buildResponseError(result.Data)
     }
 
-    return UnmarshalStoryPublicForwards(result.Data)
+    return UnmarshalPublicForwards(result.Data)
+}
+
+type GetChatBoostLevelFeaturesRequest struct { 
+    // Chat boost level
+    Level int32 `json:"level"`
+}
+
+// Returns list of features available on the specific chat boost level; this is an offline request
+func (client *Client) GetChatBoostLevelFeatures(req *GetChatBoostLevelFeaturesRequest) (*ChatBoostLevelFeatures, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getChatBoostLevelFeatures",
+        },
+        Data: map[string]interface{}{
+            "level": req.Level,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalChatBoostLevelFeatures(result.Data)
+}
+
+// Returns list of features available on the first 10 chat boost levels; this is an offline request
+func (client *Client) GetChatBoostFeatures() (*ChatBoostFeatures, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getChatBoostFeatures",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalChatBoostFeatures(result.Data)
 }
 
 // Returns the list of available chat boost slots for the current user
@@ -9506,7 +9723,7 @@ func (client *Client) ToggleBotIsAddedToAttachmentMenu(req *ToggleBotIsAddedToAt
     return UnmarshalOk(result.Data)
 }
 
-// Returns up to 8 emoji statuses, which must be shown right after the default Premium Badge in the emoji status list
+// Returns up to 8 emoji statuses, which must be shown right after the default Premium Badge in the emoji status list for self status
 func (client *Client) GetThemedEmojiStatuses() (*EmojiStatuses, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9525,7 +9742,7 @@ func (client *Client) GetThemedEmojiStatuses() (*EmojiStatuses, error) {
     return UnmarshalEmojiStatuses(result.Data)
 }
 
-// Returns recent emoji statuses
+// Returns recent emoji statuses for self status
 func (client *Client) GetRecentEmojiStatuses() (*EmojiStatuses, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9544,7 +9761,7 @@ func (client *Client) GetRecentEmojiStatuses() (*EmojiStatuses, error) {
     return UnmarshalEmojiStatuses(result.Data)
 }
 
-// Returns default emoji statuses
+// Returns default emoji statuses for self status
 func (client *Client) GetDefaultEmojiStatuses() (*EmojiStatuses, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9563,7 +9780,7 @@ func (client *Client) GetDefaultEmojiStatuses() (*EmojiStatuses, error) {
     return UnmarshalEmojiStatuses(result.Data)
 }
 
-// Clears the list of recently used emoji statuses
+// Clears the list of recently used emoji statuses for self status
 func (client *Client) ClearRecentEmojiStatuses() (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9580,6 +9797,63 @@ func (client *Client) ClearRecentEmojiStatuses() (*Ok, error) {
     }
 
     return UnmarshalOk(result.Data)
+}
+
+// Returns up to 8 emoji statuses, which must be shown in the emoji status list for chats
+func (client *Client) GetThemedChatEmojiStatuses() (*EmojiStatuses, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getThemedChatEmojiStatuses",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalEmojiStatuses(result.Data)
+}
+
+// Returns default emoji statuses for chats
+func (client *Client) GetDefaultChatEmojiStatuses() (*EmojiStatuses, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getDefaultChatEmojiStatuses",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalEmojiStatuses(result.Data)
+}
+
+// Returns the list of emoji statuses, which can't be used as chat emoji status, even they are from a sticker set with is_allowed_as_chat_emoji_status == true
+func (client *Client) GetDisallowedChatEmojiStatuses() (*EmojiStatuses, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getDisallowedChatEmojiStatuses",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalEmojiStatuses(result.Data)
 }
 
 type DownloadFileRequest struct { 
@@ -13368,7 +13642,7 @@ func (client *Client) DeleteProfilePhoto(req *DeleteProfilePhotoRequest) (*Ok, e
 type SetAccentColorRequest struct { 
     // Identifier of the accent color to use
     AccentColorId int32 `json:"accent_color_id"`
-    // Identifier of a custom emoji to be shown on the reply header background; 0 if none
+    // Identifier of a custom emoji to be shown on the reply header and link preview background; 0 if none
     BackgroundCustomEmojiId JsonInt64 `json:"background_custom_emoji_id"`
 }
 
@@ -13397,7 +13671,7 @@ func (client *Client) SetAccentColor(req *SetAccentColorRequest) (*Ok, error) {
 type SetProfileAccentColorRequest struct { 
     // Identifier of the accent color to use for profile; pass -1 if none
     ProfileAccentColorId int32 `json:"profile_accent_color_id"`
-    // Identifier of a custom emoji to be shown in the on the user's profile photo background; 0 if none
+    // Identifier of a custom emoji to be shown on the user's profile photo background; 0 if none
     ProfileBackgroundCustomEmojiId JsonInt64 `json:"profile_background_custom_emoji_id"`
 }
 
@@ -15289,36 +15563,10 @@ func (client *Client) GetSupportUser() (*User, error) {
     return UnmarshalUser(result.Data)
 }
 
-type GetBackgroundsRequest struct { 
-    // Pass true to order returned backgrounds for a dark theme
-    ForDarkTheme bool `json:"for_dark_theme"`
-}
-
-// Returns backgrounds installed by the user
-func (client *Client) GetBackgrounds(req *GetBackgroundsRequest) (*Backgrounds, error) {
-    result, err := client.Send(Request{
-        meta: meta{
-            Type: "getBackgrounds",
-        },
-        Data: map[string]interface{}{
-            "for_dark_theme": req.ForDarkTheme,
-        },
-    })
-    if err != nil {
-        return nil, err
-    }
-
-    if result.Type == "error" {
-        return nil, buildResponseError(result.Data)
-    }
-
-    return UnmarshalBackgrounds(result.Data)
-}
-
 type GetBackgroundUrlRequest struct { 
     // Background name
     Name string `json:"name"`
-    // Background type
+    // Background type; backgroundTypeChatTheme isn't supported
     Type BackgroundType `json:"type"`
 }
 
@@ -15370,20 +15618,20 @@ func (client *Client) SearchBackground(req *SearchBackgroundRequest) (*Backgroun
     return UnmarshalBackground(result.Data)
 }
 
-type SetBackgroundRequest struct { 
-    // The input background to use; pass null to create a new filled background or to remove the current background
+type SetDefaultBackgroundRequest struct { 
+    // The input background to use; pass null to create a new filled background
     Background InputBackground `json:"background"`
-    // Background type; pass null to use the default type of the remote background or to remove the current background
+    // Background type; pass null to use the default type of the remote background; backgroundTypeChatTheme isn't supported
     Type BackgroundType `json:"type"`
-    // Pass true if the background is changed for a dark theme
+    // Pass true if the background is set for a dark theme
     ForDarkTheme bool `json:"for_dark_theme"`
 }
 
-// Changes the background selected by the user; adds background to the list of installed backgrounds
-func (client *Client) SetBackground(req *SetBackgroundRequest) (*Background, error) {
+// Sets default background for chats; adds the background to the list of installed backgrounds
+func (client *Client) SetDefaultBackground(req *SetDefaultBackgroundRequest) (*Background, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "setBackground",
+            Type: "setDefaultBackground",
         },
         Data: map[string]interface{}{
             "background": req.Background,
@@ -15402,16 +15650,68 @@ func (client *Client) SetBackground(req *SetBackgroundRequest) (*Background, err
     return UnmarshalBackground(result.Data)
 }
 
-type RemoveBackgroundRequest struct { 
+type DeleteDefaultBackgroundRequest struct { 
+    // Pass true if the background is deleted for a dark theme
+    ForDarkTheme bool `json:"for_dark_theme"`
+}
+
+// Deletes default background for chats
+func (client *Client) DeleteDefaultBackground(req *DeleteDefaultBackgroundRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteDefaultBackground",
+        },
+        Data: map[string]interface{}{
+            "for_dark_theme": req.ForDarkTheme,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type GetInstalledBackgroundsRequest struct { 
+    // Pass true to order returned backgrounds for a dark theme
+    ForDarkTheme bool `json:"for_dark_theme"`
+}
+
+// Returns backgrounds installed by the user
+func (client *Client) GetInstalledBackgrounds(req *GetInstalledBackgroundsRequest) (*Backgrounds, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getInstalledBackgrounds",
+        },
+        Data: map[string]interface{}{
+            "for_dark_theme": req.ForDarkTheme,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBackgrounds(result.Data)
+}
+
+type RemoveInstalledBackgroundRequest struct { 
     // The background identifier
     BackgroundId JsonInt64 `json:"background_id"`
 }
 
 // Removes background from the list of installed backgrounds
-func (client *Client) RemoveBackground(req *RemoveBackgroundRequest) (*Ok, error) {
+func (client *Client) RemoveInstalledBackground(req *RemoveInstalledBackgroundRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "removeBackground",
+            Type: "removeInstalledBackground",
         },
         Data: map[string]interface{}{
             "background_id": req.BackgroundId,
@@ -15429,10 +15729,10 @@ func (client *Client) RemoveBackground(req *RemoveBackgroundRequest) (*Ok, error
 }
 
 // Resets list of installed backgrounds to its default value
-func (client *Client) ResetBackgrounds() (*Ok, error) {
+func (client *Client) ResetInstalledBackgrounds() (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "resetBackgrounds",
+            Type: "resetInstalledBackgrounds",
         },
         Data: map[string]interface{}{},
     })
@@ -16256,12 +16556,12 @@ type GetMessagePublicForwardsRequest struct {
     MessageId int64 `json:"message_id"`
     // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
     Offset string `json:"offset"`
-    // The maximum number of messages to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+    // The maximum number of messages and stories to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned objects is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
 }
 
-// Returns forwarded copies of a channel message to different public channels. Can be used only if message.can_get_statistics == true. For optimal performance, the number of returned messages is chosen by TDLib
-func (client *Client) GetMessagePublicForwards(req *GetMessagePublicForwardsRequest) (*FoundMessages, error) {
+// Returns forwarded copies of a channel message to different public channels and public reposts as a story. Can be used only if message.can_get_statistics == true. For optimal performance, the number of returned messages and stories is chosen by TDLib
+func (client *Client) GetMessagePublicForwards(req *GetMessagePublicForwardsRequest) (*PublicForwards, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "getMessagePublicForwards",
@@ -16281,7 +16581,7 @@ func (client *Client) GetMessagePublicForwards(req *GetMessagePublicForwardsRequ
         return nil, buildResponseError(result.Data)
     }
 
-    return UnmarshalFoundMessages(result.Data)
+    return UnmarshalPublicForwards(result.Data)
 }
 
 type GetStoryStatisticsRequest struct { 
@@ -18024,7 +18324,7 @@ func (client *Client) LaunchPrepaidPremiumGiveaway(req *LaunchPrepaidPremiumGive
 type GetPremiumGiveawayInfoRequest struct { 
     // Identifier of the channel chat which started the giveaway
     ChatId int64 `json:"chat_id"`
-    // Identifier of the giveaway message in the chat
+    // Identifier of the giveaway or a giveaway winners message in the chat
     MessageId int64 `json:"message_id"`
 }
 
@@ -18461,32 +18761,6 @@ func (client *Client) GetApplicationConfig() (JsonValue, error) {
     default:
         return nil, errors.New("invalid type")
    }
-}
-
-type AddApplicationChangelogRequest struct { 
-    // The previous application version
-    PreviousApplicationVersion string `json:"previous_application_version"`
-}
-
-// Adds server-provided application changelog as messages to the chat 777000 (Telegram) or as a stories; for official applications only. Returns a 404 error if nothing changed
-func (client *Client) AddApplicationChangelog(req *AddApplicationChangelogRequest) (*Ok, error) {
-    result, err := client.Send(Request{
-        meta: meta{
-            Type: "addApplicationChangelog",
-        },
-        Data: map[string]interface{}{
-            "previous_application_version": req.PreviousApplicationVersion,
-        },
-    })
-    if err != nil {
-        return nil, err
-    }
-
-    if result.Type == "error" {
-        return nil, buildResponseError(result.Data)
-    }
-
-    return UnmarshalOk(result.Data)
 }
 
 type SaveApplicationLogEventRequest struct { 
@@ -19416,11 +19690,8 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateChatPhoto:
         return UnmarshalUpdateChatPhoto(result.Data)
 
-    case TypeUpdateChatAccentColor:
-        return UnmarshalUpdateChatAccentColor(result.Data)
-
-    case TypeUpdateChatBackgroundCustomEmoji:
-        return UnmarshalUpdateChatBackgroundCustomEmoji(result.Data)
+    case TypeUpdateChatAccentColors:
+        return UnmarshalUpdateChatAccentColors(result.Data)
 
     case TypeUpdateChatPermissions:
         return UnmarshalUpdateChatPermissions(result.Data)
@@ -19445,6 +19716,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateChatDraftMessage:
         return UnmarshalUpdateChatDraftMessage(result.Data)
+
+    case TypeUpdateChatEmojiStatus:
+        return UnmarshalUpdateChatEmojiStatus(result.Data)
 
     case TypeUpdateChatMessageSender:
         return UnmarshalUpdateChatMessageSender(result.Data)
@@ -19641,8 +19915,8 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateSavedNotificationSounds:
         return UnmarshalUpdateSavedNotificationSounds(result.Data)
 
-    case TypeUpdateSelectedBackground:
-        return UnmarshalUpdateSelectedBackground(result.Data)
+    case TypeUpdateDefaultBackground:
+        return UnmarshalUpdateDefaultBackground(result.Data)
 
     case TypeUpdateChatThemes:
         return UnmarshalUpdateChatThemes(result.Data)
@@ -19739,6 +20013,12 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateChatBoost:
         return UnmarshalUpdateChatBoost(result.Data)
+
+    case TypeUpdateMessageReaction:
+        return UnmarshalUpdateMessageReaction(result.Data)
+
+    case TypeUpdateMessageReactions:
+        return UnmarshalUpdateMessageReactions(result.Data)
 
     default:
         return nil, errors.New("invalid type")
