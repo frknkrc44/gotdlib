@@ -93,10 +93,6 @@ type SetTdlibParametersRequest struct {
     SystemVersion string `json:"system_version"`
     // Application version; must be non-empty
     ApplicationVersion string `json:"application_version"`
-    // Pass true to automatically delete old files in background
-    EnableStorageOptimizer bool `json:"enable_storage_optimizer"`
-    // Pass true to ignore original file names for downloaded files. Otherwise, downloaded files are saved under names as close as possible to the original name
-    IgnoreFileNames bool `json:"ignore_file_names"`
 }
 
 // Sets the parameters for TDLib initialization. Works only when the current authorization state is authorizationStateWaitTdlibParameters
@@ -120,8 +116,6 @@ func (client *Client) SetTdlibParameters(req *SetTdlibParametersRequest) (*Ok, e
             "device_model": req.DeviceModel,
             "system_version": req.SystemVersion,
             "application_version": req.ApplicationVersion,
-            "enable_storage_optimizer": req.EnableStorageOptimizer,
-            "ignore_file_names": req.IgnoreFileNames,
         },
     })
     if err != nil {
@@ -846,6 +840,25 @@ func (client *Client) ResendRecoveryEmailAddressCode() (*PasswordState, error) {
     return UnmarshalPasswordState(result.Data)
 }
 
+// Cancels verification of the 2-step verification recovery email address
+func (client *Client) CancelRecoveryEmailAddressVerification() (*PasswordState, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "cancelRecoveryEmailAddressVerification",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalPasswordState(result.Data)
+}
+
 // Requests to send a 2-step verification password recovery code to an email address that was previously set up
 func (client *Client) RequestPasswordRecovery() (*EmailAddressAuthenticationCodeInfo, error) {
     result, err := client.Send(Request{
@@ -1449,6 +1462,53 @@ func (client *Client) GetMessageThread(req *GetMessageThreadRequest) (*MessageTh
     }
 
     return UnmarshalMessageThreadInfo(result.Data)
+}
+
+type GetMessageReadDateRequest struct { 
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+}
+
+// Returns read date of a recent outgoing message in a private chat. The method can be called if message.can_get_read_date == true and the message is read
+func (client *Client) GetMessageReadDate(req *GetMessageReadDateRequest) (MessageReadDate, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getMessageReadDate",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    switch result.Type {
+    case TypeMessageReadDateRead:
+        return UnmarshalMessageReadDateRead(result.Data)
+
+    case TypeMessageReadDateUnread:
+        return UnmarshalMessageReadDateUnread(result.Data)
+
+    case TypeMessageReadDateTooOld:
+        return UnmarshalMessageReadDateTooOld(result.Data)
+
+    case TypeMessageReadDateUserPrivacyRestricted:
+        return UnmarshalMessageReadDateUserPrivacyRestricted(result.Data)
+
+    case TypeMessageReadDateMyPrivacyRestricted:
+        return UnmarshalMessageReadDateMyPrivacyRestricted(result.Data)
+
+    default:
+        return nil, errors.New("invalid type")
+   }
 }
 
 type GetMessageViewersRequest struct { 
@@ -2137,6 +2197,231 @@ func (client *Client) GetInactiveSupergroupChats() (*Chats, error) {
     return UnmarshalChats(result.Data)
 }
 
+// Returns list of all pinned Saved Messages topics
+func (client *Client) GetPinnedSavedMessagesTopics() (*FoundSavedMessagesTopics, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getPinnedSavedMessagesTopics",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundSavedMessagesTopics(result.Data)
+}
+
+type GetSavedMessagesTopicsRequest struct { 
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of Saved Messages topics to be returned; up to 100
+    Limit int32 `json:"limit"`
+}
+
+// Returns list of non-pinned Saved Messages topics from the specified offset
+func (client *Client) GetSavedMessagesTopics(req *GetSavedMessagesTopicsRequest) (*FoundSavedMessagesTopics, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSavedMessagesTopics",
+        },
+        Data: map[string]interface{}{
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundSavedMessagesTopics(result.Data)
+}
+
+type GetSavedMessagesTopicHistoryRequest struct { 
+    // Saved Messages topic which messages will be fetched
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message
+    FromMessageId int64 `json:"from_message_id"`
+    // Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
+    Offset int32 `json:"offset"`
+    // The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Returns messages in a Saved Messages topic. The messages are returned in a reverse chronological order (i.e., in order of decreasing message_id)
+func (client *Client) GetSavedMessagesTopicHistory(req *GetSavedMessagesTopicHistoryRequest) (*Messages, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSavedMessagesTopicHistory",
+        },
+        Data: map[string]interface{}{
+            "saved_messages_topic": req.SavedMessagesTopic,
+            "from_message_id": req.FromMessageId,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalMessages(result.Data)
+}
+
+type GetSavedMessagesTopicMessageByDateRequest struct { 
+    // Saved Messages topic which message will be returned
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Point in time (Unix timestamp) relative to which to search for messages
+    Date int32 `json:"date"`
+}
+
+// Returns the last message sent in a Saved Messages topic no later than the specified date
+func (client *Client) GetSavedMessagesTopicMessageByDate(req *GetSavedMessagesTopicMessageByDateRequest) (*Message, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSavedMessagesTopicMessageByDate",
+        },
+        Data: map[string]interface{}{
+            "saved_messages_topic": req.SavedMessagesTopic,
+            "date": req.Date,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalMessage(result.Data)
+}
+
+type DeleteSavedMessagesTopicHistoryRequest struct { 
+    // Saved Messages topic which messages will be deleted
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+}
+
+// Deletes all messages in a Saved Messages topic
+func (client *Client) DeleteSavedMessagesTopicHistory(req *DeleteSavedMessagesTopicHistoryRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteSavedMessagesTopicHistory",
+        },
+        Data: map[string]interface{}{
+            "saved_messages_topic": req.SavedMessagesTopic,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type DeleteSavedMessagesTopicMessagesByDateRequest struct { 
+    // Saved Messages topic which messages will be deleted
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // The minimum date of the messages to delete
+    MinDate int32 `json:"min_date"`
+    // The maximum date of the messages to delete
+    MaxDate int32 `json:"max_date"`
+}
+
+// Deletes all messages between the specified dates in a Saved Messages topic. Messages sent in the last 30 seconds will not be deleted
+func (client *Client) DeleteSavedMessagesTopicMessagesByDate(req *DeleteSavedMessagesTopicMessagesByDateRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteSavedMessagesTopicMessagesByDate",
+        },
+        Data: map[string]interface{}{
+            "saved_messages_topic": req.SavedMessagesTopic,
+            "min_date": req.MinDate,
+            "max_date": req.MaxDate,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type ToggleSavedMessagesTopicIsPinnedRequest struct { 
+    // Saved Messages topic to pin or unpin
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Pass true to pin the topic; pass false to unpin it
+    IsPinned bool `json:"is_pinned"`
+}
+
+// Changes the pinned state of a Saved Messages topic. There can be up to getOption("pinned_saved_messages_topic_count_max") pinned topics. The limit can be increased with Telegram Premium
+func (client *Client) ToggleSavedMessagesTopicIsPinned(req *ToggleSavedMessagesTopicIsPinnedRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "toggleSavedMessagesTopicIsPinned",
+        },
+        Data: map[string]interface{}{
+            "saved_messages_topic": req.SavedMessagesTopic,
+            "is_pinned": req.IsPinned,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetPinnedSavedMessagesTopicsRequest struct { 
+    // The new list of pinned Saved Messages topics
+    SavedMessagesTopics []SavedMessagesTopic `json:"saved_messages_topics"`
+}
+
+// Changes the order of pinned Saved Messages topics
+func (client *Client) SetPinnedSavedMessagesTopics(req *SetPinnedSavedMessagesTopicsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setPinnedSavedMessagesTopics",
+        },
+        Data: map[string]interface{}{
+            "saved_messages_topics": req.SavedMessagesTopics,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type GetGroupsInCommonRequest struct { 
     // User identifier
     UserId int64 `json:"user_id"`
@@ -2174,7 +2459,7 @@ type GetChatHistoryRequest struct {
     ChatId int64 `json:"chat_id"`
     // Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
     FromMessageId int64 `json:"from_message_id"`
-    // Specify 0 to get results from exactly the from_message_id or a negative offset up to 99 to get additionally some newer messages
+    // Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
     Offset int32 `json:"offset"`
     // The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
@@ -2214,7 +2499,7 @@ type GetMessageThreadHistoryRequest struct {
     MessageId int64 `json:"message_id"`
     // Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
     FromMessageId int64 `json:"from_message_id"`
-    // Specify 0 to get results from exactly the from_message_id or a negative offset up to 99 to get additionally some newer messages
+    // Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
     Offset int32 `json:"offset"`
     // The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
@@ -2312,7 +2597,7 @@ type SearchChatMessagesRequest struct {
     SenderId MessageSender `json:"sender_id"`
     // Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
     FromMessageId int64 `json:"from_message_id"`
-    // Specify 0 to get results from exactly the from_message_id or a negative offset to get the specified message and some newer messages
+    // Specify 0 to get results from exactly the message from_message_id or a negative offset to get the specified message and some newer messages
     Offset int32 `json:"offset"`
     // The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
@@ -2320,6 +2605,8 @@ type SearchChatMessagesRequest struct {
     Filter SearchMessagesFilter `json:"filter"`
     // If not 0, only messages in the specified thread will be returned; supergroups only
     MessageThreadId int64 `json:"message_thread_id"`
+    // If not null, only messages in the specified Saved Messages topic will be returned; pass null to return all messages, or for chats other than Saved Messages
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
 }
 
 // Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit. A combination of query, sender_id, filter and message_thread_id search criteria is expected to be supported, only if it is required for Telegram official application implementation
@@ -2337,6 +2624,7 @@ func (client *Client) SearchChatMessages(req *SearchChatMessagesRequest) (*Found
             "limit": req.Limit,
             "filter": req.Filter,
             "message_thread_id": req.MessageThreadId,
+            "saved_messages_topic": req.SavedMessagesTopic,
         },
     })
     if err != nil {
@@ -2430,6 +2718,44 @@ func (client *Client) SearchSecretMessages(req *SearchSecretMessagesRequest) (*F
     }
 
     return UnmarshalFoundMessages(result.Data)
+}
+
+type SearchSavedMessagesRequest struct { 
+    // Tag to search for; pass null to return all suitable messages
+    Tag ReactionType `json:"tag"`
+    // Query to search for
+    Query string `json:"query"`
+    // Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message
+    FromMessageId int64 `json:"from_message_id"`
+    // Specify 0 to get results from exactly the message from_message_id or a negative offset to get the specified message and some newer messages
+    Offset int32 `json:"offset"`
+    // The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Searches for messages tagged by the given reaction and with the given words in the Saved Messages chat; for Telegram Premium users only. Returns the results in reverse chronological order, i.e. in order of decreasing message_id For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchSavedMessages(req *SearchSavedMessagesRequest) (*FoundChatMessages, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "searchSavedMessages",
+        },
+        Data: map[string]interface{}{
+            "tag": req.Tag,
+            "query": req.Query,
+            "from_message_id": req.FromMessageId,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundChatMessages(result.Data)
 }
 
 type SearchCallMessagesRequest struct { 
@@ -2605,6 +2931,8 @@ type GetChatSparseMessagePositionsRequest struct {
     FromMessageId int64 `json:"from_message_id"`
     // The expected number of message positions to be returned; 50-2000. A smaller number of positions can be returned, if there are not enough appropriate messages
     Limit int32 `json:"limit"`
+    // If not null, only messages in the specified Saved Messages topic will be considered; pass null to consider all messages, or for chats other than Saved Messages
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
 }
 
 // Returns sparse positions of messages of the specified type in the chat to be used for shared media scroll implementation. Returns the results in reverse chronological order (i.e., in order of decreasing message_id). Cannot be used in secret chats or with searchMessagesFilterFailedToSend filter without an enabled message database
@@ -2618,6 +2946,7 @@ func (client *Client) GetChatSparseMessagePositions(req *GetChatSparseMessagePos
             "filter": req.Filter,
             "from_message_id": req.FromMessageId,
             "limit": req.Limit,
+            "saved_messages_topic": req.SavedMessagesTopic,
         },
     })
     if err != nil {
@@ -2638,6 +2967,8 @@ type GetChatMessageCalendarRequest struct {
     Filter SearchMessagesFilter `json:"filter"`
     // The message identifier from which to return information about messages; use 0 to get results from the last message
     FromMessageId int64 `json:"from_message_id"`
+    // If not null, only messages in the specified Saved Messages topic will be considered; pass null to consider all messages, or for chats other than Saved Messages
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
 }
 
 // Returns information about the next messages of the specified type in the chat split by days. Returns the results in reverse chronological order. Can return partial result for the last returned day. Behavior of this method depends on the value of the option "utc_time_offset"
@@ -2650,6 +2981,7 @@ func (client *Client) GetChatMessageCalendar(req *GetChatMessageCalendarRequest)
             "chat_id": req.ChatId,
             "filter": req.Filter,
             "from_message_id": req.FromMessageId,
+            "saved_messages_topic": req.SavedMessagesTopic,
         },
     })
     if err != nil {
@@ -2668,6 +3000,8 @@ type GetChatMessageCountRequest struct {
     ChatId int64 `json:"chat_id"`
     // Filter for message content; searchMessagesFilterEmpty is unsupported in this function
     Filter SearchMessagesFilter `json:"filter"`
+    // If not null, only messages in the specified Saved Messages topic will be counted; pass null to count all messages, or for chats other than Saved Messages
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
     // Pass true to get the number of messages without sending network requests, or -1 if the number of messages is unknown locally
     ReturnLocal bool `json:"return_local"`
 }
@@ -2681,6 +3015,7 @@ func (client *Client) GetChatMessageCount(req *GetChatMessageCountRequest) (*Cou
         Data: map[string]interface{}{
             "chat_id": req.ChatId,
             "filter": req.Filter,
+            "saved_messages_topic": req.SavedMessagesTopic,
             "return_local": req.ReturnLocal,
         },
     })
@@ -2704,6 +3039,8 @@ type GetChatMessagePositionRequest struct {
     Filter SearchMessagesFilter `json:"filter"`
     // If not 0, only messages in the specified thread will be considered; supergroups only
     MessageThreadId int64 `json:"message_thread_id"`
+    // If not null, only messages in the specified Saved Messages topic will be considered; pass null to consider all relevant messages, or for chats other than Saved Messages
+    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
 }
 
 // Returns approximate 1-based position of a message among messages, which can be found by the specified filter in the chat. Cannot be used in secret chats
@@ -2717,6 +3054,7 @@ func (client *Client) GetChatMessagePosition(req *GetChatMessagePositionRequest)
             "message_id": req.MessageId,
             "filter": req.Filter,
             "message_thread_id": req.MessageThreadId,
+            "saved_messages_topic": req.SavedMessagesTopic,
         },
     })
     if err != nil {
@@ -3934,7 +4272,7 @@ type CreateForumTopicRequest struct {
     Icon *ForumTopicIcon `json:"icon"`
 }
 
-// Creates a topic in a forum supergroup chat; requires can_manage_topics rights in the supergroup
+// Creates a topic in a forum supergroup chat; requires can_manage_topics or can_create_topics rights in the supergroup
 func (client *Client) CreateForumTopic(req *CreateForumTopicRequest) (*ForumTopicInfo, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -3970,7 +4308,7 @@ type EditForumTopicRequest struct {
     IconCustomEmojiId JsonInt64 `json:"icon_custom_emoji_id"`
 }
 
-// Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic
+// Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics right in the supergroup unless the user is creator of the topic
 func (client *Client) EditForumTopic(req *EditForumTopicRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4135,7 +4473,7 @@ type ToggleForumTopicIsClosedRequest struct {
     IsClosed bool `json:"is_closed"`
 }
 
-// Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic
+// Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics right in the supergroup unless the user is creator of the topic
 func (client *Client) ToggleForumTopicIsClosed(req *ToggleForumTopicIsClosedRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4165,7 +4503,7 @@ type ToggleGeneralForumTopicIsHiddenRequest struct {
     IsHidden bool `json:"is_hidden"`
 }
 
-// Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup
+// Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics right in the supergroup
 func (client *Client) ToggleGeneralForumTopicIsHidden(req *ToggleGeneralForumTopicIsHiddenRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4196,7 +4534,7 @@ type ToggleForumTopicIsPinnedRequest struct {
     IsPinned bool `json:"is_pinned"`
 }
 
-// Changes the pinned state of a forum topic; requires can_manage_topics administrator right in the supergroup. There can be up to getOption("pinned_forum_topic_count_max") pinned forum topics
+// Changes the pinned state of a forum topic; requires can_manage_topics right in the supergroup. There can be up to getOption("pinned_forum_topic_count_max") pinned forum topics
 func (client *Client) ToggleForumTopicIsPinned(req *ToggleForumTopicIsPinnedRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4226,7 +4564,7 @@ type SetPinnedForumTopicsRequest struct {
     MessageThreadIds []int64 `json:"message_thread_ids"`
 }
 
-// Changes the order of pinned forum topics
+// Changes the order of pinned forum topics; requires can_manage_topics right in the supergroup
 func (client *Client) SetPinnedForumTopics(req *SetPinnedForumTopicsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4282,7 +4620,7 @@ type GetEmojiReactionRequest struct {
     Emoji string `json:"emoji"`
 }
 
-// Returns information about a emoji reaction. Returns a 404 error if the reaction is not found
+// Returns information about an emoji reaction. Returns a 404 error if the reaction is not found
 func (client *Client) GetEmojiReaction(req *GetEmojiReactionRequest) (*EmojiReaction, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4382,11 +4720,11 @@ type AddMessageReactionRequest struct {
     ReactionType ReactionType `json:"reaction_type"`
     // Pass true if the reaction is added with a big animation
     IsBig bool `json:"is_big"`
-    // Pass true if the reaction needs to be added to recent reactions
+    // Pass true if the reaction needs to be added to recent reactions; tags are never added to the list of recent reactions
     UpdateRecentReactions bool `json:"update_recent_reactions"`
 }
 
-// Adds a reaction to a message. Use getMessageAvailableReactions to receive the list of available reactions for the message
+// Adds a reaction or a tag to a message. Use getMessageAvailableReactions to receive the list of available reactions for the message
 func (client *Client) AddMessageReaction(req *AddMessageReactionRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4529,6 +4867,54 @@ func (client *Client) SetDefaultReactionType(req *SetDefaultReactionTypeRequest)
         },
         Data: map[string]interface{}{
             "reaction_type": req.ReactionType,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Returns tags used in Saved Messages; for Telegram Premium users only
+func (client *Client) GetSavedMessagesTags() (*SavedMessagesTags, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSavedMessagesTags",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalSavedMessagesTags(result.Data)
+}
+
+type SetSavedMessagesTagLabelRequest struct { 
+    // The tag which label will be changed
+    Tag ReactionType `json:"tag"`
+    // New label for the tag; 0-12 characters
+    Label string `json:"label"`
+}
+
+// Changes label of a Saved Messages tag; for Telegram Premium users only
+func (client *Client) SetSavedMessagesTagLabel(req *SetSavedMessagesTagLabelRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setSavedMessagesTagLabel",
+        },
+        Data: map[string]interface{}{
+            "tag": req.Tag,
+            "label": req.Label,
         },
     })
     if err != nil {
@@ -4705,6 +5091,37 @@ func GetMarkdownText(req *GetMarkdownTextRequest) (*FormattedText, error) {
 // Replaces text entities with Markdown formatting in a human-friendly format. Entities that can't be represented in Markdown unambiguously are kept as is. Can be called synchronously
 func (client *Client) GetMarkdownText(req *GetMarkdownTextRequest) (*FormattedText, error) {
     return GetMarkdownText(req)}
+
+type GetCountryFlagEmojiRequest struct { 
+    // A two-letter ISO 3166-1 alpha-2 country code as received from getCountries
+    CountryCode string `json:"country_code"`
+}
+
+// Returns an emoji for the given country. Returns an empty string on failure. Can be called synchronously
+func GetCountryFlagEmoji(req *GetCountryFlagEmojiRequest) (*Text, error) {
+    result, err := Execute(Request{
+        meta: meta{
+            Type: "getCountryFlagEmoji",
+        },
+        Data: map[string]interface{}{
+            "country_code": req.CountryCode,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalText(result.Data)
+}
+
+// deprecated
+// Returns an emoji for the given country. Returns an empty string on failure. Can be called synchronously
+func (client *Client) GetCountryFlagEmoji(req *GetCountryFlagEmojiRequest) (*Text, error) {
+    return GetCountryFlagEmoji(req)}
 
 type GetFileMimeTypeRequest struct { 
     // The name of the file or path to the file
@@ -13191,21 +13608,47 @@ func (client *Client) GetStickerEmojis(req *GetStickerEmojisRequest) (*Emojis, e
 type SearchEmojisRequest struct { 
     // Text to search for
     Text string `json:"text"`
-    // Pass true if only emojis, which exactly match the text, needs to be returned
-    ExactMatch bool `json:"exact_match"`
     // List of possible IETF language tags of the user's input language; may be empty if unknown
     InputLanguageCodes []string `json:"input_language_codes"`
 }
 
-// Searches for emojis by keywords. Supported only if the file database is enabled
-func (client *Client) SearchEmojis(req *SearchEmojisRequest) (*Emojis, error) {
+// Searches for emojis by keywords. Supported only if the file database is enabled. Order of results is unspecified
+func (client *Client) SearchEmojis(req *SearchEmojisRequest) (*EmojiKeywords, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "searchEmojis",
         },
         Data: map[string]interface{}{
             "text": req.Text,
-            "exact_match": req.ExactMatch,
+            "input_language_codes": req.InputLanguageCodes,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalEmojiKeywords(result.Data)
+}
+
+type GetKeywordEmojisRequest struct { 
+    // Text to search for
+    Text string `json:"text"`
+    // List of possible IETF language tags of the user's input language; may be empty if unknown
+    InputLanguageCodes []string `json:"input_language_codes"`
+}
+
+// Return emojis matching the keyword. Supported only if the file database is enabled. Order of results is unspecified
+func (client *Client) GetKeywordEmojis(req *GetKeywordEmojisRequest) (*Emojis, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getKeywordEmojis",
+        },
+        Data: map[string]interface{}{
+            "text": req.Text,
             "input_language_codes": req.InputLanguageCodes,
         },
     })
@@ -16155,6 +16598,137 @@ func (client *Client) GetUserPrivacySettingRules(req *GetUserPrivacySettingRules
     }
 
     return UnmarshalUserPrivacySettingRules(result.Data)
+}
+
+type SetReadDatePrivacySettingsRequest struct { 
+    // New settings
+    Settings *ReadDatePrivacySettings `json:"settings"`
+}
+
+// Changes privacy settings for message read date
+func (client *Client) SetReadDatePrivacySettings(req *SetReadDatePrivacySettingsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setReadDatePrivacySettings",
+        },
+        Data: map[string]interface{}{
+            "settings": req.Settings,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Returns privacy settings for message read date
+func (client *Client) GetReadDatePrivacySettings() (*ReadDatePrivacySettings, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getReadDatePrivacySettings",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalReadDatePrivacySettings(result.Data)
+}
+
+type SetNewChatPrivacySettingsRequest struct { 
+    // New settings
+    Settings *NewChatPrivacySettings `json:"settings"`
+}
+
+// Changes privacy settings for new chat creation; for Telegram Premium users only
+func (client *Client) SetNewChatPrivacySettings(req *SetNewChatPrivacySettingsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setNewChatPrivacySettings",
+        },
+        Data: map[string]interface{}{
+            "settings": req.Settings,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Returns privacy settings for new chat creation
+func (client *Client) GetNewChatPrivacySettings() (*NewChatPrivacySettings, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getNewChatPrivacySettings",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalNewChatPrivacySettings(result.Data)
+}
+
+type CanSendMessageToUserRequest struct { 
+    // Identifier of the other user
+    UserId int64 `json:"user_id"`
+    // Pass true to get only locally available information without sending network requests
+    OnlyLocal bool `json:"only_local"`
+}
+
+// Check whether the current user can message another user or try to create a chat with them
+func (client *Client) CanSendMessageToUser(req *CanSendMessageToUserRequest) (CanSendMessageToUserResult, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "canSendMessageToUser",
+        },
+        Data: map[string]interface{}{
+            "user_id": req.UserId,
+            "only_local": req.OnlyLocal,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    switch result.Type {
+    case TypeCanSendMessageToUserResultOk:
+        return UnmarshalCanSendMessageToUserResultOk(result.Data)
+
+    case TypeCanSendMessageToUserResultUserIsDeleted:
+        return UnmarshalCanSendMessageToUserResultUserIsDeleted(result.Data)
+
+    case TypeCanSendMessageToUserResultUserRestrictsNewChats:
+        return UnmarshalCanSendMessageToUserResultUserRestrictsNewChats(result.Data)
+
+    default:
+        return nil, errors.New("invalid type")
+   }
 }
 
 type GetOptionRequest struct { 
@@ -19777,6 +20351,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateChatOnlineMemberCount:
         return UnmarshalUpdateChatOnlineMemberCount(result.Data)
 
+    case TypeUpdatePinnedSavedMessagesTopics:
+        return UnmarshalUpdatePinnedSavedMessagesTopics(result.Data)
+
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(result.Data)
 
@@ -19953,6 +20530,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(result.Data)
+
+    case TypeUpdateSavedMessagesTags:
+        return UnmarshalUpdateSavedMessagesTags(result.Data)
 
     case TypeUpdateSpeechRecognitionTrial:
         return UnmarshalUpdateSpeechRecognitionTrial(result.Data)
