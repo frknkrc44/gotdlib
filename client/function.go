@@ -286,6 +286,8 @@ type RegisterUserRequest struct {
     FirstName string `json:"first_name"`
     // The last name of the user; 0-64 characters
     LastName string `json:"last_name"`
+    // Pass true to disable notification about the current user joining Telegram for other users that added them to contact list
+    DisableNotification bool `json:"disable_notification"`
 }
 
 // Finishes user registration. Works only when the current authorization state is authorizationStateWaitRegistration
@@ -297,6 +299,7 @@ func (client *Client) RegisterUser(req *RegisterUserRequest) (*Ok, error) {
         Data: map[string]interface{}{
             "first_name": req.FirstName,
             "last_name": req.LastName,
+            "disable_notification": req.DisableNotification,
         },
     })
     if err != nil {
@@ -2197,40 +2200,18 @@ func (client *Client) GetInactiveSupergroupChats() (*Chats, error) {
     return UnmarshalChats(result.Data)
 }
 
-// Returns list of all pinned Saved Messages topics
-func (client *Client) GetPinnedSavedMessagesTopics() (*FoundSavedMessagesTopics, error) {
-    result, err := client.Send(Request{
-        meta: meta{
-            Type: "getPinnedSavedMessagesTopics",
-        },
-        Data: map[string]interface{}{},
-    })
-    if err != nil {
-        return nil, err
-    }
-
-    if result.Type == "error" {
-        return nil, buildResponseError(result.Data)
-    }
-
-    return UnmarshalFoundSavedMessagesTopics(result.Data)
-}
-
-type GetSavedMessagesTopicsRequest struct { 
-    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
-    Offset string `json:"offset"`
-    // The maximum number of Saved Messages topics to be returned; up to 100
+type LoadSavedMessagesTopicsRequest struct { 
+    // The maximum number of topics to be loaded. For optimal performance, the number of loaded topics is chosen by TDLib and can be smaller than the specified limit, even if the end of the list is not reached
     Limit int32 `json:"limit"`
 }
 
-// Returns list of non-pinned Saved Messages topics from the specified offset
-func (client *Client) GetSavedMessagesTopics(req *GetSavedMessagesTopicsRequest) (*FoundSavedMessagesTopics, error) {
+// Loads more Saved Messages topics. The loaded topics will be sent through updateSavedMessagesTopic. Topics are sorted by their topic.order in descending order. Returns a 404 error if all topics have been loaded
+func (client *Client) LoadSavedMessagesTopics(req *LoadSavedMessagesTopicsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "getSavedMessagesTopics",
+            Type: "loadSavedMessagesTopics",
         },
         Data: map[string]interface{}{
-            "offset": req.Offset,
             "limit": req.Limit,
         },
     })
@@ -2242,12 +2223,12 @@ func (client *Client) GetSavedMessagesTopics(req *GetSavedMessagesTopicsRequest)
         return nil, buildResponseError(result.Data)
     }
 
-    return UnmarshalFoundSavedMessagesTopics(result.Data)
+    return UnmarshalOk(result.Data)
 }
 
 type GetSavedMessagesTopicHistoryRequest struct { 
-    // Saved Messages topic which messages will be fetched
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Identifier of Saved Messages topic which messages will be fetched
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
     // Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message
     FromMessageId int64 `json:"from_message_id"`
     // Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
@@ -2263,7 +2244,7 @@ func (client *Client) GetSavedMessagesTopicHistory(req *GetSavedMessagesTopicHis
             Type: "getSavedMessagesTopicHistory",
         },
         Data: map[string]interface{}{
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
             "from_message_id": req.FromMessageId,
             "offset": req.Offset,
             "limit": req.Limit,
@@ -2281,8 +2262,8 @@ func (client *Client) GetSavedMessagesTopicHistory(req *GetSavedMessagesTopicHis
 }
 
 type GetSavedMessagesTopicMessageByDateRequest struct { 
-    // Saved Messages topic which message will be returned
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Identifier of Saved Messages topic which message will be returned
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
     // Point in time (Unix timestamp) relative to which to search for messages
     Date int32 `json:"date"`
 }
@@ -2294,7 +2275,7 @@ func (client *Client) GetSavedMessagesTopicMessageByDate(req *GetSavedMessagesTo
             Type: "getSavedMessagesTopicMessageByDate",
         },
         Data: map[string]interface{}{
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
             "date": req.Date,
         },
     })
@@ -2310,8 +2291,8 @@ func (client *Client) GetSavedMessagesTopicMessageByDate(req *GetSavedMessagesTo
 }
 
 type DeleteSavedMessagesTopicHistoryRequest struct { 
-    // Saved Messages topic which messages will be deleted
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Identifier of Saved Messages topic which messages will be deleted
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
 }
 
 // Deletes all messages in a Saved Messages topic
@@ -2321,7 +2302,7 @@ func (client *Client) DeleteSavedMessagesTopicHistory(req *DeleteSavedMessagesTo
             Type: "deleteSavedMessagesTopicHistory",
         },
         Data: map[string]interface{}{
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
         },
     })
     if err != nil {
@@ -2336,8 +2317,8 @@ func (client *Client) DeleteSavedMessagesTopicHistory(req *DeleteSavedMessagesTo
 }
 
 type DeleteSavedMessagesTopicMessagesByDateRequest struct { 
-    // Saved Messages topic which messages will be deleted
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Identifier of Saved Messages topic which messages will be deleted
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
     // The minimum date of the messages to delete
     MinDate int32 `json:"min_date"`
     // The maximum date of the messages to delete
@@ -2351,7 +2332,7 @@ func (client *Client) DeleteSavedMessagesTopicMessagesByDate(req *DeleteSavedMes
             Type: "deleteSavedMessagesTopicMessagesByDate",
         },
         Data: map[string]interface{}{
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
             "min_date": req.MinDate,
             "max_date": req.MaxDate,
         },
@@ -2368,8 +2349,8 @@ func (client *Client) DeleteSavedMessagesTopicMessagesByDate(req *DeleteSavedMes
 }
 
 type ToggleSavedMessagesTopicIsPinnedRequest struct { 
-    // Saved Messages topic to pin or unpin
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // Identifier of Saved Messages topic to pin or unpin
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
     // Pass true to pin the topic; pass false to unpin it
     IsPinned bool `json:"is_pinned"`
 }
@@ -2381,7 +2362,7 @@ func (client *Client) ToggleSavedMessagesTopicIsPinned(req *ToggleSavedMessagesT
             Type: "toggleSavedMessagesTopicIsPinned",
         },
         Data: map[string]interface{}{
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
             "is_pinned": req.IsPinned,
         },
     })
@@ -2397,8 +2378,8 @@ func (client *Client) ToggleSavedMessagesTopicIsPinned(req *ToggleSavedMessagesT
 }
 
 type SetPinnedSavedMessagesTopicsRequest struct { 
-    // The new list of pinned Saved Messages topics
-    SavedMessagesTopics []SavedMessagesTopic `json:"saved_messages_topics"`
+    // Identifiers of the new pinned Saved Messages topics
+    SavedMessagesTopicIds []int64 `json:"saved_messages_topic_ids"`
 }
 
 // Changes the order of pinned Saved Messages topics
@@ -2408,7 +2389,7 @@ func (client *Client) SetPinnedSavedMessagesTopics(req *SetPinnedSavedMessagesTo
             Type: "setPinnedSavedMessagesTopics",
         },
         Data: map[string]interface{}{
-            "saved_messages_topics": req.SavedMessagesTopics,
+            "saved_messages_topic_ids": req.SavedMessagesTopicIds,
         },
     })
     if err != nil {
@@ -2605,8 +2586,8 @@ type SearchChatMessagesRequest struct {
     Filter SearchMessagesFilter `json:"filter"`
     // If not 0, only messages in the specified thread will be returned; supergroups only
     MessageThreadId int64 `json:"message_thread_id"`
-    // If not null, only messages in the specified Saved Messages topic will be returned; pass null to return all messages, or for chats other than Saved Messages
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // If not 0, only messages in the specified Saved Messages topic will be returned; pass 0 to return all messages, or for chats other than Saved Messages
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
 }
 
 // Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit. A combination of query, sender_id, filter and message_thread_id search criteria is expected to be supported, only if it is required for Telegram official application implementation
@@ -2624,7 +2605,7 @@ func (client *Client) SearchChatMessages(req *SearchChatMessagesRequest) (*Found
             "limit": req.Limit,
             "filter": req.Filter,
             "message_thread_id": req.MessageThreadId,
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
         },
     })
     if err != nil {
@@ -2721,6 +2702,8 @@ func (client *Client) SearchSecretMessages(req *SearchSecretMessagesRequest) (*F
 }
 
 type SearchSavedMessagesRequest struct { 
+    // If not 0, only messages in the specified Saved Messages topic will be considered; pass 0 to consider all messages
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
     // Tag to search for; pass null to return all suitable messages
     Tag ReactionType `json:"tag"`
     // Query to search for
@@ -2740,6 +2723,7 @@ func (client *Client) SearchSavedMessages(req *SearchSavedMessagesRequest) (*Fou
             Type: "searchSavedMessages",
         },
         Data: map[string]interface{}{
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
             "tag": req.Tag,
             "query": req.Query,
             "from_message_id": req.FromMessageId,
@@ -2931,8 +2915,8 @@ type GetChatSparseMessagePositionsRequest struct {
     FromMessageId int64 `json:"from_message_id"`
     // The expected number of message positions to be returned; 50-2000. A smaller number of positions can be returned, if there are not enough appropriate messages
     Limit int32 `json:"limit"`
-    // If not null, only messages in the specified Saved Messages topic will be considered; pass null to consider all messages, or for chats other than Saved Messages
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // If not 0, only messages in the specified Saved Messages topic will be considered; pass 0 to consider all messages, or for chats other than Saved Messages
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
 }
 
 // Returns sparse positions of messages of the specified type in the chat to be used for shared media scroll implementation. Returns the results in reverse chronological order (i.e., in order of decreasing message_id). Cannot be used in secret chats or with searchMessagesFilterFailedToSend filter without an enabled message database
@@ -2946,7 +2930,7 @@ func (client *Client) GetChatSparseMessagePositions(req *GetChatSparseMessagePos
             "filter": req.Filter,
             "from_message_id": req.FromMessageId,
             "limit": req.Limit,
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
         },
     })
     if err != nil {
@@ -2967,8 +2951,8 @@ type GetChatMessageCalendarRequest struct {
     Filter SearchMessagesFilter `json:"filter"`
     // The message identifier from which to return information about messages; use 0 to get results from the last message
     FromMessageId int64 `json:"from_message_id"`
-    // If not null, only messages in the specified Saved Messages topic will be considered; pass null to consider all messages, or for chats other than Saved Messages
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // If not0, only messages in the specified Saved Messages topic will be considered; pass 0 to consider all messages, or for chats other than Saved Messages
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
 }
 
 // Returns information about the next messages of the specified type in the chat split by days. Returns the results in reverse chronological order. Can return partial result for the last returned day. Behavior of this method depends on the value of the option "utc_time_offset"
@@ -2981,7 +2965,7 @@ func (client *Client) GetChatMessageCalendar(req *GetChatMessageCalendarRequest)
             "chat_id": req.ChatId,
             "filter": req.Filter,
             "from_message_id": req.FromMessageId,
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
         },
     })
     if err != nil {
@@ -3000,8 +2984,8 @@ type GetChatMessageCountRequest struct {
     ChatId int64 `json:"chat_id"`
     // Filter for message content; searchMessagesFilterEmpty is unsupported in this function
     Filter SearchMessagesFilter `json:"filter"`
-    // If not null, only messages in the specified Saved Messages topic will be counted; pass null to count all messages, or for chats other than Saved Messages
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // If not 0, only messages in the specified Saved Messages topic will be counted; pass 0 to count all messages, or for chats other than Saved Messages
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
     // Pass true to get the number of messages without sending network requests, or -1 if the number of messages is unknown locally
     ReturnLocal bool `json:"return_local"`
 }
@@ -3015,7 +2999,7 @@ func (client *Client) GetChatMessageCount(req *GetChatMessageCountRequest) (*Cou
         Data: map[string]interface{}{
             "chat_id": req.ChatId,
             "filter": req.Filter,
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
             "return_local": req.ReturnLocal,
         },
     })
@@ -3039,8 +3023,8 @@ type GetChatMessagePositionRequest struct {
     Filter SearchMessagesFilter `json:"filter"`
     // If not 0, only messages in the specified thread will be considered; supergroups only
     MessageThreadId int64 `json:"message_thread_id"`
-    // If not null, only messages in the specified Saved Messages topic will be considered; pass null to consider all relevant messages, or for chats other than Saved Messages
-    SavedMessagesTopic SavedMessagesTopic `json:"saved_messages_topic"`
+    // If not 0, only messages in the specified Saved Messages topic will be considered; pass 0 to consider all relevant messages, or for chats other than Saved Messages
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
 }
 
 // Returns approximate 1-based position of a message among messages, which can be found by the specified filter in the chat. Cannot be used in secret chats
@@ -3054,7 +3038,7 @@ func (client *Client) GetChatMessagePosition(req *GetChatMessagePositionRequest)
             "message_id": req.MessageId,
             "filter": req.Filter,
             "message_thread_id": req.MessageThreadId,
-            "saved_messages_topic": req.SavedMessagesTopic,
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
         },
     })
     if err != nil {
@@ -3483,7 +3467,7 @@ func (client *Client) SetChatMessageSender(req *SetChatMessageSenderRequest) (*O
 type SendMessageRequest struct { 
     // Target chat
     ChatId int64 `json:"chat_id"`
-    // If not 0, a message thread identifier in which the message will be sent
+    // If not 0, the message thread identifier in which the message will be sent
     MessageThreadId int64 `json:"message_thread_id"`
     // Information about the message or story to be replied; pass null if none
     ReplyTo InputMessageReplyTo `json:"reply_to"`
@@ -3524,7 +3508,7 @@ func (client *Client) SendMessage(req *SendMessageRequest) (*Message, error) {
 type SendMessageAlbumRequest struct { 
     // Target chat
     ChatId int64 `json:"chat_id"`
-    // If not 0, a message thread identifier in which the messages will be sent
+    // If not 0, the message thread identifier in which the messages will be sent
     MessageThreadId int64 `json:"message_thread_id"`
     // Information about the message or story to be replied; pass null if none
     ReplyTo InputMessageReplyTo `json:"reply_to"`
@@ -3568,7 +3552,7 @@ type SendBotStartMessageRequest struct {
     Parameter string `json:"parameter"`
 }
 
-// Invites a bot to a chat (if it is not yet a member) and sends it the /start command. Bots can't be invited to a private chat other than the chat with the bot. Bots can't be invited to channels (although they can be added as admins) and secret chats. Returns the sent message
+// Invites a bot to a chat (if it is not yet a member) and sends it the /start command; requires can_invite_users member right. Bots can't be invited to a private chat other than the chat with the bot. Bots can't be invited to channels (although they can be added as admins) and secret chats. Returns the sent message
 func (client *Client) SendBotStartMessage(req *SendBotStartMessageRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -3594,7 +3578,7 @@ func (client *Client) SendBotStartMessage(req *SendBotStartMessageRequest) (*Mes
 type SendInlineQueryResultMessageRequest struct { 
     // Target chat
     ChatId int64 `json:"chat_id"`
-    // If not 0, a message thread identifier in which the message will be sent
+    // If not 0, the message thread identifier in which the message will be sent
     MessageThreadId int64 `json:"message_thread_id"`
     // Information about the message or story to be replied; pass null if none
     ReplyTo InputMessageReplyTo `json:"reply_to"`
@@ -3638,7 +3622,7 @@ func (client *Client) SendInlineQueryResultMessage(req *SendInlineQueryResultMes
 type ForwardMessagesRequest struct { 
     // Identifier of the chat to which to forward messages
     ChatId int64 `json:"chat_id"`
-    // If not 0, a message thread identifier in which the message will be sent; for forum threads only
+    // If not 0, the message thread identifier in which the message will be sent; for forum threads only
     MessageThreadId int64 `json:"message_thread_id"`
     // Identifier of the chat from which to forward messages
     FromChatId int64 `json:"from_chat_id"`
@@ -4272,7 +4256,7 @@ type CreateForumTopicRequest struct {
     Icon *ForumTopicIcon `json:"icon"`
 }
 
-// Creates a topic in a forum supergroup chat; requires can_manage_topics or can_create_topics rights in the supergroup
+// Creates a topic in a forum supergroup chat; requires can_manage_topics administrator or can_create_topics member right in the supergroup
 func (client *Client) CreateForumTopic(req *CreateForumTopicRequest) (*ForumTopicInfo, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4880,13 +4864,20 @@ func (client *Client) SetDefaultReactionType(req *SetDefaultReactionTypeRequest)
     return UnmarshalOk(result.Data)
 }
 
-// Returns tags used in Saved Messages; for Telegram Premium users only
-func (client *Client) GetSavedMessagesTags() (*SavedMessagesTags, error) {
+type GetSavedMessagesTagsRequest struct { 
+    // Identifier of Saved Messages topic which tags will be returned; pass 0 to get all Saved Messages tags
+    SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
+}
+
+// Returns tags used in Saved Messages or a Saved Messages topic
+func (client *Client) GetSavedMessagesTags(req *GetSavedMessagesTagsRequest) (*SavedMessagesTags, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "getSavedMessagesTags",
         },
-        Data: map[string]interface{}{},
+        Data: map[string]interface{}{
+            "saved_messages_topic_id": req.SavedMessagesTopicId,
+        },
     })
     if err != nil {
         return nil, err
@@ -5892,7 +5883,7 @@ type OpenWebAppRequest struct {
     Theme *ThemeParameters `json:"theme"`
     // Short name of the application; 0-64 English letters, digits, and underscores
     ApplicationName string `json:"application_name"`
-    // If not 0, a message thread identifier in which the message will be sent
+    // If not 0, the message thread identifier in which the message will be sent
     MessageThreadId int64 `json:"message_thread_id"`
     // Information about the message or story to be replied in the message sent by the Web App; pass null if none
     ReplyTo InputMessageReplyTo `json:"reply_to"`
@@ -6283,7 +6274,7 @@ func (client *Client) DeleteChatReplyMarkup(req *DeleteChatReplyMarkupRequest) (
 type SendChatActionRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // If not 0, a message thread identifier in which the action was performed
+    // If not 0, the message thread identifier in which the action was performed
     MessageThreadId int64 `json:"message_thread_id"`
     // The action description; pass null to cancel the currently active action
     Action ChatAction `json:"action"`
@@ -7038,7 +7029,7 @@ type UpgradeBasicGroupChatToSupergroupChatRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Creates a new supergroup from an existing basic group and sends a corresponding messageChatUpgradeTo and messageChatUpgradeFrom; requires creator privileges. Deactivates the original basic group
+// Creates a new supergroup from an existing basic group and sends a corresponding messageChatUpgradeTo and messageChatUpgradeFrom; requires owner privileges. Deactivates the original basic group
 func (client *Client) UpgradeBasicGroupChatToSupergroupChat(req *UpgradeBasicGroupChatToSupergroupChatRequest) (*Chat, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7665,7 +7656,7 @@ type SetChatTitleRequest struct {
     Title string `json:"title"`
 }
 
-// Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
+// Changes the chat title. Supported only for basic groups, supergroups and channels. Requires can_change_info member right
 func (client *Client) SetChatTitle(req *SetChatTitleRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7694,7 +7685,7 @@ type SetChatPhotoRequest struct {
     Photo InputChatPhoto `json:"photo"`
 }
 
-// Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info administrator right
+// Changes the photo of a chat. Supported only for basic groups, supergroups and channels. Requires can_change_info member right
 func (client *Client) SetChatPhoto(req *SetChatPhotoRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7719,13 +7710,13 @@ func (client *Client) SetChatPhoto(req *SetChatPhotoRequest) (*Ok, error) {
 type SetChatAccentColorRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // Identifier of the accent color to use. The chat must have at least accentColor.min_chat_boost_level boost level to pass the corresponding color
+    // Identifier of the accent color to use. The chat must have at least accentColor.min_channel_chat_boost_level boost level to pass the corresponding color
     AccentColorId int32 `json:"accent_color_id"`
     // Identifier of a custom emoji to be shown on the reply header and link preview background; 0 if none. Use chatBoostLevelFeatures.can_set_background_custom_emoji to check whether a custom emoji can be set
     BackgroundCustomEmojiId JsonInt64 `json:"background_custom_emoji_id"`
 }
 
-// Changes accent color and background custom emoji of a chat. Requires can_change_info administrator right
+// Changes accent color and background custom emoji of a channel chat. Requires can_change_info administrator right
 func (client *Client) SetChatAccentColor(req *SetChatAccentColorRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7751,13 +7742,13 @@ func (client *Client) SetChatAccentColor(req *SetChatAccentColorRequest) (*Ok, e
 type SetChatProfileAccentColorRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // Identifier of the accent color to use for profile; pass -1 if none. The chat must have at least profileAccentColor.min_chat_boost_level boost level to pass the corresponding color
+    // Identifier of the accent color to use for profile; pass -1 if none. The chat must have at least profileAccentColor.min_supergroup_chat_boost_level for supergroups or profileAccentColor.min_channel_chat_boost_level for channels boost level to pass the corresponding color
     ProfileAccentColorId int32 `json:"profile_accent_color_id"`
     // Identifier of a custom emoji to be shown on the chat's profile photo background; 0 if none. Use chatBoostLevelFeatures.can_set_profile_background_custom_emoji to check whether a custom emoji can be set
     ProfileBackgroundCustomEmojiId JsonInt64 `json:"profile_background_custom_emoji_id"`
 }
 
-// Changes accent color and background custom emoji for profile of a chat. Requires can_change_info administrator right
+// Changes accent color and background custom emoji for profile of a supergroup or channel chat. Requires can_change_info administrator right
 func (client *Client) SetChatProfileAccentColor(req *SetChatProfileAccentColorRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -7966,9 +7957,9 @@ func (client *Client) SetChatTheme(req *SetChatThemeRequest) (*Ok, error) {
 type SetChatDraftMessageRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // If not 0, a message thread identifier in which the draft was changed
+    // If not 0, the message thread identifier in which the draft was changed
     MessageThreadId int64 `json:"message_thread_id"`
-    // New draft message; pass null to remove the draft
+    // New draft message; pass null to remove the draft. All files in draft message content must be of the type inputFileLocal. Media thumbnails and captions are ignored
     DraftMessage *DraftMessage `json:"draft_message"`
 }
 
@@ -8060,7 +8051,7 @@ type ToggleChatViewAsTopicsRequest struct {
     ViewAsTopics bool `json:"view_as_topics"`
 }
 
-// Changes the view_as_topics setting of a forum chat
+// Changes the view_as_topics setting of a forum chat or Saved Messages
 func (client *Client) ToggleChatViewAsTopics(req *ToggleChatViewAsTopicsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8172,11 +8163,11 @@ func (client *Client) ToggleChatDefaultDisableNotification(req *ToggleChatDefaul
 type SetChatAvailableReactionsRequest struct { 
     // Identifier of the chat
     ChatId int64 `json:"chat_id"`
-    // Reactions available in the chat. All explicitly specified emoji reactions must be active. Up to the chat's boost level custom emoji reactions can be explicitly specified
+    // Reactions available in the chat. All explicitly specified emoji reactions must be active. In channel chats up to the chat's boost level custom emoji reactions can be explicitly specified
     AvailableReactions ChatAvailableReactions `json:"available_reactions"`
 }
 
-// Changes reactions, available in a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
+// Changes reactions, available in a chat. Available for basic groups, supergroups, and channels. Requires can_change_info member right
 func (client *Client) SetChatAvailableReactions(req *SetChatAvailableReactionsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8234,7 +8225,7 @@ type SetChatDescriptionRequest struct {
     Description string `json:"description"`
 }
 
-// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info administrator right
+// Changes information about a chat. Available for basic groups, supergroups, and channels. Requires can_change_info member right
 func (client *Client) SetChatDescription(req *SetChatDescriptionRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8257,7 +8248,7 @@ func (client *Client) SetChatDescription(req *SetChatDescriptionRequest) (*Ok, e
 }
 
 type SetChatDiscussionGroupRequest struct { 
-    // Identifier of the channel chat. Pass 0 to remove a link from the supergroup passed in the second argument to a linked channel chat (requires can_pin_messages rights in the supergroup)
+    // Identifier of the channel chat. Pass 0 to remove a link from the supergroup passed in the second argument to a linked channel chat (requires can_pin_messages member right in the supergroup)
     ChatId int64 `json:"chat_id"`
     // Identifier of a new channel's discussion group. Use 0 to remove the discussion group. Use the method getSuitableDiscussionChats to find all suitable groups. Basic group chats must be first upgraded to supergroup chats. If new chat members don't have access to old messages in the supergroup, then toggleSupergroupIsAllHistoryAvailable must be used first to change that
     DiscussionChatId int64 `json:"discussion_chat_id"`
@@ -8321,7 +8312,7 @@ type SetChatSlowModeDelayRequest struct {
     SlowModeDelay int32 `json:"slow_mode_delay"`
 }
 
-// Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members rights
+// Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members right
 func (client *Client) SetChatSlowModeDelay(req *SetChatSlowModeDelayRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8354,7 +8345,7 @@ type PinChatMessageRequest struct {
     OnlyForSelf bool `json:"only_for_self"`
 }
 
-// Pins a message in a chat; requires can_pin_messages rights or can_edit_messages rights in the channel
+// Pins a message in a chat; requires can_pin_messages member right if the chat is a basic group or supergroup, or can_edit_messages administrator right if the chat is a channel
 func (client *Client) PinChatMessage(req *PinChatMessageRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8385,7 +8376,7 @@ type UnpinChatMessageRequest struct {
     MessageId int64 `json:"message_id"`
 }
 
-// Removes a pinned message from a chat; requires can_pin_messages rights in the group or can_edit_messages rights in the channel
+// Removes a pinned message from a chat; requires can_pin_messages member right if the chat is a basic group or supergroup, or can_edit_messages administrator right if the chat is a channel
 func (client *Client) UnpinChatMessage(req *UnpinChatMessageRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8412,7 +8403,7 @@ type UnpinAllChatMessagesRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Removes all pinned messages from a chat; requires can_pin_messages rights in the group or can_edit_messages rights in the channel
+// Removes all pinned messages from a chat; requires can_pin_messages member right if the chat is a basic group or supergroup, or can_edit_messages administrator right if the chat is a channel
 func (client *Client) UnpinAllChatMessages(req *UnpinAllChatMessagesRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8440,7 +8431,7 @@ type UnpinAllMessageThreadMessagesRequest struct {
     MessageThreadId int64 `json:"message_thread_id"`
 }
 
-// Removes all pinned messages from a forum topic; requires can_pin_messages rights in the supergroup
+// Removes all pinned messages from a forum topic; requires can_pin_messages member right in the supergroup
 func (client *Client) UnpinAllMessageThreadMessages(req *UnpinAllMessageThreadMessagesRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8523,7 +8514,7 @@ type AddChatMemberRequest struct {
     ForwardLimit int32 `json:"forward_limit"`
 }
 
-// Adds a new member to a chat. Members can't be added to private or secret chats
+// Adds a new member to a chat; requires can_invite_users member right. Members can't be added to private or secret chats
 func (client *Client) AddChatMember(req *AddChatMemberRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8553,7 +8544,7 @@ type AddChatMembersRequest struct {
     UserIds []int64 `json:"user_ids"`
 }
 
-// Adds multiple new members to a chat. Currently, this method is only available for supergroups and channels. This method can't be used to join a chat. Members can't be added to a channel if it has more than 200 members
+// Adds multiple new members to a chat; requires can_invite_users member right. Currently, this method is only available for supergroups and channels. This method can't be used to join a chat. Members can't be added to a channel if it has more than 200 members
 func (client *Client) AddChatMembers(req *AddChatMembersRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8584,7 +8575,7 @@ type SetChatMemberStatusRequest struct {
     Status ChatMemberStatus `json:"status"`
 }
 
-// Changes the status of a chat member, needs appropriate privileges. This function is currently not suitable for transferring chat ownership; use transferChatOwnership instead. Use addChatMember or banChatMember if some additional parameters needs to be passed
+// Changes the status of a chat member; requires can_invite_users member right to add a chat member, can_promote_members administrator right to change administrator rights of the member, and can_restrict_members administrator right to change restrictions of a user. This function is currently not suitable for transferring chat ownership; use transferChatOwnership instead. Use addChatMember or banChatMember if some additional parameters needs to be passed
 func (client *Client) SetChatMemberStatus(req *SetChatMemberStatusRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8618,7 +8609,7 @@ type BanChatMemberRequest struct {
     RevokeMessages bool `json:"revoke_messages"`
 }
 
-// Bans a member in a chat. Members can't be banned in private or secret chats. In supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless unbanned first
+// Bans a member in a chat; requires can_restrict_members administrator right. Members can't be banned in private or secret chats. In supergroups and channels, the user will not be able to return to the group on their own using invite links, etc., unless unbanned first
 func (client *Client) BanChatMember(req *BanChatMemberRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8685,7 +8676,7 @@ type TransferChatOwnershipRequest struct {
     Password string `json:"password"`
 }
 
-// Changes the owner of a chat. The current user must be a current owner of the chat. Use the method canTransferOwnership to check whether the ownership can be transferred from the current session. Available only for supergroups and channel chats
+// Changes the owner of a chat; requires owner privileges in the chat. Use the method canTransferOwnership to check whether the ownership can be transferred from the current session. Available only for supergroups and channel chats
 func (client *Client) TransferChatOwnership(req *TransferChatOwnershipRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -8748,7 +8739,7 @@ type SearchChatMembersRequest struct {
     Filter ChatMembersFilter `json:"filter"`
 }
 
-// Searches for a specified query in the first name, last name and usernames of the members of a specified chat. Requires administrator rights in channels
+// Searches for a specified query in the first name, last name and usernames of the members of a specified chat. Requires administrator rights if the chat is a channel
 func (client *Client) SearchChatMembers(req *SearchChatMembersRequest) (*ChatMembers, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9143,7 +9134,7 @@ func (client *Client) GetStory(req *GetStoryRequest) (*Story, error) {
     return UnmarshalStory(result.Data)
 }
 
-// Returns channel chats in which the current user has the right to post stories. The chats must be rechecked with canSendStory before actually trying to post a story there
+// Returns supergroup and channel chats in which the current user has the right to post stories. The chats must be rechecked with canSendStory before actually trying to post a story there
 func (client *Client) GetChatsToSendStories() (*Chats, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9167,7 +9158,7 @@ type CanSendStoryRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Checks whether the current user can send a story on behalf of a chat; requires can_post_stories rights for channel chats
+// Checks whether the current user can send a story on behalf of a chat; requires can_post_stories right for supergroup and channel chats
 func (client *Client) CanSendStory(req *CanSendStoryRequest) (CanSendStoryResult, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9218,7 +9209,7 @@ type SendStoryRequest struct {
     Areas *InputStoryAreas `json:"areas"`
     // Story caption; pass null to use an empty caption; 0-getOption("story_caption_length_max") characters
     Caption *FormattedText `json:"caption"`
-    // The privacy settings for the story
+    // The privacy settings for the story; ignored for stories sent to supergroup and channel chats
     PrivacySettings StoryPrivacySettings `json:"privacy_settings"`
     // Period after which the story is moved to archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400 for Telegram Premium users, and 86400 otherwise
     ActivePeriod int32 `json:"active_period"`
@@ -9230,7 +9221,7 @@ type SendStoryRequest struct {
     ProtectContent bool `json:"protect_content"`
 }
 
-// Sends a new story to a chat; requires can_post_stories rights for channel chats. Returns a temporary story
+// Sends a new story to a chat; requires can_post_stories right for supergroup and channel chats. Returns a temporary story
 func (client *Client) SendStory(req *SendStoryRequest) (*Story, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9298,22 +9289,19 @@ func (client *Client) EditStory(req *EditStoryRequest) (*Ok, error) {
 }
 
 type SetStoryPrivacySettingsRequest struct { 
-    // Identifier of the chat that posted the story
-    StorySenderChatId int64 `json:"story_sender_chat_id"`
     // Identifier of the story
     StoryId int32 `json:"story_id"`
     // The new privacy settigs for the story
     PrivacySettings StoryPrivacySettings `json:"privacy_settings"`
 }
 
-// Changes privacy settings of a story. Can be called only if story.can_be_edited == true
+// Changes privacy settings of a story. The method can be called only for stories posted on behalf of the current user and if story.can_be_edited == true
 func (client *Client) SetStoryPrivacySettings(req *SetStoryPrivacySettingsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "setStoryPrivacySettings",
         },
         Data: map[string]interface{}{
-            "story_sender_chat_id": req.StorySenderChatId,
             "story_id": req.StoryId,
             "privacy_settings": req.PrivacySettings,
         },
@@ -9531,7 +9519,7 @@ type GetChatArchivedStoriesRequest struct {
     Limit int32 `json:"limit"`
 }
 
-// Returns the list of all stories posted by the given chat; requires can_edit_stories rights for channel chats. The stories are returned in a reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
+// Returns the list of all stories posted by the given chat; requires can_edit_stories right in the chat. The stories are returned in a reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
 func (client *Client) GetChatArchivedStories(req *GetChatArchivedStoriesRequest) (*Stories, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9649,7 +9637,7 @@ type SetStoryReactionRequest struct {
     UpdateRecentReactions bool `json:"update_recent_reactions"`
 }
 
-// Changes chosen reaction on a story
+// Changes chosen reaction on a story that has already been sent
 func (client *Client) SetStoryReaction(req *SetStoryReactionRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9848,6 +9836,8 @@ func (client *Client) GetStoryPublicForwards(req *GetStoryPublicForwardsRequest)
 }
 
 type GetChatBoostLevelFeaturesRequest struct { 
+    // Pass true to get the list of features for channels; pass false to get the list of features for supergroups
+    IsChannel bool `json:"is_channel"`
     // Chat boost level
     Level int32 `json:"level"`
 }
@@ -9859,6 +9849,7 @@ func (client *Client) GetChatBoostLevelFeatures(req *GetChatBoostLevelFeaturesRe
             Type: "getChatBoostLevelFeatures",
         },
         Data: map[string]interface{}{
+            "is_channel": req.IsChannel,
             "level": req.Level,
         },
     })
@@ -9873,13 +9864,20 @@ func (client *Client) GetChatBoostLevelFeatures(req *GetChatBoostLevelFeaturesRe
     return UnmarshalChatBoostLevelFeatures(result.Data)
 }
 
+type GetChatBoostFeaturesRequest struct { 
+    // Pass true to get the list of features for channels; pass false to get the list of features for supergroups
+    IsChannel bool `json:"is_channel"`
+}
+
 // Returns list of features available on the first 10 chat boost levels; this is an offline request
-func (client *Client) GetChatBoostFeatures() (*ChatBoostFeatures, error) {
+func (client *Client) GetChatBoostFeatures(req *GetChatBoostFeaturesRequest) (*ChatBoostFeatures, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "getChatBoostFeatures",
         },
-        Data: map[string]interface{}{},
+        Data: map[string]interface{}{
+            "is_channel": req.IsChannel,
+        },
     })
     if err != nil {
         return nil, err
@@ -9912,11 +9910,11 @@ func (client *Client) GetAvailableChatBoostSlots() (*ChatBoostSlots, error) {
 }
 
 type GetChatBoostStatusRequest struct { 
-    // Identifier of the channel chat
+    // Identifier of the chat
     ChatId int64 `json:"chat_id"`
 }
 
-// Returns the current boost status for a channel chat
+// Returns the current boost status for a supergroup or a channel chat
 func (client *Client) GetChatBoostStatus(req *GetChatBoostStatusRequest) (*ChatBoostStatus, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9971,7 +9969,7 @@ type GetChatBoostLinkRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Returns an HTTPS link to boost the specified channel chat
+// Returns an HTTPS link to boost the specified supergroup or channel chat
 func (client *Client) GetChatBoostLink(req *GetChatBoostLinkRequest) (*ChatBoostLink, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10029,7 +10027,7 @@ type GetChatBoostsRequest struct {
     Limit int32 `json:"limit"`
 }
 
-// Returns list of boosts applied to a chat; requires administrator rights in the channel chat
+// Returns list of boosts applied to a chat; requires administrator rights in the chat
 func (client *Client) GetChatBoosts(req *GetChatBoostsRequest) (*FoundChatBoosts, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10060,7 +10058,7 @@ type GetUserChatBoostsRequest struct {
     UserId int64 `json:"user_id"`
 }
 
-// Returns list of boosts applied to a chat by a given user; requires administrator rights in the channel chat; for bots only
+// Returns list of boosts applied to a chat by a given user; requires administrator rights in the chat; for bots only
 func (client *Client) GetUserChatBoosts(req *GetUserChatBoostsRequest) (*FoundChatBoosts, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10835,7 +10833,7 @@ func (client *Client) GetMessageFileType(req *GetMessageFileTypeRequest) (Messag
 }
 
 type GetMessageImportConfirmationTextRequest struct { 
-    // Identifier of a chat to which the messages will be imported. It must be an identifier of a private chat with a mutual contact or an identifier of a supergroup chat with can_change_info administrator right
+    // Identifier of a chat to which the messages will be imported. It must be an identifier of a private chat with a mutual contact or an identifier of a supergroup chat with can_change_info member right
     ChatId int64 `json:"chat_id"`
 }
 
@@ -10861,7 +10859,7 @@ func (client *Client) GetMessageImportConfirmationText(req *GetMessageImportConf
 }
 
 type ImportMessagesRequest struct { 
-    // Identifier of a chat to which the messages will be imported. It must be an identifier of a private chat with a mutual contact or an identifier of a supergroup chat with can_change_info administrator right
+    // Identifier of a chat to which the messages will be imported. It must be an identifier of a private chat with a mutual contact or an identifier of a supergroup chat with can_change_info member right
     ChatId int64 `json:"chat_id"`
     // File with messages to import. Only inputFileLocal and inputFileGenerated are supported. The file must not be previously uploaded
     MessageFile InputFile `json:"message_file"`
@@ -11652,11 +11650,11 @@ type CreateVideoChatRequest struct {
     Title string `json:"title"`
     // Point in time (Unix timestamp) when the group call is supposed to be started by an administrator; 0 to start the video chat immediately. The date must be at least 10 seconds and at most 8 days in the future
     StartDate int32 `json:"start_date"`
-    // Pass true to create an RTMP stream instead of an ordinary video chat; requires creator privileges
+    // Pass true to create an RTMP stream instead of an ordinary video chat; requires owner privileges
     IsRtmpStream bool `json:"is_rtmp_stream"`
 }
 
-// Creates a video chat (a group call bound to a chat). Available only for basic groups, supergroups and channels; requires can_manage_video_chats rights
+// Creates a video chat (a group call bound to a chat). Available only for basic groups, supergroups and channels; requires can_manage_video_chats administrator right
 func (client *Client) CreateVideoChat(req *CreateVideoChatRequest) (*GroupCallId, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -11685,7 +11683,7 @@ type GetVideoChatRtmpUrlRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Returns RTMP URL for streaming to the chat; requires creator privileges
+// Returns RTMP URL for streaming to the chat; requires owner privileges
 func (client *Client) GetVideoChatRtmpUrl(req *GetVideoChatRtmpUrlRequest) (*RtmpUrl, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -11711,7 +11709,7 @@ type ReplaceVideoChatRtmpUrlRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Replaces the current RTMP URL for streaming to the chat; requires creator privileges
+// Replaces the current RTMP URL for streaming to the chat; requires owner privileges
 func (client *Client) ReplaceVideoChatRtmpUrl(req *ReplaceVideoChatRtmpUrlRequest) (*RtmpUrl, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -15384,6 +15382,64 @@ func (client *Client) SetSupergroupStickerSet(req *SetSupergroupStickerSetReques
     return UnmarshalOk(result.Data)
 }
 
+type SetSupergroupCustomEmojiStickerSetRequest struct { 
+    // Identifier of the supergroup
+    SupergroupId int64 `json:"supergroup_id"`
+    // New value of the custom emoji sticker set identifier for the supergroup. Use 0 to remove the custom emoji sticker set in the supergroup
+    CustomEmojiStickerSetId JsonInt64 `json:"custom_emoji_sticker_set_id"`
+}
+
+// Changes the custom emoji sticker set of a supergroup; requires can_change_info administrator right. The chat must have at least chatBoostFeatures.min_custom_emoji_sticker_set_boost_level boost level to pass the corresponding color
+func (client *Client) SetSupergroupCustomEmojiStickerSet(req *SetSupergroupCustomEmojiStickerSetRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setSupergroupCustomEmojiStickerSet",
+        },
+        Data: map[string]interface{}{
+            "supergroup_id": req.SupergroupId,
+            "custom_emoji_sticker_set_id": req.CustomEmojiStickerSetId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetSupergroupUnrestrictBoostCountRequest struct { 
+    // Identifier of the supergroup
+    SupergroupId int64 `json:"supergroup_id"`
+    // New value of the unrestrict_boost_count supergroup setting; 0-8. Use 0 to remove the setting
+    UnrestrictBoostCount int32 `json:"unrestrict_boost_count"`
+}
+
+// Changes the number of times the supergroup must be boosted by a user to ignore slow mode and chat permission restrictions; requires can_restrict_members administrator right
+func (client *Client) SetSupergroupUnrestrictBoostCount(req *SetSupergroupUnrestrictBoostCountRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setSupergroupUnrestrictBoostCount",
+        },
+        Data: map[string]interface{}{
+            "supergroup_id": req.SupergroupId,
+            "unrestrict_boost_count": req.UnrestrictBoostCount,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type ToggleSupergroupSignMessagesRequest struct { 
     // Identifier of the channel
     SupergroupId int64 `json:"supergroup_id"`
@@ -15391,7 +15447,7 @@ type ToggleSupergroupSignMessagesRequest struct {
     SignMessages bool `json:"sign_messages"`
 }
 
-// Toggles whether sender signature is added to sent messages in a channel; requires can_change_info administrator right
+// Toggles whether sender signature is added to sent messages in a channel; requires can_change_info member right
 func (client *Client) ToggleSupergroupSignMessages(req *ToggleSupergroupSignMessagesRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -15478,7 +15534,7 @@ type ToggleSupergroupIsAllHistoryAvailableRequest struct {
     IsAllHistoryAvailable bool `json:"is_all_history_available"`
 }
 
-// Toggles whether the message history of a supergroup is available to new members; requires can_change_info administrator right
+// Toggles whether the message history of a supergroup is available to new members; requires can_change_info member right
 func (client *Client) ToggleSupergroupIsAllHistoryAvailable(req *ToggleSupergroupIsAllHistoryAvailableRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18789,7 +18845,7 @@ func (client *Client) GetPremiumState() (*PremiumState, error) {
 }
 
 type GetPremiumGiftCodePaymentOptionsRequest struct { 
-    // Identifier of the channel chat, which will be automatically boosted by receivers of the gift codes and which is administered by the user; 0 if none
+    // Identifier of the supergroup or channel chat, which will be automatically boosted by receivers of the gift codes and which is administered by the user; 0 if none
     BoostedChatId int64 `json:"boosted_chat_id"`
 }
 
@@ -18873,7 +18929,7 @@ type LaunchPrepaidPremiumGiveawayRequest struct {
     Parameters *PremiumGiveawayParameters `json:"parameters"`
 }
 
-// Launches a prepaid Telegram Premium giveaway for subscribers of channel chats; requires can_post_messages rights in the channels
+// Launches a prepaid Telegram Premium giveaway
 func (client *Client) LaunchPrepaidPremiumGiveaway(req *LaunchPrepaidPremiumGiveawayRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -20351,8 +20407,11 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateChatOnlineMemberCount:
         return UnmarshalUpdateChatOnlineMemberCount(result.Data)
 
-    case TypeUpdatePinnedSavedMessagesTopics:
-        return UnmarshalUpdatePinnedSavedMessagesTopics(result.Data)
+    case TypeUpdateSavedMessagesTopic:
+        return UnmarshalUpdateSavedMessagesTopic(result.Data)
+
+    case TypeUpdateSavedMessagesTopicCount:
+        return UnmarshalUpdateSavedMessagesTopicCount(result.Data)
 
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(result.Data)

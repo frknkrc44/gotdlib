@@ -1677,7 +1677,7 @@ func UnmarshalListOfLoginUrlInfo(dataList []json.RawMessage) ([]LoginUrlInfo, er
     return list, nil
 }
 
-func UnmarshalSavedMessagesTopic(data json.RawMessage) (SavedMessagesTopic, error) {
+func UnmarshalSavedMessagesTopicType(data json.RawMessage) (SavedMessagesTopicType, error) {
     var meta meta
 
     err := json.Unmarshal(data, &meta)
@@ -1686,25 +1686,25 @@ func UnmarshalSavedMessagesTopic(data json.RawMessage) (SavedMessagesTopic, erro
     }
 
     switch meta.Type {
-    case TypeSavedMessagesTopicMyNotes:
-        return UnmarshalSavedMessagesTopicMyNotes(data)
+    case TypeSavedMessagesTopicTypeMyNotes:
+        return UnmarshalSavedMessagesTopicTypeMyNotes(data)
 
-    case TypeSavedMessagesTopicAuthorHidden:
-        return UnmarshalSavedMessagesTopicAuthorHidden(data)
+    case TypeSavedMessagesTopicTypeAuthorHidden:
+        return UnmarshalSavedMessagesTopicTypeAuthorHidden(data)
 
-    case TypeSavedMessagesTopicSavedFromChat:
-        return UnmarshalSavedMessagesTopicSavedFromChat(data)
+    case TypeSavedMessagesTopicTypeSavedFromChat:
+        return UnmarshalSavedMessagesTopicTypeSavedFromChat(data)
 
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
     }
 }
 
-func UnmarshalListOfSavedMessagesTopic(dataList []json.RawMessage) ([]SavedMessagesTopic, error) {
-    list := []SavedMessagesTopic{}
+func UnmarshalListOfSavedMessagesTopicType(dataList []json.RawMessage) ([]SavedMessagesTopicType, error) {
+    list := []SavedMessagesTopicType{}
 
     for _, data := range dataList {
-        entity, err := UnmarshalSavedMessagesTopic(data)
+        entity, err := UnmarshalSavedMessagesTopicType(data)
         if err != nil {
             return nil, err
         }
@@ -2584,6 +2584,9 @@ func UnmarshalMessageContent(data json.RawMessage) (MessageContent, error) {
 
     case TypeMessageChatSetMessageAutoDeleteTime:
         return UnmarshalMessageChatSetMessageAutoDeleteTime(data)
+
+    case TypeMessageChatBoost:
+        return UnmarshalMessageChatBoost(data)
 
     case TypeMessageForumTopicCreated:
         return UnmarshalMessageForumTopicCreated(data)
@@ -4156,6 +4159,9 @@ func UnmarshalChatEventAction(data json.RawMessage) (ChatEventAction, error) {
     case TypeChatEventStickerSetChanged:
         return UnmarshalChatEventStickerSetChanged(data)
 
+    case TypeChatEventCustomEmojiStickerSetChanged:
+        return UnmarshalChatEventCustomEmojiStickerSetChanged(data)
+
     case TypeChatEventTitleChanged:
         return UnmarshalChatEventTitleChanged(data)
 
@@ -4438,6 +4444,15 @@ func UnmarshalPremiumFeature(data json.RawMessage) (PremiumFeature, error) {
     case TypePremiumFeatureBackgroundForBoth:
         return UnmarshalPremiumFeatureBackgroundForBoth(data)
 
+    case TypePremiumFeatureSavedMessagesTags:
+        return UnmarshalPremiumFeatureSavedMessagesTags(data)
+
+    case TypePremiumFeatureMessagePrivacy:
+        return UnmarshalPremiumFeatureMessagePrivacy(data)
+
+    case TypePremiumFeatureLastSeenTimes:
+        return UnmarshalPremiumFeatureLastSeenTimes(data)
+
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
     }
@@ -4483,6 +4498,9 @@ func UnmarshalPremiumStoryFeature(data json.RawMessage) (PremiumStoryFeature, er
 
     case TypePremiumStoryFeatureLinksAndFormatting:
         return UnmarshalPremiumStoryFeatureLinksAndFormatting(data)
+
+    case TypePremiumStoryFeatureVideoQuality:
+        return UnmarshalPremiumStoryFeatureVideoQuality(data)
 
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
@@ -6684,8 +6702,11 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateChatOnlineMemberCount:
         return UnmarshalUpdateChatOnlineMemberCount(data)
 
-    case TypeUpdatePinnedSavedMessagesTopics:
-        return UnmarshalUpdatePinnedSavedMessagesTopics(data)
+    case TypeUpdateSavedMessagesTopic:
+        return UnmarshalUpdateSavedMessagesTopic(data)
+
+    case TypeUpdateSavedMessagesTopicCount:
+        return UnmarshalUpdateSavedMessagesTopicCount(data)
 
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(data)
@@ -9493,40 +9514,32 @@ func UnmarshalMessageThreadInfo(data json.RawMessage) (*MessageThreadInfo, error
     return &resp, err
 }
 
-func UnmarshalSavedMessagesTopicMyNotes(data json.RawMessage) (*SavedMessagesTopicMyNotes, error) {
-    var resp SavedMessagesTopicMyNotes
+func UnmarshalSavedMessagesTopicTypeMyNotes(data json.RawMessage) (*SavedMessagesTopicTypeMyNotes, error) {
+    var resp SavedMessagesTopicTypeMyNotes
 
     err := json.Unmarshal(data, &resp)
 
     return &resp, err
 }
 
-func UnmarshalSavedMessagesTopicAuthorHidden(data json.RawMessage) (*SavedMessagesTopicAuthorHidden, error) {
-    var resp SavedMessagesTopicAuthorHidden
+func UnmarshalSavedMessagesTopicTypeAuthorHidden(data json.RawMessage) (*SavedMessagesTopicTypeAuthorHidden, error) {
+    var resp SavedMessagesTopicTypeAuthorHidden
 
     err := json.Unmarshal(data, &resp)
 
     return &resp, err
 }
 
-func UnmarshalSavedMessagesTopicSavedFromChat(data json.RawMessage) (*SavedMessagesTopicSavedFromChat, error) {
-    var resp SavedMessagesTopicSavedFromChat
+func UnmarshalSavedMessagesTopicTypeSavedFromChat(data json.RawMessage) (*SavedMessagesTopicTypeSavedFromChat, error) {
+    var resp SavedMessagesTopicTypeSavedFromChat
 
     err := json.Unmarshal(data, &resp)
 
     return &resp, err
 }
 
-func UnmarshalFoundSavedMessagesTopic(data json.RawMessage) (*FoundSavedMessagesTopic, error) {
-    var resp FoundSavedMessagesTopic
-
-    err := json.Unmarshal(data, &resp)
-
-    return &resp, err
-}
-
-func UnmarshalFoundSavedMessagesTopics(data json.RawMessage) (*FoundSavedMessagesTopics, error) {
-    var resp FoundSavedMessagesTopics
+func UnmarshalSavedMessagesTopic(data json.RawMessage) (*SavedMessagesTopic, error) {
+    var resp SavedMessagesTopic
 
     err := json.Unmarshal(data, &resp)
 
@@ -11215,6 +11228,14 @@ func UnmarshalMessageChatSetTheme(data json.RawMessage) (*MessageChatSetTheme, e
 
 func UnmarshalMessageChatSetMessageAutoDeleteTime(data json.RawMessage) (*MessageChatSetMessageAutoDeleteTime, error) {
     var resp MessageChatSetMessageAutoDeleteTime
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalMessageChatBoost(data json.RawMessage) (*MessageChatBoost, error) {
+    var resp MessageChatBoost
 
     err := json.Unmarshal(data, &resp)
 
@@ -13565,6 +13586,14 @@ func UnmarshalChatEventStickerSetChanged(data json.RawMessage) (*ChatEventSticke
     return &resp, err
 }
 
+func UnmarshalChatEventCustomEmojiStickerSetChanged(data json.RawMessage) (*ChatEventCustomEmojiStickerSetChanged, error) {
+    var resp ChatEventCustomEmojiStickerSetChanged
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalChatEventTitleChanged(data json.RawMessage) (*ChatEventTitleChanged, error) {
     var resp ChatEventTitleChanged
 
@@ -14149,6 +14178,30 @@ func UnmarshalPremiumFeatureBackgroundForBoth(data json.RawMessage) (*PremiumFea
     return &resp, err
 }
 
+func UnmarshalPremiumFeatureSavedMessagesTags(data json.RawMessage) (*PremiumFeatureSavedMessagesTags, error) {
+    var resp PremiumFeatureSavedMessagesTags
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPremiumFeatureMessagePrivacy(data json.RawMessage) (*PremiumFeatureMessagePrivacy, error) {
+    var resp PremiumFeatureMessagePrivacy
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPremiumFeatureLastSeenTimes(data json.RawMessage) (*PremiumFeatureLastSeenTimes, error) {
+    var resp PremiumFeatureLastSeenTimes
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalPremiumStoryFeaturePriorityOrder(data json.RawMessage) (*PremiumStoryFeaturePriorityOrder, error) {
     var resp PremiumStoryFeaturePriorityOrder
 
@@ -14191,6 +14244,14 @@ func UnmarshalPremiumStoryFeatureSaveStories(data json.RawMessage) (*PremiumStor
 
 func UnmarshalPremiumStoryFeatureLinksAndFormatting(data json.RawMessage) (*PremiumStoryFeatureLinksAndFormatting, error) {
     var resp PremiumStoryFeatureLinksAndFormatting
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPremiumStoryFeatureVideoQuality(data json.RawMessage) (*PremiumStoryFeatureVideoQuality, error) {
+    var resp PremiumStoryFeatureVideoQuality
 
     err := json.Unmarshal(data, &resp)
 
@@ -17333,8 +17394,16 @@ func UnmarshalUpdateChatOnlineMemberCount(data json.RawMessage) (*UpdateChatOnli
     return &resp, err
 }
 
-func UnmarshalUpdatePinnedSavedMessagesTopics(data json.RawMessage) (*UpdatePinnedSavedMessagesTopics, error) {
-    var resp UpdatePinnedSavedMessagesTopics
+func UnmarshalUpdateSavedMessagesTopic(data json.RawMessage) (*UpdateSavedMessagesTopic, error) {
+    var resp UpdateSavedMessagesTopic
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateSavedMessagesTopicCount(data json.RawMessage) (*UpdateSavedMessagesTopicCount, error) {
+    var resp UpdateSavedMessagesTopicCount
 
     err := json.Unmarshal(data, &resp)
 
@@ -19057,20 +19126,17 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeMessageThreadInfo:
         return UnmarshalMessageThreadInfo(data)
 
-    case TypeSavedMessagesTopicMyNotes:
-        return UnmarshalSavedMessagesTopicMyNotes(data)
+    case TypeSavedMessagesTopicTypeMyNotes:
+        return UnmarshalSavedMessagesTopicTypeMyNotes(data)
 
-    case TypeSavedMessagesTopicAuthorHidden:
-        return UnmarshalSavedMessagesTopicAuthorHidden(data)
+    case TypeSavedMessagesTopicTypeAuthorHidden:
+        return UnmarshalSavedMessagesTopicTypeAuthorHidden(data)
 
-    case TypeSavedMessagesTopicSavedFromChat:
-        return UnmarshalSavedMessagesTopicSavedFromChat(data)
+    case TypeSavedMessagesTopicTypeSavedFromChat:
+        return UnmarshalSavedMessagesTopicTypeSavedFromChat(data)
 
-    case TypeFoundSavedMessagesTopic:
-        return UnmarshalFoundSavedMessagesTopic(data)
-
-    case TypeFoundSavedMessagesTopics:
-        return UnmarshalFoundSavedMessagesTopics(data)
+    case TypeSavedMessagesTopic:
+        return UnmarshalSavedMessagesTopic(data)
 
     case TypeForumTopicIcon:
         return UnmarshalForumTopicIcon(data)
@@ -19704,6 +19770,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeMessageChatSetMessageAutoDeleteTime:
         return UnmarshalMessageChatSetMessageAutoDeleteTime(data)
+
+    case TypeMessageChatBoost:
+        return UnmarshalMessageChatBoost(data)
 
     case TypeMessageForumTopicCreated:
         return UnmarshalMessageForumTopicCreated(data)
@@ -20584,6 +20653,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeChatEventStickerSetChanged:
         return UnmarshalChatEventStickerSetChanged(data)
 
+    case TypeChatEventCustomEmojiStickerSetChanged:
+        return UnmarshalChatEventCustomEmojiStickerSetChanged(data)
+
     case TypeChatEventTitleChanged:
         return UnmarshalChatEventTitleChanged(data)
 
@@ -20803,6 +20875,15 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypePremiumFeatureBackgroundForBoth:
         return UnmarshalPremiumFeatureBackgroundForBoth(data)
 
+    case TypePremiumFeatureSavedMessagesTags:
+        return UnmarshalPremiumFeatureSavedMessagesTags(data)
+
+    case TypePremiumFeatureMessagePrivacy:
+        return UnmarshalPremiumFeatureMessagePrivacy(data)
+
+    case TypePremiumFeatureLastSeenTimes:
+        return UnmarshalPremiumFeatureLastSeenTimes(data)
+
     case TypePremiumStoryFeaturePriorityOrder:
         return UnmarshalPremiumStoryFeaturePriorityOrder(data)
 
@@ -20820,6 +20901,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypePremiumStoryFeatureLinksAndFormatting:
         return UnmarshalPremiumStoryFeatureLinksAndFormatting(data)
+
+    case TypePremiumStoryFeatureVideoQuality:
+        return UnmarshalPremiumStoryFeatureVideoQuality(data)
 
     case TypePremiumLimit:
         return UnmarshalPremiumLimit(data)
@@ -21997,8 +22081,11 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUpdateChatOnlineMemberCount:
         return UnmarshalUpdateChatOnlineMemberCount(data)
 
-    case TypeUpdatePinnedSavedMessagesTopics:
-        return UnmarshalUpdatePinnedSavedMessagesTopics(data)
+    case TypeUpdateSavedMessagesTopic:
+        return UnmarshalUpdateSavedMessagesTopic(data)
+
+    case TypeUpdateSavedMessagesTopicCount:
+        return UnmarshalUpdateSavedMessagesTopicCount(data)
 
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(data)
