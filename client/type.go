@@ -19,6 +19,7 @@ const (
     ClassStickerFullType = "StickerFullType"
     ClassPollType = "PollType"
     ClassUserType = "UserType"
+    ClassBusinessAwayMessageSchedule = "BusinessAwayMessageSchedule"
     ClassChatPhotoStickerType = "ChatPhotoStickerType"
     ClassInputChatPhoto = "InputChatPhoto"
     ClassPremiumGiveawayParticipantStatus = "PremiumGiveawayParticipantStatus"
@@ -187,6 +188,14 @@ const (
     ClassBotCommands = "BotCommands"
     ClassBotMenuButton = "BotMenuButton"
     ClassChatLocation = "ChatLocation"
+    ClassBusinessLocation = "BusinessLocation"
+    ClassBusinessRecipients = "BusinessRecipients"
+    ClassBusinessAwayMessageSettings = "BusinessAwayMessageSettings"
+    ClassBusinessGreetingMessageSettings = "BusinessGreetingMessageSettings"
+    ClassBusinessConnectedBot = "BusinessConnectedBot"
+    ClassBusinessOpeningHoursInterval = "BusinessOpeningHoursInterval"
+    ClassBusinessOpeningHours = "BusinessOpeningHours"
+    ClassBusinessInfo = "BusinessInfo"
     ClassChatPhotoSticker = "ChatPhotoSticker"
     ClassAnimatedChatPhoto = "AnimatedChatPhoto"
     ClassChatPhoto = "ChatPhoto"
@@ -355,6 +364,8 @@ const (
     ClassChatActiveStories = "ChatActiveStories"
     ClassStoryInteraction = "StoryInteraction"
     ClassStoryInteractions = "StoryInteractions"
+    ClassQuickReplyMessage = "QuickReplyMessage"
+    ClassQuickReplyShortcut = "QuickReplyShortcut"
     ClassPublicForwards = "PublicForwards"
     ClassChatBoostLevelFeatures = "ChatBoostLevelFeatures"
     ClassChatBoostFeatures = "ChatBoostFeatures"
@@ -410,6 +421,8 @@ const (
     ClassPushReceiverId = "PushReceiverId"
     ClassThemeSettings = "ThemeSettings"
     ClassChatTheme = "ChatTheme"
+    ClassTimeZone = "TimeZone"
+    ClassTimeZones = "TimeZones"
     ClassHashtags = "Hashtags"
     ClassNotificationSound = "NotificationSound"
     ClassNotificationSounds = "NotificationSounds"
@@ -576,6 +589,17 @@ const (
     TypeBotCommands = "botCommands"
     TypeBotMenuButton = "botMenuButton"
     TypeChatLocation = "chatLocation"
+    TypeBusinessAwayMessageScheduleAlways = "businessAwayMessageScheduleAlways"
+    TypeBusinessAwayMessageScheduleOutsideOfOpeningHours = "businessAwayMessageScheduleOutsideOfOpeningHours"
+    TypeBusinessAwayMessageScheduleCustom = "businessAwayMessageScheduleCustom"
+    TypeBusinessLocation = "businessLocation"
+    TypeBusinessRecipients = "businessRecipients"
+    TypeBusinessAwayMessageSettings = "businessAwayMessageSettings"
+    TypeBusinessGreetingMessageSettings = "businessGreetingMessageSettings"
+    TypeBusinessConnectedBot = "businessConnectedBot"
+    TypeBusinessOpeningHoursInterval = "businessOpeningHoursInterval"
+    TypeBusinessOpeningHours = "businessOpeningHours"
+    TypeBusinessInfo = "businessInfo"
     TypeChatPhotoStickerTypeRegularOrMask = "chatPhotoStickerTypeRegularOrMask"
     TypeChatPhotoStickerTypeCustomEmoji = "chatPhotoStickerTypeCustomEmoji"
     TypeChatPhotoSticker = "chatPhotoSticker"
@@ -1163,6 +1187,8 @@ const (
     TypeStoryInteractionTypeRepost = "storyInteractionTypeRepost"
     TypeStoryInteraction = "storyInteraction"
     TypeStoryInteractions = "storyInteractions"
+    TypeQuickReplyMessage = "quickReplyMessage"
+    TypeQuickReplyShortcut = "quickReplyShortcut"
     TypePublicForwardMessage = "publicForwardMessage"
     TypePublicForwardStory = "publicForwardStory"
     TypePublicForwards = "publicForwards"
@@ -1423,6 +1449,8 @@ const (
     TypeInputBackgroundPrevious = "inputBackgroundPrevious"
     TypeThemeSettings = "themeSettings"
     TypeChatTheme = "chatTheme"
+    TypeTimeZone = "timeZone"
+    TypeTimeZones = "timeZones"
     TypeHashtags = "hashtags"
     TypeCanSendStoryResultOk = "canSendStoryResultOk"
     TypeCanSendStoryResultPremiumNeeded = "canSendStoryResultPremiumNeeded"
@@ -1750,6 +1778,8 @@ const (
     TypeUpdateChatPermissions = "updateChatPermissions"
     TypeUpdateChatLastMessage = "updateChatLastMessage"
     TypeUpdateChatPosition = "updateChatPosition"
+    TypeUpdateChatAddedToList = "updateChatAddedToList"
+    TypeUpdateChatRemovedFromList = "updateChatRemovedFromList"
     TypeUpdateChatReadInbox = "updateChatReadInbox"
     TypeUpdateChatReadOutbox = "updateChatReadOutbox"
     TypeUpdateChatActionBar = "updateChatActionBar"
@@ -1777,6 +1807,10 @@ const (
     TypeUpdateChatOnlineMemberCount = "updateChatOnlineMemberCount"
     TypeUpdateSavedMessagesTopic = "updateSavedMessagesTopic"
     TypeUpdateSavedMessagesTopicCount = "updateSavedMessagesTopicCount"
+    TypeUpdateQuickReplyShortcut = "updateQuickReplyShortcut"
+    TypeUpdateQuickReplyShortcutDeleted = "updateQuickReplyShortcutDeleted"
+    TypeUpdateQuickReplyShortcuts = "updateQuickReplyShortcuts"
+    TypeUpdateQuickReplyShortcutMessages = "updateQuickReplyShortcutMessages"
     TypeUpdateForumTopicInfo = "updateForumTopicInfo"
     TypeUpdateScopeNotificationSettings = "updateScopeNotificationSettings"
     TypeUpdateNotification = "updateNotification"
@@ -1933,6 +1967,11 @@ type PollType interface {
 // Represents the type of a user. The following types are possible: regular users, deleted users and bots
 type UserType interface {
     UserTypeType() string
+}
+
+// Describes conditions for sending of away messages by a Telegram Business account
+type BusinessAwayMessageSchedule interface {
+    BusinessAwayMessageScheduleType() string
 }
 
 // Describes type of a sticker, which was used to create a chat photo
@@ -5632,6 +5671,328 @@ func (*ChatLocation) GetType() string {
     return TypeChatLocation
 }
 
+// Send away messages always
+type BusinessAwayMessageScheduleAlways struct{
+    meta
+}
+
+func (entity *BusinessAwayMessageScheduleAlways) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessAwayMessageScheduleAlways
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessAwayMessageScheduleAlways) GetClass() string {
+    return ClassBusinessAwayMessageSchedule
+}
+
+func (*BusinessAwayMessageScheduleAlways) GetType() string {
+    return TypeBusinessAwayMessageScheduleAlways
+}
+
+func (*BusinessAwayMessageScheduleAlways) BusinessAwayMessageScheduleType() string {
+    return TypeBusinessAwayMessageScheduleAlways
+}
+
+// Send away messages outside of the business opening hours
+type BusinessAwayMessageScheduleOutsideOfOpeningHours struct{
+    meta
+}
+
+func (entity *BusinessAwayMessageScheduleOutsideOfOpeningHours) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessAwayMessageScheduleOutsideOfOpeningHours
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessAwayMessageScheduleOutsideOfOpeningHours) GetClass() string {
+    return ClassBusinessAwayMessageSchedule
+}
+
+func (*BusinessAwayMessageScheduleOutsideOfOpeningHours) GetType() string {
+    return TypeBusinessAwayMessageScheduleOutsideOfOpeningHours
+}
+
+func (*BusinessAwayMessageScheduleOutsideOfOpeningHours) BusinessAwayMessageScheduleType() string {
+    return TypeBusinessAwayMessageScheduleOutsideOfOpeningHours
+}
+
+// Send away messages only in the specified time span
+type BusinessAwayMessageScheduleCustom struct {
+    meta
+    // Point in time (Unix timestamp) when the away messages will start to be sent
+    StartDate int32 `json:"start_date"`
+    // Point in time (Unix timestamp) when the away messages will stop to be sent
+    EndDate int32 `json:"end_date"`
+}
+
+func (entity *BusinessAwayMessageScheduleCustom) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessAwayMessageScheduleCustom
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessAwayMessageScheduleCustom) GetClass() string {
+    return ClassBusinessAwayMessageSchedule
+}
+
+func (*BusinessAwayMessageScheduleCustom) GetType() string {
+    return TypeBusinessAwayMessageScheduleCustom
+}
+
+func (*BusinessAwayMessageScheduleCustom) BusinessAwayMessageScheduleType() string {
+    return TypeBusinessAwayMessageScheduleCustom
+}
+
+// Represents a location of a business
+type BusinessLocation struct {
+    meta
+    // The location; may be null if not specified
+    Location *Location `json:"location"`
+    // Location address; 1-96 characters
+    Address string `json:"address"`
+}
+
+func (entity *BusinessLocation) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessLocation
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessLocation) GetClass() string {
+    return ClassBusinessLocation
+}
+
+func (*BusinessLocation) GetType() string {
+    return TypeBusinessLocation
+}
+
+// Describes private chats chosen for automatic interaction with a business
+type BusinessRecipients struct {
+    meta
+    // Identifiers of selected private chats
+    ChatIds []int64 `json:"chat_ids"`
+    // True, if all existing private chats are selected
+    SelectExistingChats bool `json:"select_existing_chats"`
+    // True, if all new private chats are selected
+    SelectNewChats bool `json:"select_new_chats"`
+    // True, if all private chats with contacts are selected
+    SelectContacts bool `json:"select_contacts"`
+    // True, if all private chats with non-contacts are selected
+    SelectNonContacts bool `json:"select_non_contacts"`
+    // If true, then all private chats except the selected are chosen. Otherwise, only the selected chats are chosen
+    ExcludeSelected bool `json:"exclude_selected"`
+}
+
+func (entity *BusinessRecipients) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessRecipients
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessRecipients) GetClass() string {
+    return ClassBusinessRecipients
+}
+
+func (*BusinessRecipients) GetType() string {
+    return TypeBusinessRecipients
+}
+
+// Describes settings for messages that are automatically sent by a Telegram Business account when it is away
+type BusinessAwayMessageSettings struct {
+    meta
+    // Unique quick reply shortcut identifier for the away messages
+    ShortcutId int32 `json:"shortcut_id"`
+    // Chosen recipients of the away messages
+    Recipients *BusinessRecipients `json:"recipients"`
+    // Settings used to check whether the current user is away
+    Schedule BusinessAwayMessageSchedule `json:"schedule"`
+    // True, if the messages must not be sent if the account was online in the last 10 minutes
+    OfflineOnly bool `json:"offline_only"`
+}
+
+func (entity *BusinessAwayMessageSettings) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessAwayMessageSettings
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessAwayMessageSettings) GetClass() string {
+    return ClassBusinessAwayMessageSettings
+}
+
+func (*BusinessAwayMessageSettings) GetType() string {
+    return TypeBusinessAwayMessageSettings
+}
+
+func (businessAwayMessageSettings *BusinessAwayMessageSettings) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        ShortcutId int32 `json:"shortcut_id"`
+        Recipients *BusinessRecipients `json:"recipients"`
+        Schedule json.RawMessage `json:"schedule"`
+        OfflineOnly bool `json:"offline_only"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    businessAwayMessageSettings.ShortcutId = tmp.ShortcutId
+    businessAwayMessageSettings.Recipients = tmp.Recipients
+    businessAwayMessageSettings.OfflineOnly = tmp.OfflineOnly
+
+    fieldSchedule, _ := UnmarshalBusinessAwayMessageSchedule(tmp.Schedule)
+    businessAwayMessageSettings.Schedule = fieldSchedule
+
+    return nil
+}
+
+// Describes settings for greeting messages that are automatically sent by a Telegram Business account as response to incoming messages in an inactive private chat
+type BusinessGreetingMessageSettings struct {
+    meta
+    // Unique quick reply shortcut identifier for the greeting messages
+    ShortcutId int32 `json:"shortcut_id"`
+    // Chosen recipients of the greeting messages
+    Recipients *BusinessRecipients `json:"recipients"`
+    // The number of days after which a chat will be considered as inactive; currently, must be on of 7, 14, 21, or 28
+    InactivityDays int32 `json:"inactivity_days"`
+}
+
+func (entity *BusinessGreetingMessageSettings) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessGreetingMessageSettings
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessGreetingMessageSettings) GetClass() string {
+    return ClassBusinessGreetingMessageSettings
+}
+
+func (*BusinessGreetingMessageSettings) GetType() string {
+    return TypeBusinessGreetingMessageSettings
+}
+
+// Describes a bot connected to a business account
+type BusinessConnectedBot struct {
+    meta
+    // User identifier of the bot
+    BotUserId int64 `json:"bot_user_id"`
+    // Private chats that will be accessible to the bot
+    Recipients *BusinessRecipients `json:"recipients"`
+    // True, if the bot can send messages to the private chats; false otherwise
+    CanReply bool `json:"can_reply"`
+}
+
+func (entity *BusinessConnectedBot) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessConnectedBot
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessConnectedBot) GetClass() string {
+    return ClassBusinessConnectedBot
+}
+
+func (*BusinessConnectedBot) GetType() string {
+    return TypeBusinessConnectedBot
+}
+
+// Describes an interval of time when the business is open
+type BusinessOpeningHoursInterval struct {
+    meta
+    // The first minute of the interval since start of the week; 0-7*24*60
+    StartMinute int32 `json:"start_minute"`
+    // The first minute after the end of the interval since start of the week; 1-8*24*60
+    EndMinute int32 `json:"end_minute"`
+}
+
+func (entity *BusinessOpeningHoursInterval) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessOpeningHoursInterval
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessOpeningHoursInterval) GetClass() string {
+    return ClassBusinessOpeningHoursInterval
+}
+
+func (*BusinessOpeningHoursInterval) GetType() string {
+    return TypeBusinessOpeningHoursInterval
+}
+
+// Describes opening hours of a business
+type BusinessOpeningHours struct {
+    meta
+    // Unique time zone identifier
+    TimeZoneId string `json:"time_zone_id"`
+    // Intervals of the time when the business is open
+    OpeningHours []*BusinessOpeningHoursInterval `json:"opening_hours"`
+}
+
+func (entity *BusinessOpeningHours) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessOpeningHours
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessOpeningHours) GetClass() string {
+    return ClassBusinessOpeningHours
+}
+
+func (*BusinessOpeningHours) GetType() string {
+    return TypeBusinessOpeningHours
+}
+
+// Contains information about a Telegram Business account
+type BusinessInfo struct {
+    meta
+    // Location of the business; may be null if none
+    Location *BusinessLocation `json:"location"`
+    // Opening hours of the business; may be null if none. The hours are guaranteed to be valid and has already been split by week days
+    OpeningHours *BusinessOpeningHours `json:"opening_hours"`
+    // The greeting message; may be null if none or the Business account is not of the current user
+    GreetingMessageSettings *BusinessGreetingMessageSettings `json:"greeting_message_settings"`
+    // The away message; may be null if none or the Business account is not of the current user
+    AwayMessageSettings *BusinessAwayMessageSettings `json:"away_message_settings"`
+}
+
+func (entity *BusinessInfo) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessInfo
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessInfo) GetClass() string {
+    return ClassBusinessInfo
+}
+
+func (*BusinessInfo) GetType() string {
+    return TypeBusinessInfo
+}
+
 // Information about the sticker, which was used to create the chat photo
 type ChatPhotoStickerTypeRegularOrMask struct {
     meta
@@ -6941,6 +7302,8 @@ type UserFullInfo struct {
     PremiumGiftOptions []*PremiumPaymentOption `json:"premium_gift_options"`
     // Number of group chats where both the other user and the current user are a member; 0 for the current user
     GroupInCommonCount int32 `json:"group_in_common_count"`
+    // Information about business settings for Telegram Business accounts; may be null if none
+    BusinessInfo *BusinessInfo `json:"business_info"`
     // For bots, information about the bot; may be null if the user isn't a bot
     BotInfo *BotInfo `json:"bot_info"`
 }
@@ -6978,6 +7341,7 @@ func (userFullInfo *UserFullInfo) UnmarshalJSON(data []byte) error {
         Bio *FormattedText `json:"bio"`
         PremiumGiftOptions []*PremiumPaymentOption `json:"premium_gift_options"`
         GroupInCommonCount int32 `json:"group_in_common_count"`
+        BusinessInfo *BusinessInfo `json:"business_info"`
         BotInfo *BotInfo `json:"bot_info"`
     }
 
@@ -7000,6 +7364,7 @@ func (userFullInfo *UserFullInfo) UnmarshalJSON(data []byte) error {
     userFullInfo.Bio = tmp.Bio
     userFullInfo.PremiumGiftOptions = tmp.PremiumGiftOptions
     userFullInfo.GroupInCommonCount = tmp.GroupInCommonCount
+    userFullInfo.BusinessInfo = tmp.BusinessInfo
     userFullInfo.BotInfo = tmp.BotInfo
 
     fieldBlockList, _ := UnmarshalBlockList(tmp.BlockList)
@@ -11138,6 +11503,8 @@ type ChatFolder struct {
     Title string `json:"title"`
     // The chosen icon for the chat folder; may be null. If null, use getChatFolderDefaultIconName to get default icon name for the folder
     Icon *ChatFolderIcon `json:"icon"`
+    // The identifier of the chosen color for the chat folder icon; from -1 to 6. If -1, then color is didabled
+    ColorId int32 `json:"color_id"`
     // True, if at least one link has been created for the folder
     IsShareable bool `json:"is_shareable"`
     // The chat identifiers of pinned chats in the folder. There can be up to getOption("chat_folder_chosen_chat_count_max") pinned and always included non-secret chats and the same number of secret chats, but the limit can be increased with Telegram Premium
@@ -11189,6 +11556,8 @@ type ChatFolderInfo struct {
     Title string `json:"title"`
     // The chosen or default icon for the chat folder
     Icon *ChatFolderIcon `json:"icon"`
+    // The identifier of the chosen color for the chat folder icon; from -1 to 6. If -1, then color is didabled
+    ColorId int32 `json:"color_id"`
     // True, if at least one link has been created for the folder
     IsShareable bool `json:"is_shareable"`
     // True, if the chat folder has invite links created by the current user
@@ -11799,6 +12168,8 @@ type Chat struct {
     LastMessage *Message `json:"last_message"`
     // Positions of the chat in chat lists
     Positions []*ChatPosition `json:"positions"`
+    // Chat lists to which the chat belongs. A chat can have a non-zero position in a chat list even it doesn't belong to the chat list and have no position in a chat list even it belongs to the chat list
+    ChatLists []ChatList `json:"chat_lists"`
     // Identifier of a user or chat that is selected to send messages in the chat; may be null if the user can't change message sender
     MessageSenderId MessageSender `json:"message_sender_id"`
     // Block list to which the chat is added; may be null if none
@@ -11886,6 +12257,7 @@ func (chat *Chat) UnmarshalJSON(data []byte) error {
         Permissions *ChatPermissions `json:"permissions"`
         LastMessage *Message `json:"last_message"`
         Positions []*ChatPosition `json:"positions"`
+        ChatLists []json.RawMessage `json:"chat_lists"`
         MessageSenderId json.RawMessage `json:"message_sender_id"`
         BlockList json.RawMessage `json:"block_list"`
         HasProtectedContent bool `json:"has_protected_content"`
@@ -11958,6 +12330,9 @@ func (chat *Chat) UnmarshalJSON(data []byte) error {
 
     fieldType, _ := UnmarshalChatType(tmp.Type)
     chat.Type = fieldType
+
+    fieldChatLists, _ := UnmarshalListOfChatList(tmp.ChatLists)
+    chat.ChatLists = fieldChatLists
 
     fieldMessageSenderId, _ := UnmarshalMessageSender(tmp.MessageSenderId)
     chat.MessageSenderId = fieldMessageSenderId
@@ -25691,6 +26066,107 @@ func (*StoryInteractions) GetType() string {
     return TypeStoryInteractions
 }
 
+// Describes a message that can be used for quick reply
+type QuickReplyMessage struct {
+    meta
+    // Unique message identifier among all quick replies
+    Id int64 `json:"id"`
+    // The sending state of the message; may be null if the message isn't being sent and didn't fail to be sent
+    SendingState MessageSendingState `json:"sending_state"`
+    // True, if the message can be edited
+    CanBeEdited bool `json:"can_be_edited"`
+    // Information about the identifier of the quick reply message to which the message replies
+    ReplyToMessageId int64 `json:"reply_to_message_id"`
+    // If non-zero, the user identifier of the bot through which this message was sent
+    ViaBotUserId int64 `json:"via_bot_user_id"`
+    // Unique identifier of an album this message belongs to. Only audios, documents, photos and videos can be grouped together in albums
+    MediaAlbumId JsonInt64 `json:"media_album_id"`
+    // Content of the message
+    Content MessageContent `json:"content"`
+    // Inline keyboard reply markup for the message; may be null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+}
+
+func (entity *QuickReplyMessage) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub QuickReplyMessage
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*QuickReplyMessage) GetClass() string {
+    return ClassQuickReplyMessage
+}
+
+func (*QuickReplyMessage) GetType() string {
+    return TypeQuickReplyMessage
+}
+
+func (quickReplyMessage *QuickReplyMessage) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        Id int64 `json:"id"`
+        SendingState json.RawMessage `json:"sending_state"`
+        CanBeEdited bool `json:"can_be_edited"`
+        ReplyToMessageId int64 `json:"reply_to_message_id"`
+        ViaBotUserId int64 `json:"via_bot_user_id"`
+        MediaAlbumId JsonInt64 `json:"media_album_id"`
+        Content json.RawMessage `json:"content"`
+        ReplyMarkup json.RawMessage `json:"reply_markup"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    quickReplyMessage.Id = tmp.Id
+    quickReplyMessage.CanBeEdited = tmp.CanBeEdited
+    quickReplyMessage.ReplyToMessageId = tmp.ReplyToMessageId
+    quickReplyMessage.ViaBotUserId = tmp.ViaBotUserId
+    quickReplyMessage.MediaAlbumId = tmp.MediaAlbumId
+
+    fieldSendingState, _ := UnmarshalMessageSendingState(tmp.SendingState)
+    quickReplyMessage.SendingState = fieldSendingState
+
+    fieldContent, _ := UnmarshalMessageContent(tmp.Content)
+    quickReplyMessage.Content = fieldContent
+
+    fieldReplyMarkup, _ := UnmarshalReplyMarkup(tmp.ReplyMarkup)
+    quickReplyMessage.ReplyMarkup = fieldReplyMarkup
+
+    return nil
+}
+
+// Describes a shortcut that can be used for a quick reply
+type QuickReplyShortcut struct {
+    meta
+    // Unique shortcut identifier
+    Id int32 `json:"id"`
+    // The name of the shortcut that can be used to use the shortcut
+    Name string `json:"name"`
+    // The first shortcut message
+    FirstMessage *QuickReplyMessage `json:"first_message"`
+    // The total number of messages in the shortcut
+    MessageCount int32 `json:"message_count"`
+}
+
+func (entity *QuickReplyShortcut) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub QuickReplyShortcut
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*QuickReplyShortcut) GetClass() string {
+    return ClassQuickReplyShortcut
+}
+
+func (*QuickReplyShortcut) GetType() string {
+    return TypeQuickReplyShortcut
+}
+
 // Contains a public forward as a message
 type PublicForwardMessage struct {
     meta
@@ -34227,6 +34703,56 @@ func (*ChatTheme) GetClass() string {
 
 func (*ChatTheme) GetType() string {
     return TypeChatTheme
+}
+
+// Describes a time zone
+type TimeZone struct {
+    meta
+    // Unique time zone identifier
+    Id string `json:"id"`
+    // Time zone name
+    Name string `json:"name"`
+    // Current UTC time offset for the time zone
+    UtcTimeOffset int32 `json:"utc_time_offset"`
+}
+
+func (entity *TimeZone) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub TimeZone
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*TimeZone) GetClass() string {
+    return ClassTimeZone
+}
+
+func (*TimeZone) GetType() string {
+    return TypeTimeZone
+}
+
+// Contains a list of time zones
+type TimeZones struct {
+    meta
+    // A list of time zones
+    TimeZones []*TimeZone `json:"time_zones"`
+}
+
+func (entity *TimeZones) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub TimeZones
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*TimeZones) GetClass() string {
+    return ClassTimeZones
+}
+
+func (*TimeZones) GetType() string {
+    return TypeTimeZones
 }
 
 // Contains a list of hashtags
@@ -43713,6 +44239,102 @@ func (*UpdateChatPosition) UpdateType() string {
     return TypeUpdateChatPosition
 }
 
+// A chat was added to a chat list
+type UpdateChatAddedToList struct {
+    meta
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // The chat list to which the chat was added
+    ChatList ChatList `json:"chat_list"`
+}
+
+func (entity *UpdateChatAddedToList) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateChatAddedToList
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateChatAddedToList) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateChatAddedToList) GetType() string {
+    return TypeUpdateChatAddedToList
+}
+
+func (*UpdateChatAddedToList) UpdateType() string {
+    return TypeUpdateChatAddedToList
+}
+
+func (updateChatAddedToList *UpdateChatAddedToList) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        ChatId int64 `json:"chat_id"`
+        ChatList json.RawMessage `json:"chat_list"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    updateChatAddedToList.ChatId = tmp.ChatId
+
+    fieldChatList, _ := UnmarshalChatList(tmp.ChatList)
+    updateChatAddedToList.ChatList = fieldChatList
+
+    return nil
+}
+
+// A chat was removed from a chat list
+type UpdateChatRemovedFromList struct {
+    meta
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // The chat list from which the chat was removed
+    ChatList ChatList `json:"chat_list"`
+}
+
+func (entity *UpdateChatRemovedFromList) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateChatRemovedFromList
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateChatRemovedFromList) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateChatRemovedFromList) GetType() string {
+    return TypeUpdateChatRemovedFromList
+}
+
+func (*UpdateChatRemovedFromList) UpdateType() string {
+    return TypeUpdateChatRemovedFromList
+}
+
+func (updateChatRemovedFromList *UpdateChatRemovedFromList) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        ChatId int64 `json:"chat_id"`
+        ChatList json.RawMessage `json:"chat_list"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    updateChatRemovedFromList.ChatId = tmp.ChatId
+
+    fieldChatList, _ := UnmarshalChatList(tmp.ChatList)
+    updateChatRemovedFromList.ChatList = fieldChatList
+
+    return nil
+}
+
 // Incoming messages were read or the number of unread messages has been changed
 type UpdateChatReadInbox struct {
     meta
@@ -44467,6 +45089,8 @@ type UpdateChatFolders struct {
     ChatFolders []*ChatFolderInfo `json:"chat_folders"`
     // Position of the main chat list among chat folders, 0-based
     MainChatListPosition int32 `json:"main_chat_list_position"`
+    // True, if folder tags are enabled
+    AreTagsEnabled bool `json:"are_tags_enabled"`
 }
 
 func (entity *UpdateChatFolders) MarshalJSON() ([]byte, error) {
@@ -44570,6 +45194,116 @@ func (*UpdateSavedMessagesTopicCount) GetType() string {
 
 func (*UpdateSavedMessagesTopicCount) UpdateType() string {
     return TypeUpdateSavedMessagesTopicCount
+}
+
+// Basic information about a quick reply shortcut has changed. This update is guaranteed to come before the quick shortcut name is returned to the application
+type UpdateQuickReplyShortcut struct {
+    meta
+    // New data about the shortcut
+    Shortcut *QuickReplyShortcut `json:"shortcut"`
+}
+
+func (entity *UpdateQuickReplyShortcut) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateQuickReplyShortcut
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateQuickReplyShortcut) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateQuickReplyShortcut) GetType() string {
+    return TypeUpdateQuickReplyShortcut
+}
+
+func (*UpdateQuickReplyShortcut) UpdateType() string {
+    return TypeUpdateQuickReplyShortcut
+}
+
+// A quick reply shortcut and all its messages were deleted
+type UpdateQuickReplyShortcutDeleted struct {
+    meta
+    // The identifier of the deleted shortcut
+    ShortcutId int32 `json:"shortcut_id"`
+}
+
+func (entity *UpdateQuickReplyShortcutDeleted) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateQuickReplyShortcutDeleted
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateQuickReplyShortcutDeleted) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateQuickReplyShortcutDeleted) GetType() string {
+    return TypeUpdateQuickReplyShortcutDeleted
+}
+
+func (*UpdateQuickReplyShortcutDeleted) UpdateType() string {
+    return TypeUpdateQuickReplyShortcutDeleted
+}
+
+// The list of quick reply shortcuts has changed
+type UpdateQuickReplyShortcuts struct {
+    meta
+    // The new list of identifiers of quick reply shortcuts
+    ShortcutIds []int32 `json:"shortcut_ids"`
+}
+
+func (entity *UpdateQuickReplyShortcuts) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateQuickReplyShortcuts
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateQuickReplyShortcuts) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateQuickReplyShortcuts) GetType() string {
+    return TypeUpdateQuickReplyShortcuts
+}
+
+func (*UpdateQuickReplyShortcuts) UpdateType() string {
+    return TypeUpdateQuickReplyShortcuts
+}
+
+// The list of quick reply shortcut messages has changed
+type UpdateQuickReplyShortcutMessages struct {
+    meta
+    // The identifier of the shortcut
+    ShortcutId int32 `json:"shortcut_id"`
+    // The new list of quick reply messages for the shortcut in order from the first to the last sent
+    Messages []*QuickReplyMessage `json:"messages"`
+}
+
+func (entity *UpdateQuickReplyShortcutMessages) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateQuickReplyShortcutMessages
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateQuickReplyShortcutMessages) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateQuickReplyShortcutMessages) GetType() string {
+    return TypeUpdateQuickReplyShortcutMessages
+}
+
+func (*UpdateQuickReplyShortcutMessages) UpdateType() string {
+    return TypeUpdateQuickReplyShortcutMessages
 }
 
 // Basic information about a topic in a forum chat was changed

@@ -3663,6 +3663,38 @@ func (client *Client) ForwardMessages(req *ForwardMessagesRequest) (*Messages, e
     return UnmarshalMessages(result.Data)
 }
 
+type SendQuickReplyShortcutMessagesRequest struct { 
+    // Identifier of the chat to which to send messages. The chat must be a private chat with a regular user
+    ChatId int64 `json:"chat_id"`
+    // Unique identifier of the quick reply shortcut
+    ShortcutId int32 `json:"shortcut_id"`
+    // Non-persistent identifier, which will be returned back in messageSendingStatePending object and can be used to match sent messages and corresponding updateNewMessage updates
+    SendingId int32 `json:"sending_id"`
+}
+
+// Sends messages from a quick reply shortcut. Requires Telegram Business subscription
+func (client *Client) SendQuickReplyShortcutMessages(req *SendQuickReplyShortcutMessagesRequest) (*Messages, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "sendQuickReplyShortcutMessages",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "shortcut_id": req.ShortcutId,
+            "sending_id": req.SendingId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalMessages(result.Data)
+}
+
 type ResendMessagesRequest struct { 
     // Identifier of the chat to send messages
     ChatId int64 `json:"chat_id"`
@@ -4215,6 +4247,192 @@ func (client *Client) EditMessageSchedulingState(req *EditMessageSchedulingState
             "chat_id": req.ChatId,
             "message_id": req.MessageId,
             "scheduling_state": req.SchedulingState,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type CheckQuickReplyShortcutNameRequest struct { 
+    // The name of the shortcut; 1-32 characters
+    Name string `json:"name"`
+}
+
+// Checks validness of a name for a quick reply shortcut. Can be called synchronously
+func CheckQuickReplyShortcutName(req *CheckQuickReplyShortcutNameRequest) (*Ok, error) {
+    result, err := Execute(Request{
+        meta: meta{
+            Type: "checkQuickReplyShortcutName",
+        },
+        Data: map[string]interface{}{
+            "name": req.Name,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// deprecated
+// Checks validness of a name for a quick reply shortcut. Can be called synchronously
+func (client *Client) CheckQuickReplyShortcutName(req *CheckQuickReplyShortcutNameRequest) (*Ok, error) {
+    return CheckQuickReplyShortcutName(req)}
+
+// Loads quick reply shortcuts created by the current user. The loaded topics will be sent through updateQuickReplyShortcuts
+func (client *Client) LoadQuickReplyShortcuts() (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "loadQuickReplyShortcuts",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetQuickReplyShortcutNameRequest struct { 
+    // Unique identifier of the quick reply shortcut
+    ShortcutId int32 `json:"shortcut_id"`
+    // New name for the shortcut. Use checkQuickReplyShortcutName to check its validness
+    Name string `json:"name"`
+}
+
+// Changes name of a quick reply shortcut
+func (client *Client) SetQuickReplyShortcutName(req *SetQuickReplyShortcutNameRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setQuickReplyShortcutName",
+        },
+        Data: map[string]interface{}{
+            "shortcut_id": req.ShortcutId,
+            "name": req.Name,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type DeleteQuickReplyShortcutRequest struct { 
+    // Unique identifier of the quick reply shortcut
+    ShortcutId int32 `json:"shortcut_id"`
+}
+
+// Deletes a quick reply shortcut
+func (client *Client) DeleteQuickReplyShortcut(req *DeleteQuickReplyShortcutRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteQuickReplyShortcut",
+        },
+        Data: map[string]interface{}{
+            "shortcut_id": req.ShortcutId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type ReorderQuickReplyShortcutsRequest struct { 
+    // The new order of quick reply shortcuts
+    ShortcutIds []int32 `json:"shortcut_ids"`
+}
+
+// Changes the order of quick reply shortcuts
+func (client *Client) ReorderQuickReplyShortcuts(req *ReorderQuickReplyShortcutsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "reorderQuickReplyShortcuts",
+        },
+        Data: map[string]interface{}{
+            "shortcut_ids": req.ShortcutIds,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type LoadQuickReplyShortcutMessagesRequest struct { 
+    // Unique identifier of the quick reply shortcut
+    ShortcutId int32 `json:"shortcut_id"`
+}
+
+// Loads quick reply messages that can be sent by a given quick reply shortcut. The loaded messages will be sent through updateQuickReplyShortcutMessages
+func (client *Client) LoadQuickReplyShortcutMessages(req *LoadQuickReplyShortcutMessagesRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "loadQuickReplyShortcutMessages",
+        },
+        Data: map[string]interface{}{
+            "shortcut_id": req.ShortcutId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type DeleteQuickReplyShortcutMessagesRequest struct { 
+    // Unique identifier of the quick reply shortcut to which the messages belong
+    ShortcutId int32 `json:"shortcut_id"`
+    // Unique identifiers of the messages
+    MessageIds []int64 `json:"message_ids"`
+}
+
+// Deletes specified quick reply messages
+func (client *Client) DeleteQuickReplyShortcutMessages(req *DeleteQuickReplyShortcutMessagesRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteQuickReplyShortcutMessages",
+        },
+        Data: map[string]interface{}{
+            "shortcut_id": req.ShortcutId,
+            "message_ids": req.MessageIds,
         },
     })
     if err != nil {
@@ -7283,6 +7501,32 @@ func (client *Client) ReorderChatFolders(req *ReorderChatFoldersRequest) (*Ok, e
         Data: map[string]interface{}{
             "chat_folder_ids": req.ChatFolderIds,
             "main_chat_list_position": req.MainChatListPosition,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type ToggleChatFolderTagsRequest struct { 
+    // Pass true to enable folder tags; pass false to disable them
+    AreTagsEnabled bool `json:"are_tags_enabled"`
+}
+
+// Toggles whether chat folder tags are enabled
+func (client *Client) ToggleChatFolderTags(req *ToggleChatFolderTagsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "toggleChatFolderTags",
+        },
+        Data: map[string]interface{}{
+            "are_tags_enabled": req.AreTagsEnabled,
         },
     })
     if err != nil {
@@ -13429,7 +13673,7 @@ type AddRecentStickerRequest struct {
     Sticker InputFile `json:"sticker"`
 }
 
-// Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list. Emoji stickers can't be added to recent stickers
+// Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set or in WEBP format can be added to this list. Emoji stickers can't be added to recent stickers
 func (client *Client) AddRecentSticker(req *AddRecentStickerRequest) (*Stickers, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -13530,7 +13774,7 @@ type AddFavoriteStickerRequest struct {
     Sticker InputFile `json:"sticker"`
 }
 
-// Adds a new sticker to the list of favorite stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set can be added to this list. Emoji stickers can't be added to favorite stickers
+// Adds a new sticker to the list of favorite stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set or in WEBP format can be added to this list. Emoji stickers can't be added to favorite stickers
 func (client *Client) AddFavoriteSticker(req *AddFavoriteStickerRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -14305,7 +14549,7 @@ type SetLocationRequest struct {
     Location *Location `json:"location"`
 }
 
-// Changes the location of the current user. Needs to be called if getOption("is_location_visible") is true and location changes for more than 1 kilometer
+// Changes the location of the current user. Needs to be called if getOption("is_location_visible") is true and location changes for more than 1 kilometer. Must not be called if the user has a business location
 func (client *Client) SetLocation(req *SetLocationRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -14313,6 +14557,110 @@ func (client *Client) SetLocation(req *SetLocationRequest) (*Ok, error) {
         },
         Data: map[string]interface{}{
             "location": req.Location,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetBusinessLocationRequest struct { 
+    // The new location of the business; pass null to remove the location
+    Location *BusinessLocation `json:"location"`
+}
+
+// Changes the business location of the current user. Requires Telegram Business subscription
+func (client *Client) SetBusinessLocation(req *SetBusinessLocationRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBusinessLocation",
+        },
+        Data: map[string]interface{}{
+            "location": req.Location,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetBusinessOpeningHoursRequest struct { 
+    // The new opening hours of the business; pass null to remove the opening hours
+    OpeningHours *BusinessOpeningHours `json:"opening_hours"`
+}
+
+// Changes the business opening hours of the current user. Requires Telegram Business subscription
+func (client *Client) SetBusinessOpeningHours(req *SetBusinessOpeningHoursRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBusinessOpeningHours",
+        },
+        Data: map[string]interface{}{
+            "opening_hours": req.OpeningHours,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetBusinessGreetingMessageSettingsRequest struct { 
+    // The new settings for the greeting message of the business; pass null to disable the greeting message
+    GreetingMessageSettings *BusinessGreetingMessageSettings `json:"greeting_message_settings"`
+}
+
+// Changes the business greeting message settings of the current user. Requires Telegram Business subscription
+func (client *Client) SetBusinessGreetingMessageSettings(req *SetBusinessGreetingMessageSettingsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBusinessGreetingMessageSettings",
+        },
+        Data: map[string]interface{}{
+            "greeting_message_settings": req.GreetingMessageSettings,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetBusinessAwayMessageSettingsRequest struct { 
+    // The new settings for the away message of the business; pass null to disable the away message
+    AwayMessageSettings *BusinessAwayMessageSettings `json:"away_message_settings"`
+}
+
+// Changes the business away message settings of the current user. Requires Telegram Business subscription
+func (client *Client) SetBusinessAwayMessageSettings(req *SetBusinessAwayMessageSettingsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBusinessAwayMessageSettings",
+        },
+        Data: map[string]interface{}{
+            "away_message_settings": req.AwayMessageSettings,
         },
     })
     if err != nil {
@@ -14387,6 +14735,77 @@ func (client *Client) CheckChangePhoneNumberCode(req *CheckChangePhoneNumberCode
         },
         Data: map[string]interface{}{
             "code": req.Code,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Returns the business bot that is connected to the current user account. Returns a 404 error if there is no connected bot
+func (client *Client) GetBusinessConnectedBot() (*BusinessConnectedBot, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getBusinessConnectedBot",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessConnectedBot(result.Data)
+}
+
+type SetBusinessConnectedBotRequest struct { 
+    // Connection settings for the bot
+    Bot *BusinessConnectedBot `json:"bot"`
+}
+
+// Adds or changes business bot that is connected to the current user account
+func (client *Client) SetBusinessConnectedBot(req *SetBusinessConnectedBotRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBusinessConnectedBot",
+        },
+        Data: map[string]interface{}{
+            "bot": req.Bot,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type DeleteBusinessConnectedBotRequest struct { 
+    // Unique user identifier for the bot
+    BotUserId int64 `json:"bot_user_id"`
+}
+
+// Deletes the business bot that is connected to the current user account
+func (client *Client) DeleteBusinessConnectedBot(req *DeleteBusinessConnectedBotRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "deleteBusinessConnectedBot",
+        },
+        Data: map[string]interface{}{
+            "bot_user_id": req.BotUserId,
         },
     })
     if err != nil {
@@ -15827,6 +16246,25 @@ func (client *Client) GetChatEventLog(req *GetChatEventLogRequest) (*ChatEvents,
     }
 
     return UnmarshalChatEvents(result.Data)
+}
+
+// Returns the list of supported time zones
+func (client *Client) GetTimeZones() (*TimeZones, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getTimeZones",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalTimeZones(result.Data)
 }
 
 type GetPaymentFormRequest struct { 
@@ -20332,6 +20770,12 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateChatPosition:
         return UnmarshalUpdateChatPosition(result.Data)
 
+    case TypeUpdateChatAddedToList:
+        return UnmarshalUpdateChatAddedToList(result.Data)
+
+    case TypeUpdateChatRemovedFromList:
+        return UnmarshalUpdateChatRemovedFromList(result.Data)
+
     case TypeUpdateChatReadInbox:
         return UnmarshalUpdateChatReadInbox(result.Data)
 
@@ -20412,6 +20856,18 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateSavedMessagesTopicCount:
         return UnmarshalUpdateSavedMessagesTopicCount(result.Data)
+
+    case TypeUpdateQuickReplyShortcut:
+        return UnmarshalUpdateQuickReplyShortcut(result.Data)
+
+    case TypeUpdateQuickReplyShortcutDeleted:
+        return UnmarshalUpdateQuickReplyShortcutDeleted(result.Data)
+
+    case TypeUpdateQuickReplyShortcuts:
+        return UnmarshalUpdateQuickReplyShortcuts(result.Data)
+
+    case TypeUpdateQuickReplyShortcutMessages:
+        return UnmarshalUpdateQuickReplyShortcutMessages(result.Data)
 
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(result.Data)

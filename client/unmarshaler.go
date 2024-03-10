@@ -508,6 +508,43 @@ func UnmarshalListOfUserType(dataList []json.RawMessage) ([]UserType, error) {
     return list, nil
 }
 
+func UnmarshalBusinessAwayMessageSchedule(data json.RawMessage) (BusinessAwayMessageSchedule, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeBusinessAwayMessageScheduleAlways:
+        return UnmarshalBusinessAwayMessageScheduleAlways(data)
+
+    case TypeBusinessAwayMessageScheduleOutsideOfOpeningHours:
+        return UnmarshalBusinessAwayMessageScheduleOutsideOfOpeningHours(data)
+
+    case TypeBusinessAwayMessageScheduleCustom:
+        return UnmarshalBusinessAwayMessageScheduleCustom(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfBusinessAwayMessageSchedule(dataList []json.RawMessage) ([]BusinessAwayMessageSchedule, error) {
+    list := []BusinessAwayMessageSchedule{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalBusinessAwayMessageSchedule(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
 func UnmarshalChatPhotoStickerType(data json.RawMessage) (ChatPhotoStickerType, error) {
     var meta meta
 
@@ -6627,6 +6664,12 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateChatPosition:
         return UnmarshalUpdateChatPosition(data)
 
+    case TypeUpdateChatAddedToList:
+        return UnmarshalUpdateChatAddedToList(data)
+
+    case TypeUpdateChatRemovedFromList:
+        return UnmarshalUpdateChatRemovedFromList(data)
+
     case TypeUpdateChatReadInbox:
         return UnmarshalUpdateChatReadInbox(data)
 
@@ -6707,6 +6750,18 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
 
     case TypeUpdateSavedMessagesTopicCount:
         return UnmarshalUpdateSavedMessagesTopicCount(data)
+
+    case TypeUpdateQuickReplyShortcut:
+        return UnmarshalUpdateQuickReplyShortcut(data)
+
+    case TypeUpdateQuickReplyShortcutDeleted:
+        return UnmarshalUpdateQuickReplyShortcutDeleted(data)
+
+    case TypeUpdateQuickReplyShortcuts:
+        return UnmarshalUpdateQuickReplyShortcuts(data)
+
+    case TypeUpdateQuickReplyShortcutMessages:
+        return UnmarshalUpdateQuickReplyShortcutMessages(data)
 
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(data)
@@ -7796,6 +7851,94 @@ func UnmarshalBotMenuButton(data json.RawMessage) (*BotMenuButton, error) {
 
 func UnmarshalChatLocation(data json.RawMessage) (*ChatLocation, error) {
     var resp ChatLocation
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessAwayMessageScheduleAlways(data json.RawMessage) (*BusinessAwayMessageScheduleAlways, error) {
+    var resp BusinessAwayMessageScheduleAlways
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessAwayMessageScheduleOutsideOfOpeningHours(data json.RawMessage) (*BusinessAwayMessageScheduleOutsideOfOpeningHours, error) {
+    var resp BusinessAwayMessageScheduleOutsideOfOpeningHours
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessAwayMessageScheduleCustom(data json.RawMessage) (*BusinessAwayMessageScheduleCustom, error) {
+    var resp BusinessAwayMessageScheduleCustom
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessLocation(data json.RawMessage) (*BusinessLocation, error) {
+    var resp BusinessLocation
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessRecipients(data json.RawMessage) (*BusinessRecipients, error) {
+    var resp BusinessRecipients
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessAwayMessageSettings(data json.RawMessage) (*BusinessAwayMessageSettings, error) {
+    var resp BusinessAwayMessageSettings
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessGreetingMessageSettings(data json.RawMessage) (*BusinessGreetingMessageSettings, error) {
+    var resp BusinessGreetingMessageSettings
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessConnectedBot(data json.RawMessage) (*BusinessConnectedBot, error) {
+    var resp BusinessConnectedBot
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessOpeningHoursInterval(data json.RawMessage) (*BusinessOpeningHoursInterval, error) {
+    var resp BusinessOpeningHoursInterval
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessOpeningHours(data json.RawMessage) (*BusinessOpeningHours, error) {
+    var resp BusinessOpeningHours
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalBusinessInfo(data json.RawMessage) (*BusinessInfo, error) {
+    var resp BusinessInfo
 
     err := json.Unmarshal(data, &resp)
 
@@ -12498,6 +12641,22 @@ func UnmarshalStoryInteractions(data json.RawMessage) (*StoryInteractions, error
     return &resp, err
 }
 
+func UnmarshalQuickReplyMessage(data json.RawMessage) (*QuickReplyMessage, error) {
+    var resp QuickReplyMessage
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalQuickReplyShortcut(data json.RawMessage) (*QuickReplyShortcut, error) {
+    var resp QuickReplyShortcut
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalPublicForwardMessage(data json.RawMessage) (*PublicForwardMessage, error) {
     var resp PublicForwardMessage
 
@@ -14572,6 +14731,22 @@ func UnmarshalThemeSettings(data json.RawMessage) (*ThemeSettings, error) {
 
 func UnmarshalChatTheme(data json.RawMessage) (*ChatTheme, error) {
     var resp ChatTheme
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalTimeZone(data json.RawMessage) (*TimeZone, error) {
+    var resp TimeZone
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalTimeZones(data json.RawMessage) (*TimeZones, error) {
+    var resp TimeZones
 
     err := json.Unmarshal(data, &resp)
 
@@ -17194,6 +17369,22 @@ func UnmarshalUpdateChatPosition(data json.RawMessage) (*UpdateChatPosition, err
     return &resp, err
 }
 
+func UnmarshalUpdateChatAddedToList(data json.RawMessage) (*UpdateChatAddedToList, error) {
+    var resp UpdateChatAddedToList
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateChatRemovedFromList(data json.RawMessage) (*UpdateChatRemovedFromList, error) {
+    var resp UpdateChatRemovedFromList
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalUpdateChatReadInbox(data json.RawMessage) (*UpdateChatReadInbox, error) {
     var resp UpdateChatReadInbox
 
@@ -17404,6 +17595,38 @@ func UnmarshalUpdateSavedMessagesTopic(data json.RawMessage) (*UpdateSavedMessag
 
 func UnmarshalUpdateSavedMessagesTopicCount(data json.RawMessage) (*UpdateSavedMessagesTopicCount, error) {
     var resp UpdateSavedMessagesTopicCount
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateQuickReplyShortcut(data json.RawMessage) (*UpdateQuickReplyShortcut, error) {
+    var resp UpdateQuickReplyShortcut
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateQuickReplyShortcutDeleted(data json.RawMessage) (*UpdateQuickReplyShortcutDeleted, error) {
+    var resp UpdateQuickReplyShortcutDeleted
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateQuickReplyShortcuts(data json.RawMessage) (*UpdateQuickReplyShortcuts, error) {
+    var resp UpdateQuickReplyShortcuts
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateQuickReplyShortcutMessages(data json.RawMessage) (*UpdateQuickReplyShortcutMessages, error) {
+    var resp UpdateQuickReplyShortcutMessages
 
     err := json.Unmarshal(data, &resp)
 
@@ -18483,6 +18706,39 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeChatLocation:
         return UnmarshalChatLocation(data)
+
+    case TypeBusinessAwayMessageScheduleAlways:
+        return UnmarshalBusinessAwayMessageScheduleAlways(data)
+
+    case TypeBusinessAwayMessageScheduleOutsideOfOpeningHours:
+        return UnmarshalBusinessAwayMessageScheduleOutsideOfOpeningHours(data)
+
+    case TypeBusinessAwayMessageScheduleCustom:
+        return UnmarshalBusinessAwayMessageScheduleCustom(data)
+
+    case TypeBusinessLocation:
+        return UnmarshalBusinessLocation(data)
+
+    case TypeBusinessRecipients:
+        return UnmarshalBusinessRecipients(data)
+
+    case TypeBusinessAwayMessageSettings:
+        return UnmarshalBusinessAwayMessageSettings(data)
+
+    case TypeBusinessGreetingMessageSettings:
+        return UnmarshalBusinessGreetingMessageSettings(data)
+
+    case TypeBusinessConnectedBot:
+        return UnmarshalBusinessConnectedBot(data)
+
+    case TypeBusinessOpeningHoursInterval:
+        return UnmarshalBusinessOpeningHoursInterval(data)
+
+    case TypeBusinessOpeningHours:
+        return UnmarshalBusinessOpeningHours(data)
+
+    case TypeBusinessInfo:
+        return UnmarshalBusinessInfo(data)
 
     case TypeChatPhotoStickerTypeRegularOrMask:
         return UnmarshalChatPhotoStickerTypeRegularOrMask(data)
@@ -20245,6 +20501,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeStoryInteractions:
         return UnmarshalStoryInteractions(data)
 
+    case TypeQuickReplyMessage:
+        return UnmarshalQuickReplyMessage(data)
+
+    case TypeQuickReplyShortcut:
+        return UnmarshalQuickReplyShortcut(data)
+
     case TypePublicForwardMessage:
         return UnmarshalPublicForwardMessage(data)
 
@@ -21024,6 +21286,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeChatTheme:
         return UnmarshalChatTheme(data)
+
+    case TypeTimeZone:
+        return UnmarshalTimeZone(data)
+
+    case TypeTimeZones:
+        return UnmarshalTimeZones(data)
 
     case TypeHashtags:
         return UnmarshalHashtags(data)
@@ -22006,6 +22274,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUpdateChatPosition:
         return UnmarshalUpdateChatPosition(data)
 
+    case TypeUpdateChatAddedToList:
+        return UnmarshalUpdateChatAddedToList(data)
+
+    case TypeUpdateChatRemovedFromList:
+        return UnmarshalUpdateChatRemovedFromList(data)
+
     case TypeUpdateChatReadInbox:
         return UnmarshalUpdateChatReadInbox(data)
 
@@ -22086,6 +22360,18 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeUpdateSavedMessagesTopicCount:
         return UnmarshalUpdateSavedMessagesTopicCount(data)
+
+    case TypeUpdateQuickReplyShortcut:
+        return UnmarshalUpdateQuickReplyShortcut(data)
+
+    case TypeUpdateQuickReplyShortcutDeleted:
+        return UnmarshalUpdateQuickReplyShortcutDeleted(data)
+
+    case TypeUpdateQuickReplyShortcuts:
+        return UnmarshalUpdateQuickReplyShortcuts(data)
+
+    case TypeUpdateQuickReplyShortcutMessages:
+        return UnmarshalUpdateQuickReplyShortcutMessages(data)
 
     case TypeUpdateForumTopicInfo:
         return UnmarshalUpdateForumTopicInfo(data)
