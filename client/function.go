@@ -2200,6 +2200,25 @@ func (client *Client) GetInactiveSupergroupChats() (*Chats, error) {
     return UnmarshalChats(result.Data)
 }
 
+// Returns a list of channel chats, which can be used as a personal chat
+func (client *Client) GetSuitablePersonalChats() (*Chats, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSuitablePersonalChats",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalChats(result.Data)
+}
+
 type LoadSavedMessagesTopicsRequest struct { 
     // The maximum number of topics to be loaded. For optimal performance, the number of loaded topics is chosen by TDLib and can be smaller than the specified limit, even if the end of the list is not reached
     Limit int32 `json:"limit"`
@@ -3131,6 +3150,56 @@ func (client *Client) ClickChatSponsoredMessage(req *ClickChatSponsoredMessageRe
     }
 
     return UnmarshalOk(result.Data)
+}
+
+type ReportChatSponsoredMessageRequest struct { 
+    // Chat identifier of the sponsored message
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the sponsored message
+    MessageId int64 `json:"message_id"`
+    // Option identifier chosen by the user; leave empty for the initial request
+    OptionId []byte `json:"option_id"`
+}
+
+// Reports a sponsored message to Telegram moderators
+func (client *Client) ReportChatSponsoredMessage(req *ReportChatSponsoredMessageRequest) (ReportChatSponsoredMessageResult, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "reportChatSponsoredMessage",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "option_id": req.OptionId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    switch result.Type {
+    case TypeReportChatSponsoredMessageResultOk:
+        return UnmarshalReportChatSponsoredMessageResultOk(result.Data)
+
+    case TypeReportChatSponsoredMessageResultFailed:
+        return UnmarshalReportChatSponsoredMessageResultFailed(result.Data)
+
+    case TypeReportChatSponsoredMessageResultOptionRequired:
+        return UnmarshalReportChatSponsoredMessageResultOptionRequired(result.Data)
+
+    case TypeReportChatSponsoredMessageResultAdsHidden:
+        return UnmarshalReportChatSponsoredMessageResultAdsHidden(result.Data)
+
+    case TypeReportChatSponsoredMessageResultPremiumRequired:
+        return UnmarshalReportChatSponsoredMessageResultPremiumRequired(result.Data)
+
+    default:
+        return nil, errors.New("invalid type")
+   }
 }
 
 type RemoveNotificationRequest struct { 
@@ -4258,6 +4327,91 @@ func (client *Client) EditMessageSchedulingState(req *EditMessageSchedulingState
     }
 
     return UnmarshalOk(result.Data)
+}
+
+type SendBusinessMessageRequest struct { 
+    // Unique identifier of business connection on behalf of which to send the request
+    BusinessConnectionId string `json:"business_connection_id"`
+    // Target chat
+    ChatId int64 `json:"chat_id"`
+    // Information about the message to be replied; pass null if none
+    ReplyTo InputMessageReplyTo `json:"reply_to"`
+    // Pass true to disable notification for the message
+    DisableNotification bool `json:"disable_notification"`
+    // Pass true if the content of the message must be protected from forwarding and saving
+    ProtectContent bool `json:"protect_content"`
+    // Markup for replying to the message; pass null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+    // The content of the message to be sent
+    InputMessageContent InputMessageContent `json:"input_message_content"`
+}
+
+// Sends a message on behalf of a business account; for bots only. Returns the message after it was sent
+func (client *Client) SendBusinessMessage(req *SendBusinessMessageRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "sendBusinessMessage",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "reply_to": req.ReplyTo,
+            "disable_notification": req.DisableNotification,
+            "protect_content": req.ProtectContent,
+            "reply_markup": req.ReplyMarkup,
+            "input_message_content": req.InputMessageContent,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
+}
+
+type SendBusinessMessageAlbumRequest struct { 
+    // Unique identifier of business connection on behalf of which to send the request
+    BusinessConnectionId string `json:"business_connection_id"`
+    // Target chat
+    ChatId int64 `json:"chat_id"`
+    // Information about the message to be replied; pass null if none
+    ReplyTo InputMessageReplyTo `json:"reply_to"`
+    // Pass true to disable notification for the message
+    DisableNotification bool `json:"disable_notification"`
+    // Pass true if the content of the message must be protected from forwarding and saving
+    ProtectContent bool `json:"protect_content"`
+    // Contents of messages to be sent. At most 10 messages can be added to an album
+    InputMessageContents []InputMessageContent `json:"input_message_contents"`
+}
+
+// Sends 2-10 messages grouped together into an album on behalf of a business account; for bots only. Currently, only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
+func (client *Client) SendBusinessMessageAlbum(req *SendBusinessMessageAlbumRequest) (*BusinessMessages, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "sendBusinessMessageAlbum",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "reply_to": req.ReplyTo,
+            "disable_notification": req.DisableNotification,
+            "protect_content": req.ProtectContent,
+            "input_message_contents": req.InputMessageContents,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessages(result.Data)
 }
 
 type CheckQuickReplyShortcutNameRequest struct { 
@@ -5719,6 +5873,32 @@ func (client *Client) HideSuggestedAction(req *HideSuggestedActionRequest) (*Ok,
     return UnmarshalOk(result.Data)
 }
 
+type GetBusinessConnectionRequest struct { 
+    // Identifier of the business connection to return
+    ConnectionId string `json:"connection_id"`
+}
+
+// Returns information about a business connection by its identifier; for bots only
+func (client *Client) GetBusinessConnection(req *GetBusinessConnectionRequest) (*BusinessConnection, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getBusinessConnection",
+        },
+        Data: map[string]interface{}{
+            "connection_id": req.ConnectionId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessConnection(result.Data)
+}
+
 type GetLoginUrlInfoRequest struct { 
     // Chat identifier of the message with the button
     ChatId int64 `json:"chat_id"`
@@ -6494,6 +6674,8 @@ type SendChatActionRequest struct {
     ChatId int64 `json:"chat_id"`
     // If not 0, the message thread identifier in which the action was performed
     MessageThreadId int64 `json:"message_thread_id"`
+    // Unique identifier of business connection on behalf of which to send the request; for bots only
+    BusinessConnectionId string `json:"business_connection_id"`
     // The action description; pass null to cancel the currently active action
     Action ChatAction `json:"action"`
 }
@@ -6507,6 +6689,7 @@ func (client *Client) SendChatAction(req *SendChatActionRequest) (*Ok, error) {
         Data: map[string]interface{}{
             "chat_id": req.ChatId,
             "message_thread_id": req.MessageThreadId,
+            "business_connection_id": req.BusinessConnectionId,
             "action": req.Action,
         },
     })
@@ -9451,7 +9634,7 @@ type SendStoryRequest struct {
     Content InputStoryContent `json:"content"`
     // Clickable rectangle areas to be shown on the story media; pass null if none
     Areas *InputStoryAreas `json:"areas"`
-    // Story caption; pass null to use an empty caption; 0-getOption("story_caption_length_max") characters
+    // Story caption; pass null to use an empty caption; 0-getOption("story_caption_length_max") characters; can have entities only if getOption("can_use_text_entities_in_story_caption")
     Caption *FormattedText `json:"caption"`
     // The privacy settings for the story; ignored for stories sent to supergroup and channel chats
     PrivacySettings StoryPrivacySettings `json:"privacy_settings"`
@@ -13353,7 +13536,7 @@ func (client *Client) GetInstalledStickerSets(req *GetInstalledStickerSetsReques
 type GetArchivedStickerSetsRequest struct { 
     // Type of the sticker sets to return
     StickerType StickerType `json:"sticker_type"`
-    // Identifier of the sticker set from which to return the result
+    // Identifier of the sticker set from which to return the result; use 0 to get results from the beginning
     OffsetStickerSetId JsonInt64 `json:"offset_sticker_set_id"`
     // The maximum number of sticker sets to return; up to 100
     Limit int32 `json:"limit"`
@@ -13673,7 +13856,7 @@ type AddRecentStickerRequest struct {
     Sticker InputFile `json:"sticker"`
 }
 
-// Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set or in WEBP format can be added to this list. Emoji stickers can't be added to recent stickers
+// Manually adds a new sticker to the list of recently used stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set or in WEBP or WEBM format can be added to this list. Emoji stickers can't be added to recent stickers
 func (client *Client) AddRecentSticker(req *AddRecentStickerRequest) (*Stickers, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -13774,7 +13957,7 @@ type AddFavoriteStickerRequest struct {
     Sticker InputFile `json:"sticker"`
 }
 
-// Adds a new sticker to the list of favorite stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set or in WEBP format can be added to this list. Emoji stickers can't be added to favorite stickers
+// Adds a new sticker to the list of favorite stickers. The new sticker is added to the top of the list. If the sticker was already in the list, it is removed from the list first. Only stickers belonging to a sticker set or in WEBP or WEBM format can be added to this list. Emoji stickers can't be added to favorite stickers
 func (client *Client) AddFavoriteSticker(req *AddFavoriteStickerRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -14518,6 +14701,58 @@ func (client *Client) ReorderActiveUsernames(req *ReorderActiveUsernamesRequest)
     return UnmarshalOk(result.Data)
 }
 
+type SetBirthdateRequest struct { 
+    // The new value of the current user's birthdate; pass null to remove the birthdate
+    Birthdate *Birthdate `json:"birthdate"`
+}
+
+// Changes the birthdate of the current user
+func (client *Client) SetBirthdate(req *SetBirthdateRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBirthdate",
+        },
+        Data: map[string]interface{}{
+            "birthdate": req.Birthdate,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetPersonalChatRequest struct { 
+    // Identifier of the new personal chat; pass 0 to remove the chat. Use getSuitablePersonalChats to get suitable chats
+    ChatId int64 `json:"chat_id"`
+}
+
+// Changes the personal chat of the current user
+func (client *Client) SetPersonalChat(req *SetPersonalChatRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setPersonalChat",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type SetEmojiStatusRequest struct { 
     // New emoji status; pass null to switch to the default badge
     EmojiStatus *EmojiStatus `json:"emoji_status"`
@@ -14597,7 +14832,7 @@ func (client *Client) SetBusinessLocation(req *SetBusinessLocationRequest) (*Ok,
 }
 
 type SetBusinessOpeningHoursRequest struct { 
-    // The new opening hours of the business; pass null to remove the opening hours
+    // The new opening hours of the business; pass null to remove the opening hours; up to 28 time intervals can be specified
     OpeningHours *BusinessOpeningHours `json:"opening_hours"`
 }
 
@@ -14661,6 +14896,32 @@ func (client *Client) SetBusinessAwayMessageSettings(req *SetBusinessAwayMessage
         },
         Data: map[string]interface{}{
             "away_message_settings": req.AwayMessageSettings,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetBusinessIntroRequest struct { 
+    // The new intro of the business; pass null to remove the intro
+    Intro *InputBusinessIntro `json:"intro"`
+}
+
+// Changes the business intro of the current user. Requires Telegram Business subscription
+func (client *Client) SetBusinessIntro(req *SetBusinessIntroRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setBusinessIntro",
+        },
+        Data: map[string]interface{}{
+            "intro": req.Intro,
         },
     })
     if err != nil {
@@ -17144,7 +17405,7 @@ type SetNewChatPrivacySettingsRequest struct {
     Settings *NewChatPrivacySettings `json:"settings"`
 }
 
-// Changes privacy settings for new chat creation; for Telegram Premium users only
+// Changes privacy settings for new chat creation; can be used only if getOption("can_set_new_chat_privacy_settings")
 func (client *Client) SetNewChatPrivacySettings(req *SetNewChatPrivacySettingsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18774,15 +19035,13 @@ type CreateNewStickerSetRequest struct {
     UserId int64 `json:"user_id"`
     // Sticker set title; 1-64 characters
     Title string `json:"title"`
-    // Sticker set name. Can contain only English letters, digits and underscores. Must end with *"_by_<bot username>"* (*<bot_username>* is case insensitive) for bots; 1-64 characters
+    // Sticker set name. Can contain only English letters, digits and underscores. Must end with *"_by_<bot username>"* (*<bot_username>* is case insensitive) for bots; 0-64 characters. If empty, then the name returned by getSuggestedStickerSetName will be used automatically
     Name string `json:"name"`
-    // Format of the stickers in the set
-    StickerFormat StickerFormat `json:"sticker_format"`
     // Type of the stickers in the set
     StickerType StickerType `json:"sticker_type"`
     // Pass true if stickers in the sticker set must be repainted; for custom emoji sticker sets only
     NeedsRepainting bool `json:"needs_repainting"`
-    // List of stickers to be added to the set; must be non-empty. All stickers must have the same format. For TGS stickers, uploadStickerFile must be used before the sticker is shown
+    // List of stickers to be added to the set; 1-200 stickers for custom emoji sticker sets, and 1-120 stickers otherwise. For TGS stickers, uploadStickerFile must be used before the sticker is shown
     Stickers []*InputSticker `json:"stickers"`
     // Source of the sticker set; may be empty if unknown
     Source string `json:"source"`
@@ -18798,7 +19057,6 @@ func (client *Client) CreateNewStickerSet(req *CreateNewStickerSetRequest) (*Sti
             "user_id": req.UserId,
             "title": req.Title,
             "name": req.Name,
-            "sticker_format": req.StickerFormat,
             "sticker_type": req.StickerType,
             "needs_repainting": req.NeedsRepainting,
             "stickers": req.Stickers,
@@ -18817,15 +19075,15 @@ func (client *Client) CreateNewStickerSet(req *CreateNewStickerSetRequest) (*Sti
 }
 
 type AddStickerToSetRequest struct { 
-    // Sticker set owner
+    // Sticker set owner; ignored for regular users
     UserId int64 `json:"user_id"`
-    // Sticker set name
+    // Sticker set name. The sticker set must be owned by the current user, and contain less than 200 stickers for custom emoji sticker sets and less than 120 otherwise
     Name string `json:"name"`
     // Sticker to add to the set
     Sticker *InputSticker `json:"sticker"`
 }
 
-// Adds a new sticker to a set; for bots only
+// Adds a new sticker to a set
 func (client *Client) AddStickerToSet(req *AddStickerToSetRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18848,16 +19106,53 @@ func (client *Client) AddStickerToSet(req *AddStickerToSetRequest) (*Ok, error) 
     return UnmarshalOk(result.Data)
 }
 
-type SetStickerSetThumbnailRequest struct { 
-    // Sticker set owner
+type ReplaceStickerInSetRequest struct { 
+    // Sticker set owner; ignored for regular users
     UserId int64 `json:"user_id"`
-    // Sticker set name
+    // Sticker set name. The sticker set must be owned by the current user
     Name string `json:"name"`
-    // Thumbnail to set in PNG, TGS, or WEBM format; pass null to remove the sticker set thumbnail. Thumbnail format must match the format of stickers in the set
-    Thumbnail InputFile `json:"thumbnail"`
+    // Sticker to remove from the set
+    OldSticker InputFile `json:"old_sticker"`
+    // Sticker to add to the set
+    NewSticker *InputSticker `json:"new_sticker"`
 }
 
-// Sets a sticker set thumbnail; for bots only
+// Replaces existing sticker in a set. The function is equivalent to removeStickerFromSet, then addStickerToSet, then setStickerPositionInSet
+func (client *Client) ReplaceStickerInSet(req *ReplaceStickerInSetRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "replaceStickerInSet",
+        },
+        Data: map[string]interface{}{
+            "user_id": req.UserId,
+            "name": req.Name,
+            "old_sticker": req.OldSticker,
+            "new_sticker": req.NewSticker,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type SetStickerSetThumbnailRequest struct { 
+    // Sticker set owner; ignored for regular users
+    UserId int64 `json:"user_id"`
+    // Sticker set name. The sticker set must be owned by the current user
+    Name string `json:"name"`
+    // Thumbnail to set; pass null to remove the sticker set thumbnail
+    Thumbnail InputFile `json:"thumbnail"`
+    // Format of the thumbnail; pass null if thumbnail is removed
+    Format StickerFormat `json:"format"`
+}
+
+// Sets a sticker set thumbnail
 func (client *Client) SetStickerSetThumbnail(req *SetStickerSetThumbnailRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18867,6 +19162,7 @@ func (client *Client) SetStickerSetThumbnail(req *SetStickerSetThumbnailRequest)
             "user_id": req.UserId,
             "name": req.Name,
             "thumbnail": req.Thumbnail,
+            "format": req.Format,
         },
     })
     if err != nil {
@@ -18881,13 +19177,13 @@ func (client *Client) SetStickerSetThumbnail(req *SetStickerSetThumbnailRequest)
 }
 
 type SetCustomEmojiStickerSetThumbnailRequest struct { 
-    // Sticker set name
+    // Sticker set name. The sticker set must be owned by the current user
     Name string `json:"name"`
     // Identifier of the custom emoji from the sticker set, which will be set as sticker set thumbnail; pass 0 to remove the sticker set thumbnail
     CustomEmojiId JsonInt64 `json:"custom_emoji_id"`
 }
 
-// Sets a custom emoji sticker set thumbnail; for bots only
+// Sets a custom emoji sticker set thumbnail
 func (client *Client) SetCustomEmojiStickerSetThumbnail(req *SetCustomEmojiStickerSetThumbnailRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18910,13 +19206,13 @@ func (client *Client) SetCustomEmojiStickerSetThumbnail(req *SetCustomEmojiStick
 }
 
 type SetStickerSetTitleRequest struct { 
-    // Sticker set name
+    // Sticker set name. The sticker set must be owned by the current user
     Name string `json:"name"`
     // New sticker set title
     Title string `json:"title"`
 }
 
-// Sets a sticker set title; for bots only
+// Sets a sticker set title
 func (client *Client) SetStickerSetTitle(req *SetStickerSetTitleRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18939,11 +19235,11 @@ func (client *Client) SetStickerSetTitle(req *SetStickerSetTitleRequest) (*Ok, e
 }
 
 type DeleteStickerSetRequest struct { 
-    // Sticker set name
+    // Sticker set name. The sticker set must be owned by the current user
     Name string `json:"name"`
 }
 
-// Deleted a sticker set; for bots only
+// Completely deletes a sticker set
 func (client *Client) DeleteStickerSet(req *DeleteStickerSetRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18971,7 +19267,7 @@ type SetStickerPositionInSetRequest struct {
     Position int32 `json:"position"`
 }
 
-// Changes the position of a sticker in the set to which it belongs; for bots only. The sticker set must have been created by the bot
+// Changes the position of a sticker in the set to which it belongs. The sticker set must be owned by the current user
 func (client *Client) SetStickerPositionInSet(req *SetStickerPositionInSetRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18994,11 +19290,11 @@ func (client *Client) SetStickerPositionInSet(req *SetStickerPositionInSetReques
 }
 
 type RemoveStickerFromSetRequest struct { 
-    // Sticker
+    // Sticker to remove from the set
     Sticker InputFile `json:"sticker"`
 }
 
-// Removes a sticker from the set to which it belongs; for bots only. The sticker set must have been created by the bot
+// Removes a sticker from the set to which it belongs. The sticker set must be owned by the current user
 func (client *Client) RemoveStickerFromSet(req *RemoveStickerFromSetRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19026,7 +19322,7 @@ type SetStickerEmojisRequest struct {
     Emojis string `json:"emojis"`
 }
 
-// Changes the list of emoji corresponding to a sticker; for bots only. The sticker must belong to a regular or custom emoji sticker set created by the bot
+// Changes the list of emoji corresponding to a sticker. The sticker must belong to a regular or custom emoji sticker set that is owned by the current user
 func (client *Client) SetStickerEmojis(req *SetStickerEmojisRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19055,7 +19351,7 @@ type SetStickerKeywordsRequest struct {
     Keywords []string `json:"keywords"`
 }
 
-// Changes the list of keywords of a sticker; for bots only. The sticker must belong to a regular or custom emoji sticker set created by the bot
+// Changes the list of keywords of a sticker. The sticker must belong to a regular or custom emoji sticker set that is owned by the current user
 func (client *Client) SetStickerKeywords(req *SetStickerKeywordsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19084,7 +19380,7 @@ type SetStickerMaskPositionRequest struct {
     MaskPosition *MaskPosition `json:"mask_position"`
 }
 
-// Changes the mask position of a mask sticker; for bots only. The sticker must belong to a mask sticker set created by the bot
+// Changes the mask position of a mask sticker. The sticker must belong to a mask sticker set that is owned by the current user
 func (client *Client) SetStickerMaskPosition(req *SetStickerMaskPositionRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19104,6 +19400,35 @@ func (client *Client) SetStickerMaskPosition(req *SetStickerMaskPositionRequest)
     }
 
     return UnmarshalOk(result.Data)
+}
+
+type GetOwnedStickerSetsRequest struct { 
+    // Identifier of the sticker set from which to return owned sticker sets; use 0 to get results from the beginning
+    OffsetStickerSetId JsonInt64 `json:"offset_sticker_set_id"`
+    // The maximum number of sticker sets to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned objects is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Returns sticker sets owned by the current user
+func (client *Client) GetOwnedStickerSets(req *GetOwnedStickerSetsRequest) (*StickerSets, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getOwnedStickerSets",
+        },
+        Data: map[string]interface{}{
+            "offset_sticker_set_id": req.OffsetStickerSetId,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStickerSets(result.Data)
 }
 
 type GetMapThumbnailFileRequest struct { 
@@ -19517,6 +19842,32 @@ func (client *Client) AssignGooglePlayTransaction(req *AssignGooglePlayTransacti
     return UnmarshalOk(result.Data)
 }
 
+type GetBusinessFeaturesRequest struct { 
+    // Source of the request; pass null if the method is called from settings or some non-standard source
+    Source BusinessFeature `json:"source"`
+}
+
+// Returns information about features, available to Business users
+func (client *Client) GetBusinessFeatures(req *GetBusinessFeaturesRequest) (*BusinessFeatures, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getBusinessFeatures",
+        },
+        Data: map[string]interface{}{
+            "source": req.Source,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessFeatures(result.Data)
+}
+
 type AcceptTermsOfServiceRequest struct { 
     // Terms of service identifier
     TermsOfServiceId string `json:"terms_of_service_id"`
@@ -19764,6 +20115,32 @@ func GetPhoneNumberInfoSync(req *GetPhoneNumberInfoSyncRequest) (*PhoneNumberInf
 // Returns information about a phone number by its prefix synchronously. getCountries must be called at least once after changing localization to the specified language if properly localized country information is expected. Can be called synchronously
 func (client *Client) GetPhoneNumberInfoSync(req *GetPhoneNumberInfoSyncRequest) (*PhoneNumberInfo, error) {
     return GetPhoneNumberInfoSync(req)}
+
+type GetCollectibleItemInfoRequest struct { 
+    // Type of the collectible item. The item must be used by a user and must be visible to the current user
+    Type CollectibleItemType `json:"type"`
+}
+
+// Returns information about a given collectible item that was purchased at https://fragment.com
+func (client *Client) GetCollectibleItemInfo(req *GetCollectibleItemInfoRequest) (*CollectibleItemInfo, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getCollectibleItemInfo",
+        },
+        Data: map[string]interface{}{
+            "type": req.Type,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalCollectibleItemInfo(result.Data)
+}
 
 type GetDeepLinkInfoRequest struct { 
     // The link
@@ -21064,11 +21441,26 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateSuggestedActions:
         return UnmarshalUpdateSuggestedActions(result.Data)
 
+    case TypeUpdateContactCloseBirthdays:
+        return UnmarshalUpdateContactCloseBirthdays(result.Data)
+
     case TypeUpdateAddChatMembersPrivacyForbidden:
         return UnmarshalUpdateAddChatMembersPrivacyForbidden(result.Data)
 
     case TypeUpdateAutosaveSettings:
         return UnmarshalUpdateAutosaveSettings(result.Data)
+
+    case TypeUpdateBusinessConnection:
+        return UnmarshalUpdateBusinessConnection(result.Data)
+
+    case TypeUpdateNewBusinessMessage:
+        return UnmarshalUpdateNewBusinessMessage(result.Data)
+
+    case TypeUpdateBusinessMessageEdited:
+        return UnmarshalUpdateBusinessMessageEdited(result.Data)
+
+    case TypeUpdateBusinessMessagesDeleted:
+        return UnmarshalUpdateBusinessMessagesDeleted(result.Data)
 
     case TypeUpdateNewInlineQuery:
         return UnmarshalUpdateNewInlineQuery(result.Data)

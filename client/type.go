@@ -38,6 +38,7 @@ const (
     ClassInputMessageReplyTo = "InputMessageReplyTo"
     ClassMessageSource = "MessageSource"
     ClassMessageSponsorType = "MessageSponsorType"
+    ClassReportChatSponsoredMessageResult = "ReportChatSponsoredMessageResult"
     ClassNotificationSettingsScope = "NotificationSettingsScope"
     ClassChatType = "ChatType"
     ClassChatList = "ChatList"
@@ -54,6 +55,7 @@ const (
     ClassPageBlockHorizontalAlignment = "PageBlockHorizontalAlignment"
     ClassPageBlockVerticalAlignment = "PageBlockVerticalAlignment"
     ClassPageBlock = "PageBlock"
+    ClassCollectibleItemType = "CollectibleItemType"
     ClassInputCredentials = "InputCredentials"
     ClassPaymentProvider = "PaymentProvider"
     ClassInputInvoice = "InputInvoice"
@@ -99,6 +101,7 @@ const (
     ClassLanguagePackStringValue = "LanguagePackStringValue"
     ClassPremiumLimitType = "PremiumLimitType"
     ClassPremiumFeature = "PremiumFeature"
+    ClassBusinessFeature = "BusinessFeature"
     ClassPremiumStoryFeature = "PremiumStoryFeature"
     ClassPremiumSource = "PremiumSource"
     ClassStorePaymentPurpose = "StorePaymentPurpose"
@@ -188,11 +191,15 @@ const (
     ClassBotCommands = "BotCommands"
     ClassBotMenuButton = "BotMenuButton"
     ClassChatLocation = "ChatLocation"
+    ClassBirthdate = "Birthdate"
+    ClassCloseBirthdayUser = "CloseBirthdayUser"
     ClassBusinessLocation = "BusinessLocation"
     ClassBusinessRecipients = "BusinessRecipients"
     ClassBusinessAwayMessageSettings = "BusinessAwayMessageSettings"
     ClassBusinessGreetingMessageSettings = "BusinessGreetingMessageSettings"
     ClassBusinessConnectedBot = "BusinessConnectedBot"
+    ClassBusinessIntro = "BusinessIntro"
+    ClassInputBusinessIntro = "InputBusinessIntro"
     ClassBusinessOpeningHoursInterval = "BusinessOpeningHoursInterval"
     ClassBusinessOpeningHours = "BusinessOpeningHours"
     ClassBusinessInfo = "BusinessInfo"
@@ -259,9 +266,12 @@ const (
     ClassMessagePositions = "MessagePositions"
     ClassMessageCalendarDay = "MessageCalendarDay"
     ClassMessageCalendar = "MessageCalendar"
+    ClassBusinessMessage = "BusinessMessage"
+    ClassBusinessMessages = "BusinessMessages"
     ClassMessageSponsor = "MessageSponsor"
     ClassSponsoredMessage = "SponsoredMessage"
     ClassSponsoredMessages = "SponsoredMessages"
+    ClassReportChatSponsoredMessageOption = "ReportChatSponsoredMessageOption"
     ClassFileDownload = "FileDownload"
     ClassDownloadedFileCounts = "DownloadedFileCounts"
     ClassFoundFileDownloads = "FoundFileDownloads"
@@ -297,6 +307,8 @@ const (
     ClassForumTopic = "ForumTopic"
     ClassForumTopics = "ForumTopics"
     ClassLinkPreviewOptions = "LinkPreviewOptions"
+    ClassSharedUser = "SharedUser"
+    ClassSharedChat = "SharedChat"
     ClassPageBlockCaption = "PageBlockCaption"
     ClassPageBlockListItem = "PageBlockListItem"
     ClassPageBlockTableCell = "PageBlockTableCell"
@@ -306,6 +318,7 @@ const (
     ClassCountryInfo = "CountryInfo"
     ClassCountries = "Countries"
     ClassPhoneNumberInfo = "PhoneNumberInfo"
+    ClassCollectibleItemInfo = "CollectibleItemInfo"
     ClassBankCardActionOpenUrl = "BankCardActionOpenUrl"
     ClassBankCardInfo = "BankCardInfo"
     ClassAddress = "Address"
@@ -396,6 +409,7 @@ const (
     ClassEmojiReaction = "EmojiReaction"
     ClassAnimations = "Animations"
     ClassImportedContacts = "ImportedContacts"
+    ClassBusinessConnection = "BusinessConnection"
     ClassAttachmentMenuBotColor = "AttachmentMenuBotColor"
     ClassAttachmentMenuBot = "AttachmentMenuBot"
     ClassSentWebAppMessage = "SentWebAppMessage"
@@ -416,7 +430,9 @@ const (
     ClassLocalizationTargetInfo = "LocalizationTargetInfo"
     ClassPremiumLimit = "PremiumLimit"
     ClassPremiumFeatures = "PremiumFeatures"
+    ClassBusinessFeatures = "BusinessFeatures"
     ClassPremiumFeaturePromotionAnimation = "PremiumFeaturePromotionAnimation"
+    ClassBusinessFeaturePromotionAnimation = "BusinessFeaturePromotionAnimation"
     ClassPremiumState = "PremiumState"
     ClassPushReceiverId = "PushReceiverId"
     ClassThemeSettings = "ThemeSettings"
@@ -589,6 +605,8 @@ const (
     TypeBotCommands = "botCommands"
     TypeBotMenuButton = "botMenuButton"
     TypeChatLocation = "chatLocation"
+    TypeBirthdate = "birthdate"
+    TypeCloseBirthdayUser = "closeBirthdayUser"
     TypeBusinessAwayMessageScheduleAlways = "businessAwayMessageScheduleAlways"
     TypeBusinessAwayMessageScheduleOutsideOfOpeningHours = "businessAwayMessageScheduleOutsideOfOpeningHours"
     TypeBusinessAwayMessageScheduleCustom = "businessAwayMessageScheduleCustom"
@@ -597,6 +615,8 @@ const (
     TypeBusinessAwayMessageSettings = "businessAwayMessageSettings"
     TypeBusinessGreetingMessageSettings = "businessGreetingMessageSettings"
     TypeBusinessConnectedBot = "businessConnectedBot"
+    TypeBusinessIntro = "businessIntro"
+    TypeInputBusinessIntro = "inputBusinessIntro"
     TypeBusinessOpeningHoursInterval = "businessOpeningHoursInterval"
     TypeBusinessOpeningHours = "businessOpeningHours"
     TypeBusinessInfo = "businessInfo"
@@ -722,6 +742,8 @@ const (
     TypeMessagePositions = "messagePositions"
     TypeMessageCalendarDay = "messageCalendarDay"
     TypeMessageCalendar = "messageCalendar"
+    TypeBusinessMessage = "businessMessage"
+    TypeBusinessMessages = "businessMessages"
     TypeMessageSourceChatHistory = "messageSourceChatHistory"
     TypeMessageSourceMessageThreadHistory = "messageSourceMessageThreadHistory"
     TypeMessageSourceForumTopicHistory = "messageSourceForumTopicHistory"
@@ -740,6 +762,12 @@ const (
     TypeMessageSponsor = "messageSponsor"
     TypeSponsoredMessage = "sponsoredMessage"
     TypeSponsoredMessages = "sponsoredMessages"
+    TypeReportChatSponsoredMessageOption = "reportChatSponsoredMessageOption"
+    TypeReportChatSponsoredMessageResultOk = "reportChatSponsoredMessageResultOk"
+    TypeReportChatSponsoredMessageResultFailed = "reportChatSponsoredMessageResultFailed"
+    TypeReportChatSponsoredMessageResultOptionRequired = "reportChatSponsoredMessageResultOptionRequired"
+    TypeReportChatSponsoredMessageResultAdsHidden = "reportChatSponsoredMessageResultAdsHidden"
+    TypeReportChatSponsoredMessageResultPremiumRequired = "reportChatSponsoredMessageResultPremiumRequired"
     TypeFileDownload = "fileDownload"
     TypeDownloadedFileCounts = "downloadedFileCounts"
     TypeFoundFileDownloads = "foundFileDownloads"
@@ -823,6 +851,8 @@ const (
     TypeForumTopic = "forumTopic"
     TypeForumTopics = "forumTopics"
     TypeLinkPreviewOptions = "linkPreviewOptions"
+    TypeSharedUser = "sharedUser"
+    TypeSharedChat = "sharedChat"
     TypeRichTextPlain = "richTextPlain"
     TypeRichTextBold = "richTextBold"
     TypeRichTextItalic = "richTextItalic"
@@ -884,6 +914,9 @@ const (
     TypeCountryInfo = "countryInfo"
     TypeCountries = "countries"
     TypePhoneNumberInfo = "phoneNumberInfo"
+    TypeCollectibleItemTypeUsername = "collectibleItemTypeUsername"
+    TypeCollectibleItemTypePhoneNumber = "collectibleItemTypePhoneNumber"
+    TypeCollectibleItemInfo = "collectibleItemInfo"
     TypeBankCardActionOpenUrl = "bankCardActionOpenUrl"
     TypeBankCardInfo = "bankCardInfo"
     TypeAddress = "address"
@@ -1258,6 +1291,7 @@ const (
     TypeSpeechRecognitionResultPending = "speechRecognitionResultPending"
     TypeSpeechRecognitionResultText = "speechRecognitionResultText"
     TypeSpeechRecognitionResultError = "speechRecognitionResultError"
+    TypeBusinessConnection = "businessConnection"
     TypeAttachmentMenuBotColor = "attachmentMenuBotColor"
     TypeAttachmentMenuBot = "attachmentMenuBot"
     TypeSentWebAppMessage = "sentWebAppMessage"
@@ -1402,6 +1436,18 @@ const (
     TypePremiumFeatureSavedMessagesTags = "premiumFeatureSavedMessagesTags"
     TypePremiumFeatureMessagePrivacy = "premiumFeatureMessagePrivacy"
     TypePremiumFeatureLastSeenTimes = "premiumFeatureLastSeenTimes"
+    TypePremiumFeatureBusiness = "premiumFeatureBusiness"
+    TypeBusinessFeatureLocation = "businessFeatureLocation"
+    TypeBusinessFeatureOpeningHours = "businessFeatureOpeningHours"
+    TypeBusinessFeatureQuickReplies = "businessFeatureQuickReplies"
+    TypeBusinessFeatureGreetingMessage = "businessFeatureGreetingMessage"
+    TypeBusinessFeatureAwayMessage = "businessFeatureAwayMessage"
+    TypeBusinessFeatureAccountLinks = "businessFeatureAccountLinks"
+    TypeBusinessFeatureIntro = "businessFeatureIntro"
+    TypeBusinessFeatureBots = "businessFeatureBots"
+    TypeBusinessFeatureEmojiStatus = "businessFeatureEmojiStatus"
+    TypeBusinessFeatureChatFolderTags = "businessFeatureChatFolderTags"
+    TypeBusinessFeatureUpgradedStories = "businessFeatureUpgradedStories"
     TypePremiumStoryFeaturePriorityOrder = "premiumStoryFeaturePriorityOrder"
     TypePremiumStoryFeatureStealthMode = "premiumStoryFeatureStealthMode"
     TypePremiumStoryFeaturePermanentViewsHistory = "premiumStoryFeaturePermanentViewsHistory"
@@ -1411,12 +1457,15 @@ const (
     TypePremiumStoryFeatureVideoQuality = "premiumStoryFeatureVideoQuality"
     TypePremiumLimit = "premiumLimit"
     TypePremiumFeatures = "premiumFeatures"
+    TypeBusinessFeatures = "businessFeatures"
     TypePremiumSourceLimitExceeded = "premiumSourceLimitExceeded"
     TypePremiumSourceFeature = "premiumSourceFeature"
+    TypePremiumSourceBusinessFeature = "premiumSourceBusinessFeature"
     TypePremiumSourceStoryFeature = "premiumSourceStoryFeature"
     TypePremiumSourceLink = "premiumSourceLink"
     TypePremiumSourceSettings = "premiumSourceSettings"
     TypePremiumFeaturePromotionAnimation = "premiumFeaturePromotionAnimation"
+    TypeBusinessFeaturePromotionAnimation = "businessFeaturePromotionAnimation"
     TypePremiumState = "premiumState"
     TypeStorePaymentPurposePremiumSubscription = "storePaymentPurposePremiumSubscription"
     TypeStorePaymentPurposeGiftedPremium = "storePaymentPurposeGiftedPremium"
@@ -1540,6 +1589,7 @@ const (
     TypeStoryPrivacySettingsSelectedUsers = "storyPrivacySettingsSelectedUsers"
     TypeUserPrivacySettingRuleAllowAll = "userPrivacySettingRuleAllowAll"
     TypeUserPrivacySettingRuleAllowContacts = "userPrivacySettingRuleAllowContacts"
+    TypeUserPrivacySettingRuleAllowPremiumUsers = "userPrivacySettingRuleAllowPremiumUsers"
     TypeUserPrivacySettingRuleAllowUsers = "userPrivacySettingRuleAllowUsers"
     TypeUserPrivacySettingRuleAllowChatMembers = "userPrivacySettingRuleAllowChatMembers"
     TypeUserPrivacySettingRuleRestrictAll = "userPrivacySettingRuleRestrictAll"
@@ -1552,6 +1602,7 @@ const (
     TypeUserPrivacySettingShowLinkInForwardedMessages = "userPrivacySettingShowLinkInForwardedMessages"
     TypeUserPrivacySettingShowPhoneNumber = "userPrivacySettingShowPhoneNumber"
     TypeUserPrivacySettingShowBio = "userPrivacySettingShowBio"
+    TypeUserPrivacySettingShowBirthdate = "userPrivacySettingShowBirthdate"
     TypeUserPrivacySettingAllowChatInvites = "userPrivacySettingAllowChatInvites"
     TypeUserPrivacySettingAllowCalls = "userPrivacySettingAllowCalls"
     TypeUserPrivacySettingAllowPeerToPeerCalls = "userPrivacySettingAllowPeerToPeerCalls"
@@ -1720,6 +1771,7 @@ const (
     TypeSuggestedActionRestorePremium = "suggestedActionRestorePremium"
     TypeSuggestedActionSubscribeToAnnualPremium = "suggestedActionSubscribeToAnnualPremium"
     TypeSuggestedActionGiftPremiumForChristmas = "suggestedActionGiftPremiumForChristmas"
+    TypeSuggestedActionSetBirthdate = "suggestedActionSetBirthdate"
     TypeCount = "count"
     TypeText = "text"
     TypeSeconds = "seconds"
@@ -1876,8 +1928,13 @@ const (
     TypeUpdateAnimatedEmojiMessageClicked = "updateAnimatedEmojiMessageClicked"
     TypeUpdateAnimationSearchParameters = "updateAnimationSearchParameters"
     TypeUpdateSuggestedActions = "updateSuggestedActions"
+    TypeUpdateContactCloseBirthdays = "updateContactCloseBirthdays"
     TypeUpdateAddChatMembersPrivacyForbidden = "updateAddChatMembersPrivacyForbidden"
     TypeUpdateAutosaveSettings = "updateAutosaveSettings"
+    TypeUpdateBusinessConnection = "updateBusinessConnection"
+    TypeUpdateNewBusinessMessage = "updateNewBusinessMessage"
+    TypeUpdateBusinessMessageEdited = "updateBusinessMessageEdited"
+    TypeUpdateBusinessMessagesDeleted = "updateBusinessMessagesDeleted"
     TypeUpdateNewInlineQuery = "updateNewInlineQuery"
     TypeUpdateNewChosenInlineResult = "updateNewChosenInlineResult"
     TypeUpdateNewCallbackQuery = "updateNewCallbackQuery"
@@ -2064,6 +2121,11 @@ type MessageSponsorType interface {
     MessageSponsorTypeType() string
 }
 
+// Describes result of sponsored message report
+type ReportChatSponsoredMessageResult interface {
+    ReportChatSponsoredMessageResultType() string
+}
+
 // Describes the types of chats to which notification settings are relevant
 type NotificationSettingsScope interface {
     NotificationSettingsScopeType() string
@@ -2142,6 +2204,11 @@ type PageBlockVerticalAlignment interface {
 // Describes a block of an instant view web page
 type PageBlock interface {
     PageBlockType() string
+}
+
+// Describes a collectible item that can be purchased at https://fragment.com
+type CollectibleItemType interface {
+    CollectibleItemTypeType() string
 }
 
 // Contains information about the payment method chosen by the user
@@ -2367,6 +2434,11 @@ type PremiumLimitType interface {
 // Describes a feature available to Premium users
 type PremiumFeature interface {
     PremiumFeatureType() string
+}
+
+// Describes a feature available to Business user accounts
+type BusinessFeature interface {
+    BusinessFeatureType() string
 }
 
 // Describes a story feature available to Premium users
@@ -4006,7 +4078,7 @@ func (*ThumbnailFormatPng) ThumbnailFormatType() string {
     return TypeThumbnailFormatPng
 }
 
-// The thumbnail is in TGS format. It will be used only for TGS sticker sets
+// The thumbnail is in TGS format. It will be used only for sticker sets
 type ThumbnailFormatTgs struct{
     meta
 }
@@ -4031,7 +4103,7 @@ func (*ThumbnailFormatTgs) ThumbnailFormatType() string {
     return TypeThumbnailFormatTgs
 }
 
-// The thumbnail is in WEBM format. It will be used only for WEBM sticker sets
+// The thumbnail is in WEBM format. It will be used only for sticker sets
 type ThumbnailFormatWebm struct{
     meta
 }
@@ -4056,7 +4128,7 @@ func (*ThumbnailFormatWebm) ThumbnailFormatType() string {
     return TypeThumbnailFormatWebm
 }
 
-// The thumbnail is in WEBP format. It will be used only for some stickers
+// The thumbnail is in WEBP format. It will be used only for some stickers and sticker sets
 type ThumbnailFormatWebp struct{
     meta
 }
@@ -5022,7 +5094,7 @@ func (voiceNote *VoiceNote) UnmarshalJSON(data []byte) error {
 // Describes an animated or custom representation of an emoji
 type AnimatedEmoji struct {
     meta
-    // Sticker for the emoji; may be null if yet unknown for a custom emoji. If the sticker is a custom emoji, it can have arbitrary format different from stickerFormatTgs
+    // Sticker for the emoji; may be null if yet unknown for a custom emoji. If the sticker is a custom emoji, then it can have arbitrary format
     Sticker *Sticker `json:"sticker"`
     // Expected width of the sticker, which can be used if the sticker is null
     StickerWidth int32 `json:"sticker_width"`
@@ -5522,6 +5594,8 @@ type UserTypeBot struct {
     InlineQueryPlaceholder string `json:"inline_query_placeholder"`
     // True, if the location of the user is expected to be sent with every inline query to this bot
     NeedLocation bool `json:"need_location"`
+    // True, if the bot supports connection to Telegram Business accounts
+    CanConnectToBusiness bool `json:"can_connect_to_business"`
     // True, if the bot can be added to attachment or side menu
     CanBeAddedToAttachmentMenu bool `json:"can_be_added_to_attachment_menu"`
 }
@@ -5671,6 +5745,58 @@ func (*ChatLocation) GetType() string {
     return TypeChatLocation
 }
 
+// Represents a birthdate of a user
+type Birthdate struct {
+    meta
+    // Day of the month; 1-31
+    Day int32 `json:"day"`
+    // Month of the year; 1-12
+    Month int32 `json:"month"`
+    // Birth year; 0 if unknown
+    Year int32 `json:"year"`
+}
+
+func (entity *Birthdate) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub Birthdate
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*Birthdate) GetClass() string {
+    return ClassBirthdate
+}
+
+func (*Birthdate) GetType() string {
+    return TypeBirthdate
+}
+
+// Describes a user that had or will have a birthday soon
+type CloseBirthdayUser struct {
+    meta
+    // User identifier
+    UserId int64 `json:"user_id"`
+    // Birthdate of the user
+    Birthdate *Birthdate `json:"birthdate"`
+}
+
+func (entity *CloseBirthdayUser) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub CloseBirthdayUser
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*CloseBirthdayUser) GetClass() string {
+    return ClassCloseBirthdayUser
+}
+
+func (*CloseBirthdayUser) GetType() string {
+    return TypeCloseBirthdayUser
+}
+
 // Send away messages always
 type BusinessAwayMessageScheduleAlways struct{
     meta
@@ -5780,6 +5906,8 @@ type BusinessRecipients struct {
     meta
     // Identifiers of selected private chats
     ChatIds []int64 `json:"chat_ids"`
+    // Identifiers of private chats that are always excluded; for businessConnectedBot only
+    ExcludedChatIds []int64 `json:"excluded_chat_ids"`
     // True, if all existing private chats are selected
     SelectExistingChats bool `json:"select_existing_chats"`
     // True, if all new private chats are selected
@@ -5914,6 +6042,81 @@ func (*BusinessConnectedBot) GetType() string {
     return TypeBusinessConnectedBot
 }
 
+// Describes settings for a business account intro
+type BusinessIntro struct {
+    meta
+    // Title text of the intro
+    Title string `json:"title"`
+    // Message text of the intro
+    Message string `json:"message"`
+    // Greeting sticker of the intro; may be null if none
+    Sticker *Sticker `json:"sticker"`
+}
+
+func (entity *BusinessIntro) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessIntro
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessIntro) GetClass() string {
+    return ClassBusinessIntro
+}
+
+func (*BusinessIntro) GetType() string {
+    return TypeBusinessIntro
+}
+
+// Describes settings for a business account intro to set
+type InputBusinessIntro struct {
+    meta
+    // Title text of the intro; 0-getOption("business_intro_title_length_max") characters
+    Title string `json:"title"`
+    // Message text of the intro; 0-getOption("business_intro_message_length_max") characters
+    Message string `json:"message"`
+    // Greeting sticker of the intro; pass null if none. The sticker must belong to a sticker set and must not be a custom emoji
+    Sticker InputFile `json:"sticker"`
+}
+
+func (entity *InputBusinessIntro) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub InputBusinessIntro
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*InputBusinessIntro) GetClass() string {
+    return ClassInputBusinessIntro
+}
+
+func (*InputBusinessIntro) GetType() string {
+    return TypeInputBusinessIntro
+}
+
+func (inputBusinessIntro *InputBusinessIntro) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        Title string `json:"title"`
+        Message string `json:"message"`
+        Sticker json.RawMessage `json:"sticker"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    inputBusinessIntro.Title = tmp.Title
+    inputBusinessIntro.Message = tmp.Message
+
+    fieldSticker, _ := UnmarshalInputFile(tmp.Sticker)
+    inputBusinessIntro.Sticker = fieldSticker
+
+    return nil
+}
+
 // Describes an interval of time when the business is open
 type BusinessOpeningHoursInterval struct {
     meta
@@ -5975,6 +6178,8 @@ type BusinessInfo struct {
     GreetingMessageSettings *BusinessGreetingMessageSettings `json:"greeting_message_settings"`
     // The away message; may be null if none or the Business account is not of the current user
     AwayMessageSettings *BusinessAwayMessageSettings `json:"away_message_settings"`
+    // Information about intro of the business; may be null if none
+    Intro *BusinessIntro `json:"intro"`
 }
 
 func (entity *BusinessInfo) MarshalJSON() ([]byte, error) {
@@ -7005,7 +7210,7 @@ type Usernames struct {
     ActiveUsernames []string `json:"active_usernames"`
     // List of currently disabled usernames; the username can be activated with toggleUsernameIsActive, toggleBotUsernameIsActive, or toggleSupergroupUsernameIsActive
     DisabledUsernames []string `json:"disabled_usernames"`
-    // The active username, which can be changed with setUsername or setSupergroupUsername
+    // The active username, which can be changed with setUsername or setSupergroupUsername. Information about other active usernames can be received using getCollectibleItemInfo
     EditableUsername string `json:"editable_username"`
 }
 
@@ -7298,6 +7503,10 @@ type UserFullInfo struct {
     SetChatBackground bool `json:"set_chat_background"`
     // A short user bio; may be null for bots
     Bio *FormattedText `json:"bio"`
+    // Birthdate of the user; may be null if unknown
+    Birthdate *Birthdate `json:"birthdate"`
+    // Identifier of the personal chat of the user; 0 if none
+    PersonalChatId int64 `json:"personal_chat_id"`
     // The list of available options for gifting Telegram Premium to the user
     PremiumGiftOptions []*PremiumPaymentOption `json:"premium_gift_options"`
     // Number of group chats where both the other user and the current user are a member; 0 for the current user
@@ -7339,6 +7548,8 @@ func (userFullInfo *UserFullInfo) UnmarshalJSON(data []byte) error {
         NeedPhoneNumberPrivacyException bool `json:"need_phone_number_privacy_exception"`
         SetChatBackground bool `json:"set_chat_background"`
         Bio *FormattedText `json:"bio"`
+        Birthdate *Birthdate `json:"birthdate"`
+        PersonalChatId int64 `json:"personal_chat_id"`
         PremiumGiftOptions []*PremiumPaymentOption `json:"premium_gift_options"`
         GroupInCommonCount int32 `json:"group_in_common_count"`
         BusinessInfo *BusinessInfo `json:"business_info"`
@@ -7362,6 +7573,8 @@ func (userFullInfo *UserFullInfo) UnmarshalJSON(data []byte) error {
     userFullInfo.NeedPhoneNumberPrivacyException = tmp.NeedPhoneNumberPrivacyException
     userFullInfo.SetChatBackground = tmp.SetChatBackground
     userFullInfo.Bio = tmp.Bio
+    userFullInfo.Birthdate = tmp.Birthdate
+    userFullInfo.PersonalChatId = tmp.PersonalChatId
     userFullInfo.PremiumGiftOptions = tmp.PremiumGiftOptions
     userFullInfo.GroupInCommonCount = tmp.GroupInCommonCount
     userFullInfo.BusinessInfo = tmp.BusinessInfo
@@ -10090,6 +10303,8 @@ type Message struct {
     IsOutgoing bool `json:"is_outgoing"`
     // True, if the message is pinned
     IsPinned bool `json:"is_pinned"`
+    // True, if the message was sent because of a scheduled action by the message sender, for example, as away, or greeting service message
+    IsFromOffline bool `json:"is_from_offline"`
     // True, if the message can be edited. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message by the application
     CanBeEdited bool `json:"can_be_edited"`
     // True, if the message can be forwarded
@@ -10148,8 +10363,10 @@ type Message struct {
     SelfDestructIn float64 `json:"self_destruct_in"`
     // Time left before the message will be automatically deleted by message_auto_delete_time setting of the chat, in seconds; 0 if never
     AutoDeleteIn float64 `json:"auto_delete_in"`
-    // If non-zero, the user identifier of the bot through which this message was sent
+    // If non-zero, the user identifier of the inline bot through which this message was sent
     ViaBotUserId int64 `json:"via_bot_user_id"`
+    // If non-zero, the user identifier of the business bot that sent this message
+    SenderBusinessBotUserId int64 `json:"sender_business_bot_user_id"`
     // Number of times the sender of the message boosted the supergroup at the time the message was sent; 0 if none or unknown. For messages sent by the current user, supergroupFullInfo.my_boost_count must be used instead
     SenderBoostCount int32 `json:"sender_boost_count"`
     // For channel posts and anonymous group messages, optional author signature
@@ -10189,6 +10406,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
         SchedulingState json.RawMessage `json:"scheduling_state"`
         IsOutgoing bool `json:"is_outgoing"`
         IsPinned bool `json:"is_pinned"`
+        IsFromOffline bool `json:"is_from_offline"`
         CanBeEdited bool `json:"can_be_edited"`
         CanBeForwarded bool `json:"can_be_forwarded"`
         CanBeRepliedInAnotherChat bool `json:"can_be_replied_in_another_chat"`
@@ -10219,6 +10437,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
         SelfDestructIn float64 `json:"self_destruct_in"`
         AutoDeleteIn float64 `json:"auto_delete_in"`
         ViaBotUserId int64 `json:"via_bot_user_id"`
+        SenderBusinessBotUserId int64 `json:"sender_business_bot_user_id"`
         SenderBoostCount int32 `json:"sender_boost_count"`
         AuthorSignature string `json:"author_signature"`
         MediaAlbumId JsonInt64 `json:"media_album_id"`
@@ -10236,6 +10455,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
     message.ChatId = tmp.ChatId
     message.IsOutgoing = tmp.IsOutgoing
     message.IsPinned = tmp.IsPinned
+    message.IsFromOffline = tmp.IsFromOffline
     message.CanBeEdited = tmp.CanBeEdited
     message.CanBeForwarded = tmp.CanBeForwarded
     message.CanBeRepliedInAnotherChat = tmp.CanBeRepliedInAnotherChat
@@ -10264,6 +10484,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
     message.SelfDestructIn = tmp.SelfDestructIn
     message.AutoDeleteIn = tmp.AutoDeleteIn
     message.ViaBotUserId = tmp.ViaBotUserId
+    message.SenderBusinessBotUserId = tmp.SenderBusinessBotUserId
     message.SenderBoostCount = tmp.SenderBoostCount
     message.AuthorSignature = tmp.AuthorSignature
     message.MediaAlbumId = tmp.MediaAlbumId
@@ -10472,6 +10693,54 @@ func (*MessageCalendar) GetClass() string {
 
 func (*MessageCalendar) GetType() string {
     return TypeMessageCalendar
+}
+
+// Describes a message from a business account as received by a bot
+type BusinessMessage struct {
+    meta
+    // The message
+    Message *Message `json:"message"`
+    // Message that is replied by the message in the same chat; may be null if none
+    ReplyToMessage *Message `json:"reply_to_message"`
+}
+
+func (entity *BusinessMessage) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessMessage
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessMessage) GetClass() string {
+    return ClassBusinessMessage
+}
+
+func (*BusinessMessage) GetType() string {
+    return TypeBusinessMessage
+}
+
+// Contains a list of messages from a business account as received by a bot
+type BusinessMessages struct {
+    meta
+    // List of business messages
+    Messages []*BusinessMessage `json:"messages"`
+}
+
+func (entity *BusinessMessages) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessMessages
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessMessages) GetClass() string {
+    return ClassBusinessMessages
+}
+
+func (*BusinessMessages) GetType() string {
+    return TypeBusinessMessages
 }
 
 // The message is from a chat history
@@ -10981,6 +11250,8 @@ type SponsoredMessage struct {
     MessageId int64 `json:"message_id"`
     // True, if the message needs to be labeled as "recommended" instead of "sponsored"
     IsRecommended bool `json:"is_recommended"`
+    // True, if the message can be reported to Telegram moderators through reportChatSponsoredMessage
+    CanBeReported bool `json:"can_be_reported"`
     // Content of the message. Currently, can be only of the type messageText
     Content MessageContent `json:"content"`
     // Information about the sponsor of the message
@@ -11011,6 +11282,7 @@ func (sponsoredMessage *SponsoredMessage) UnmarshalJSON(data []byte) error {
     var tmp struct {
         MessageId int64 `json:"message_id"`
         IsRecommended bool `json:"is_recommended"`
+        CanBeReported bool `json:"can_be_reported"`
         Content json.RawMessage `json:"content"`
         Sponsor *MessageSponsor `json:"sponsor"`
         ButtonText string `json:"button_text"`
@@ -11024,6 +11296,7 @@ func (sponsoredMessage *SponsoredMessage) UnmarshalJSON(data []byte) error {
 
     sponsoredMessage.MessageId = tmp.MessageId
     sponsoredMessage.IsRecommended = tmp.IsRecommended
+    sponsoredMessage.CanBeReported = tmp.CanBeReported
     sponsoredMessage.Sponsor = tmp.Sponsor
     sponsoredMessage.ButtonText = tmp.ButtonText
     sponsoredMessage.AdditionalInfo = tmp.AdditionalInfo
@@ -11057,6 +11330,160 @@ func (*SponsoredMessages) GetClass() string {
 
 func (*SponsoredMessages) GetType() string {
     return TypeSponsoredMessages
+}
+
+// Describes an option to report a sponsored message
+type ReportChatSponsoredMessageOption struct {
+    meta
+    // Unique identifier of the option
+    Id []byte `json:"id"`
+    // Text of the option
+    Text string `json:"text"`
+}
+
+func (entity *ReportChatSponsoredMessageOption) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub ReportChatSponsoredMessageOption
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*ReportChatSponsoredMessageOption) GetClass() string {
+    return ClassReportChatSponsoredMessageOption
+}
+
+func (*ReportChatSponsoredMessageOption) GetType() string {
+    return TypeReportChatSponsoredMessageOption
+}
+
+// The message was reported successfully
+type ReportChatSponsoredMessageResultOk struct{
+    meta
+}
+
+func (entity *ReportChatSponsoredMessageResultOk) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub ReportChatSponsoredMessageResultOk
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*ReportChatSponsoredMessageResultOk) GetClass() string {
+    return ClassReportChatSponsoredMessageResult
+}
+
+func (*ReportChatSponsoredMessageResultOk) GetType() string {
+    return TypeReportChatSponsoredMessageResultOk
+}
+
+func (*ReportChatSponsoredMessageResultOk) ReportChatSponsoredMessageResultType() string {
+    return TypeReportChatSponsoredMessageResultOk
+}
+
+// The sponsored message is too old or not found
+type ReportChatSponsoredMessageResultFailed struct{
+    meta
+}
+
+func (entity *ReportChatSponsoredMessageResultFailed) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub ReportChatSponsoredMessageResultFailed
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*ReportChatSponsoredMessageResultFailed) GetClass() string {
+    return ClassReportChatSponsoredMessageResult
+}
+
+func (*ReportChatSponsoredMessageResultFailed) GetType() string {
+    return TypeReportChatSponsoredMessageResultFailed
+}
+
+func (*ReportChatSponsoredMessageResultFailed) ReportChatSponsoredMessageResultType() string {
+    return TypeReportChatSponsoredMessageResultFailed
+}
+
+// The user must choose an option to report the message and repeat request with the chosen option
+type ReportChatSponsoredMessageResultOptionRequired struct {
+    meta
+    // Title for the option choice
+    Title string `json:"title"`
+    // List of available options
+    Options []*ReportChatSponsoredMessageOption `json:"options"`
+}
+
+func (entity *ReportChatSponsoredMessageResultOptionRequired) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub ReportChatSponsoredMessageResultOptionRequired
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*ReportChatSponsoredMessageResultOptionRequired) GetClass() string {
+    return ClassReportChatSponsoredMessageResult
+}
+
+func (*ReportChatSponsoredMessageResultOptionRequired) GetType() string {
+    return TypeReportChatSponsoredMessageResultOptionRequired
+}
+
+func (*ReportChatSponsoredMessageResultOptionRequired) ReportChatSponsoredMessageResultType() string {
+    return TypeReportChatSponsoredMessageResultOptionRequired
+}
+
+// Sponsored messages were hidden for the user in all chats
+type ReportChatSponsoredMessageResultAdsHidden struct{
+    meta
+}
+
+func (entity *ReportChatSponsoredMessageResultAdsHidden) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub ReportChatSponsoredMessageResultAdsHidden
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*ReportChatSponsoredMessageResultAdsHidden) GetClass() string {
+    return ClassReportChatSponsoredMessageResult
+}
+
+func (*ReportChatSponsoredMessageResultAdsHidden) GetType() string {
+    return TypeReportChatSponsoredMessageResultAdsHidden
+}
+
+func (*ReportChatSponsoredMessageResultAdsHidden) ReportChatSponsoredMessageResultType() string {
+    return TypeReportChatSponsoredMessageResultAdsHidden
+}
+
+// The user asked to hide sponsored messages, but Telegram Premium is required for this
+type ReportChatSponsoredMessageResultPremiumRequired struct{
+    meta
+}
+
+func (entity *ReportChatSponsoredMessageResultPremiumRequired) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub ReportChatSponsoredMessageResultPremiumRequired
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*ReportChatSponsoredMessageResultPremiumRequired) GetClass() string {
+    return ClassReportChatSponsoredMessageResult
+}
+
+func (*ReportChatSponsoredMessageResultPremiumRequired) GetType() string {
+    return TypeReportChatSponsoredMessageResultPremiumRequired
+}
+
+func (*ReportChatSponsoredMessageResultPremiumRequired) ReportChatSponsoredMessageResultType() string {
+    return TypeReportChatSponsoredMessageResultPremiumRequired
 }
 
 // Describes a file added to file download list
@@ -11503,7 +11930,7 @@ type ChatFolder struct {
     Title string `json:"title"`
     // The chosen icon for the chat folder; may be null. If null, use getChatFolderDefaultIconName to get default icon name for the folder
     Icon *ChatFolderIcon `json:"icon"`
-    // The identifier of the chosen color for the chat folder icon; from -1 to 6. If -1, then color is didabled
+    // The identifier of the chosen color for the chat folder icon; from -1 to 6. If -1, then color is didabled. Can't be changed if folder tags are disabled or the current user doesn't have Telegram Premium subscription
     ColorId int32 `json:"color_id"`
     // True, if at least one link has been created for the folder
     IsShareable bool `json:"is_shareable"`
@@ -12780,6 +13207,12 @@ type KeyboardButtonTypeRequestUsers struct {
     UserIsPremium bool `json:"user_is_premium"`
     // The maximum number of users to share
     MaxQuantity int32 `json:"max_quantity"`
+    // Pass true to request name of the users; bots only
+    RequestName bool `json:"request_name"`
+    // Pass true to request username of the users; bots only
+    RequestUsername bool `json:"request_username"`
+    // Pass true to request photo of the users; bots only
+    RequestPhoto bool `json:"request_photo"`
 }
 
 func (entity *KeyboardButtonTypeRequestUsers) MarshalJSON() ([]byte, error) {
@@ -12825,6 +13258,12 @@ type KeyboardButtonTypeRequestChat struct {
     BotAdministratorRights *ChatAdministratorRights `json:"bot_administrator_rights"`
     // True, if the bot must be a member of the chat; for basic group and supergroup chats only
     BotIsMember bool `json:"bot_is_member"`
+    // Pass true to request title of the chat; bots only
+    RequestTitle bool `json:"request_title"`
+    // Pass true to request username of the chat; bots only
+    RequestUsername bool `json:"request_username"`
+    // Pass true to request photo of the chat; bots only
+    RequestPhoto bool `json:"request_photo"`
 }
 
 func (entity *KeyboardButtonTypeRequestChat) MarshalJSON() ([]byte, error) {
@@ -13828,6 +14267,66 @@ func (*LinkPreviewOptions) GetClass() string {
 
 func (*LinkPreviewOptions) GetType() string {
     return TypeLinkPreviewOptions
+}
+
+// Contains information about a user shared with a bot
+type SharedUser struct {
+    meta
+    // User identifier
+    UserId int64 `json:"user_id"`
+    // First name of the user; for bots only
+    FirstName string `json:"first_name"`
+    // Last name of the user; for bots only
+    LastName string `json:"last_name"`
+    // Username of the user; for bots only
+    Username string `json:"username"`
+    // Profile photo of the user; for bots only; may be null
+    Photo *Photo `json:"photo"`
+}
+
+func (entity *SharedUser) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub SharedUser
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*SharedUser) GetClass() string {
+    return ClassSharedUser
+}
+
+func (*SharedUser) GetType() string {
+    return TypeSharedUser
+}
+
+// Contains information about a chat shared with a bot
+type SharedChat struct {
+    meta
+    // Chat identifier
+    ChatId int64 `json:"chat_id"`
+    // Title of the chat; for bots only
+    Title string `json:"title"`
+    // Username of the chat; for bots only
+    Username string `json:"username"`
+    // Photo of the chat; for bots only; may be null
+    Photo *Photo `json:"photo"`
+}
+
+func (entity *SharedChat) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub SharedChat
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*SharedChat) GetClass() string {
+    return ClassSharedChat
+}
+
+func (*SharedChat) GetType() string {
+    return TypeSharedChat
 }
 
 // A plain text
@@ -16287,7 +16786,7 @@ type PhoneNumberInfo struct {
     CountryCallingCode string `json:"country_calling_code"`
     // The phone number without country calling code formatted accordingly to local rules. Expected digits are returned as '-', but even more digits might be entered by the user
     FormattedPhoneNumber string `json:"formatted_phone_number"`
-    // True, if the phone number was bought on Fragment and isn't tied to a SIM card
+    // True, if the phone number was bought at https://fragment.com and isn't tied to a SIM card. Information about the phone number can be received using getCollectibleItemInfo
     IsAnonymous bool `json:"is_anonymous"`
 }
 
@@ -16305,6 +16804,93 @@ func (*PhoneNumberInfo) GetClass() string {
 
 func (*PhoneNumberInfo) GetType() string {
     return TypePhoneNumberInfo
+}
+
+// A username
+type CollectibleItemTypeUsername struct {
+    meta
+    // The username
+    Username string `json:"username"`
+}
+
+func (entity *CollectibleItemTypeUsername) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub CollectibleItemTypeUsername
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*CollectibleItemTypeUsername) GetClass() string {
+    return ClassCollectibleItemType
+}
+
+func (*CollectibleItemTypeUsername) GetType() string {
+    return TypeCollectibleItemTypeUsername
+}
+
+func (*CollectibleItemTypeUsername) CollectibleItemTypeType() string {
+    return TypeCollectibleItemTypeUsername
+}
+
+// A phone number
+type CollectibleItemTypePhoneNumber struct {
+    meta
+    // The phone number
+    PhoneNumber string `json:"phone_number"`
+}
+
+func (entity *CollectibleItemTypePhoneNumber) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub CollectibleItemTypePhoneNumber
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*CollectibleItemTypePhoneNumber) GetClass() string {
+    return ClassCollectibleItemType
+}
+
+func (*CollectibleItemTypePhoneNumber) GetType() string {
+    return TypeCollectibleItemTypePhoneNumber
+}
+
+func (*CollectibleItemTypePhoneNumber) CollectibleItemTypeType() string {
+    return TypeCollectibleItemTypePhoneNumber
+}
+
+// Contains information about a collectible item and its last purchase
+type CollectibleItemInfo struct {
+    meta
+    // Point in time (Unix timestamp) when the item was purchased
+    PurchaseDate int32 `json:"purchase_date"`
+    // Currency for the paid amount
+    Currency string `json:"currency"`
+    // The paid amount, in the smallest units of the currency
+    Amount int64 `json:"amount"`
+    // Cryptocurrency used to pay for the item
+    Cryptocurrency string `json:"cryptocurrency"`
+    // The paid amount, in the smallest units of the cryptocurrency
+    CryptocurrencyAmount JsonInt64 `json:"cryptocurrency_amount"`
+    // Individual URL for the item on https://fragment.com
+    Url string `json:"url"`
+}
+
+func (entity *CollectibleItemInfo) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub CollectibleItemInfo
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*CollectibleItemInfo) GetClass() string {
+    return ClassCollectibleItemInfo
+}
+
+func (*CollectibleItemInfo) GetType() string {
+    return TypeCollectibleItemInfo
 }
 
 // Describes an action associated with a bank card number
@@ -17103,7 +17689,7 @@ type MessageExtendedMediaPreview struct {
     Width int32 `json:"width"`
     // Media height; 0 if unknown
     Height int32 `json:"height"`
-    // Media duration; 0 if unknown
+    // Media duration, in seconds; 0 if unknown
     Duration int32 `json:"duration"`
     // Media minithumbnail; may be null
     Minithumbnail *Minithumbnail `json:"minithumbnail"`
@@ -17229,7 +17815,7 @@ type PremiumGiveawayParameters struct {
     OnlyNewMembers bool `json:"only_new_members"`
     // True, if the list of winners of the giveaway will be available to everyone
     HasPublicWinners bool `json:"has_public_winners"`
-    // The list of two-letter ISO 3166-1 alpha-2 codes of countries, users from which will be eligible for the giveaway. If empty, then all users can participate in the giveaway. There can be up to getOption("giveaway_country_count_max") chosen countries. Users with phone number that was bought on Fragment can participate in any giveaway and the country code "FT" must not be specified in the list
+    // The list of two-letter ISO 3166-1 alpha-2 codes of countries, users from which will be eligible for the giveaway. If empty, then all users can participate in the giveaway. There can be up to getOption("giveaway_country_count_max") chosen countries. Users with phone number that was bought at https://fragment.com can participate in any giveaway and the country code "FT" must not be specified in the list
     CountryCodes []string `json:"country_codes"`
     // Additional description of the giveaway prize; 0-128 characters
     PrizeDescription string `json:"prize_description"`
@@ -21313,8 +21899,8 @@ func (*MessageContactRegistered) MessageContentType() string {
 // The current user shared users, which were requested by the bot
 type MessageUsersShared struct {
     meta
-    // Identifier of the shared users
-    UserIds []int64 `json:"user_ids"`
+    // The shared users
+    Users []*SharedUser `json:"users"`
     // Identifier of the keyboard button with the request
     ButtonId int32 `json:"button_id"`
 }
@@ -21342,8 +21928,8 @@ func (*MessageUsersShared) MessageContentType() string {
 // The current user shared a chat, which was requested by the bot
 type MessageChatShared struct {
     meta
-    // Identifier of the shared chat
-    ChatId int64 `json:"chat_id"`
+    // The shared chat
+    Chat *SharedChat `json:"chat"`
     // Identifier of the keyboard button with the request
     ButtonId int32 `json:"button_id"`
 }
@@ -22842,7 +23428,7 @@ type InputMessageVideoNote struct {
     VideoNote InputFile `json:"video_note"`
     // Video thumbnail; may be null if empty; pass null to skip thumbnail uploading
     Thumbnail *InputThumbnail `json:"thumbnail"`
-    // Duration of the video, in seconds
+    // Duration of the video, in seconds; 0-60
     Duration int32 `json:"duration"`
     // Video width and height; must be positive and not greater than 640
     Length int32 `json:"length"`
@@ -24401,14 +24987,14 @@ type StickerSet struct {
     Thumbnail *Thumbnail `json:"thumbnail"`
     // Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
     ThumbnailOutline []*ClosedVectorPath `json:"thumbnail_outline"`
+    // True, if the sticker set is owned by the current user
+    IsOwned bool `json:"is_owned"`
     // True, if the sticker set has been installed by the current user
     IsInstalled bool `json:"is_installed"`
     // True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
     IsArchived bool `json:"is_archived"`
     // True, if the sticker set is official
     IsOfficial bool `json:"is_official"`
-    // Format of the stickers in the set
-    StickerFormat StickerFormat `json:"sticker_format"`
     // Type of the stickers in the set
     StickerType StickerType `json:"sticker_type"`
     // True, if stickers in the sticker set are custom emoji that must be repainted; for custom emoji sticker sets only
@@ -24446,10 +25032,10 @@ func (stickerSet *StickerSet) UnmarshalJSON(data []byte) error {
         Name string `json:"name"`
         Thumbnail *Thumbnail `json:"thumbnail"`
         ThumbnailOutline []*ClosedVectorPath `json:"thumbnail_outline"`
+        IsOwned bool `json:"is_owned"`
         IsInstalled bool `json:"is_installed"`
         IsArchived bool `json:"is_archived"`
         IsOfficial bool `json:"is_official"`
-        StickerFormat json.RawMessage `json:"sticker_format"`
         StickerType json.RawMessage `json:"sticker_type"`
         NeedsRepainting bool `json:"needs_repainting"`
         IsAllowedAsChatEmojiStatus bool `json:"is_allowed_as_chat_emoji_status"`
@@ -24468,6 +25054,7 @@ func (stickerSet *StickerSet) UnmarshalJSON(data []byte) error {
     stickerSet.Name = tmp.Name
     stickerSet.Thumbnail = tmp.Thumbnail
     stickerSet.ThumbnailOutline = tmp.ThumbnailOutline
+    stickerSet.IsOwned = tmp.IsOwned
     stickerSet.IsInstalled = tmp.IsInstalled
     stickerSet.IsArchived = tmp.IsArchived
     stickerSet.IsOfficial = tmp.IsOfficial
@@ -24476,9 +25063,6 @@ func (stickerSet *StickerSet) UnmarshalJSON(data []byte) error {
     stickerSet.IsViewed = tmp.IsViewed
     stickerSet.Stickers = tmp.Stickers
     stickerSet.Emojis = tmp.Emojis
-
-    fieldStickerFormat, _ := UnmarshalStickerFormat(tmp.StickerFormat)
-    stickerSet.StickerFormat = fieldStickerFormat
 
     fieldStickerType, _ := UnmarshalStickerType(tmp.StickerType)
     stickerSet.StickerType = fieldStickerType
@@ -24499,14 +25083,14 @@ type StickerSetInfo struct {
     Thumbnail *Thumbnail `json:"thumbnail"`
     // Sticker set thumbnail's outline represented as a list of closed vector paths; may be empty. The coordinate system origin is in the upper-left corner
     ThumbnailOutline []*ClosedVectorPath `json:"thumbnail_outline"`
+    // True, if the sticker set is owned by the current user
+    IsOwned bool `json:"is_owned"`
     // True, if the sticker set has been installed by the current user
     IsInstalled bool `json:"is_installed"`
     // True, if the sticker set has been archived. A sticker set can't be installed and archived simultaneously
     IsArchived bool `json:"is_archived"`
     // True, if the sticker set is official
     IsOfficial bool `json:"is_official"`
-    // Format of the stickers in the set
-    StickerFormat StickerFormat `json:"sticker_format"`
     // Type of the stickers in the set
     StickerType StickerType `json:"sticker_type"`
     // True, if stickers in the sticker set are custom emoji that must be repainted; for custom emoji sticker sets only
@@ -24544,10 +25128,10 @@ func (stickerSetInfo *StickerSetInfo) UnmarshalJSON(data []byte) error {
         Name string `json:"name"`
         Thumbnail *Thumbnail `json:"thumbnail"`
         ThumbnailOutline []*ClosedVectorPath `json:"thumbnail_outline"`
+        IsOwned bool `json:"is_owned"`
         IsInstalled bool `json:"is_installed"`
         IsArchived bool `json:"is_archived"`
         IsOfficial bool `json:"is_official"`
-        StickerFormat json.RawMessage `json:"sticker_format"`
         StickerType json.RawMessage `json:"sticker_type"`
         NeedsRepainting bool `json:"needs_repainting"`
         IsAllowedAsChatEmojiStatus bool `json:"is_allowed_as_chat_emoji_status"`
@@ -24566,6 +25150,7 @@ func (stickerSetInfo *StickerSetInfo) UnmarshalJSON(data []byte) error {
     stickerSetInfo.Name = tmp.Name
     stickerSetInfo.Thumbnail = tmp.Thumbnail
     stickerSetInfo.ThumbnailOutline = tmp.ThumbnailOutline
+    stickerSetInfo.IsOwned = tmp.IsOwned
     stickerSetInfo.IsInstalled = tmp.IsInstalled
     stickerSetInfo.IsArchived = tmp.IsArchived
     stickerSetInfo.IsOfficial = tmp.IsOfficial
@@ -24574,9 +25159,6 @@ func (stickerSetInfo *StickerSetInfo) UnmarshalJSON(data []byte) error {
     stickerSetInfo.IsViewed = tmp.IsViewed
     stickerSetInfo.Size = tmp.Size
     stickerSetInfo.Covers = tmp.Covers
-
-    fieldStickerFormat, _ := UnmarshalStickerFormat(tmp.StickerFormat)
-    stickerSetInfo.StickerFormat = fieldStickerFormat
 
     fieldStickerType, _ := UnmarshalStickerType(tmp.StickerType)
     stickerSetInfo.StickerType = fieldStickerType
@@ -28445,6 +29027,39 @@ func (*SpeechRecognitionResultError) GetType() string {
 
 func (*SpeechRecognitionResultError) SpeechRecognitionResultType() string {
     return TypeSpeechRecognitionResultError
+}
+
+// Describes a connection of the bot with a business account
+type BusinessConnection struct {
+    meta
+    // Unique identifier of the connection
+    Id string `json:"id"`
+    // Identifier of the business user that created the connection
+    UserId int64 `json:"user_id"`
+    // Chat identifier of the private chat with the user
+    UserChatId int64 `json:"user_chat_id"`
+    // Point in time (Unix timestamp) when the connection was established
+    Date int32 `json:"date"`
+    // True, if the bot can send messages to the connected user; false otherwise
+    CanReply bool `json:"can_reply"`
+    // True, if the connection is enabled; false otherwise
+    IsEnabled bool `json:"is_enabled"`
+}
+
+func (entity *BusinessConnection) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessConnection
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessConnection) GetClass() string {
+    return ClassBusinessConnection
+}
+
+func (*BusinessConnection) GetType() string {
+    return TypeBusinessConnection
 }
 
 // Describes a color to highlight a bot added to attachment menu
@@ -32905,7 +33520,7 @@ func (*PremiumFeatureProfileBadge) PremiumFeatureType() string {
     return TypePremiumFeatureProfileBadge
 }
 
-// An emoji status shown along with the user's name
+// The ability to show an emoji status along with the user's name
 type PremiumFeatureEmojiStatus struct{
     meta
 }
@@ -33205,6 +33820,306 @@ func (*PremiumFeatureLastSeenTimes) PremiumFeatureType() string {
     return TypePremiumFeatureLastSeenTimes
 }
 
+// The ability to use Business features
+type PremiumFeatureBusiness struct{
+    meta
+}
+
+func (entity *PremiumFeatureBusiness) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub PremiumFeatureBusiness
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*PremiumFeatureBusiness) GetClass() string {
+    return ClassPremiumFeature
+}
+
+func (*PremiumFeatureBusiness) GetType() string {
+    return TypePremiumFeatureBusiness
+}
+
+func (*PremiumFeatureBusiness) PremiumFeatureType() string {
+    return TypePremiumFeatureBusiness
+}
+
+// The ability to set location
+type BusinessFeatureLocation struct{
+    meta
+}
+
+func (entity *BusinessFeatureLocation) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureLocation
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureLocation) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureLocation) GetType() string {
+    return TypeBusinessFeatureLocation
+}
+
+func (*BusinessFeatureLocation) BusinessFeatureType() string {
+    return TypeBusinessFeatureLocation
+}
+
+// The ability to set opening hours
+type BusinessFeatureOpeningHours struct{
+    meta
+}
+
+func (entity *BusinessFeatureOpeningHours) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureOpeningHours
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureOpeningHours) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureOpeningHours) GetType() string {
+    return TypeBusinessFeatureOpeningHours
+}
+
+func (*BusinessFeatureOpeningHours) BusinessFeatureType() string {
+    return TypeBusinessFeatureOpeningHours
+}
+
+// The ability to use quick replies
+type BusinessFeatureQuickReplies struct{
+    meta
+}
+
+func (entity *BusinessFeatureQuickReplies) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureQuickReplies
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureQuickReplies) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureQuickReplies) GetType() string {
+    return TypeBusinessFeatureQuickReplies
+}
+
+func (*BusinessFeatureQuickReplies) BusinessFeatureType() string {
+    return TypeBusinessFeatureQuickReplies
+}
+
+// The ability to set up a greeting message
+type BusinessFeatureGreetingMessage struct{
+    meta
+}
+
+func (entity *BusinessFeatureGreetingMessage) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureGreetingMessage
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureGreetingMessage) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureGreetingMessage) GetType() string {
+    return TypeBusinessFeatureGreetingMessage
+}
+
+func (*BusinessFeatureGreetingMessage) BusinessFeatureType() string {
+    return TypeBusinessFeatureGreetingMessage
+}
+
+// The ability to set up an away message
+type BusinessFeatureAwayMessage struct{
+    meta
+}
+
+func (entity *BusinessFeatureAwayMessage) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureAwayMessage
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureAwayMessage) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureAwayMessage) GetType() string {
+    return TypeBusinessFeatureAwayMessage
+}
+
+func (*BusinessFeatureAwayMessage) BusinessFeatureType() string {
+    return TypeBusinessFeatureAwayMessage
+}
+
+// The ability to create links to the business account with predefined message text
+type BusinessFeatureAccountLinks struct{
+    meta
+}
+
+func (entity *BusinessFeatureAccountLinks) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureAccountLinks
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureAccountLinks) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureAccountLinks) GetType() string {
+    return TypeBusinessFeatureAccountLinks
+}
+
+func (*BusinessFeatureAccountLinks) BusinessFeatureType() string {
+    return TypeBusinessFeatureAccountLinks
+}
+
+// The ability to customize intro
+type BusinessFeatureIntro struct{
+    meta
+}
+
+func (entity *BusinessFeatureIntro) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureIntro
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureIntro) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureIntro) GetType() string {
+    return TypeBusinessFeatureIntro
+}
+
+func (*BusinessFeatureIntro) BusinessFeatureType() string {
+    return TypeBusinessFeatureIntro
+}
+
+// The ability to connect a bot to the account
+type BusinessFeatureBots struct{
+    meta
+}
+
+func (entity *BusinessFeatureBots) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureBots
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureBots) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureBots) GetType() string {
+    return TypeBusinessFeatureBots
+}
+
+func (*BusinessFeatureBots) BusinessFeatureType() string {
+    return TypeBusinessFeatureBots
+}
+
+// The ability to show an emoji status along with the business name
+type BusinessFeatureEmojiStatus struct{
+    meta
+}
+
+func (entity *BusinessFeatureEmojiStatus) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureEmojiStatus
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureEmojiStatus) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureEmojiStatus) GetType() string {
+    return TypeBusinessFeatureEmojiStatus
+}
+
+func (*BusinessFeatureEmojiStatus) BusinessFeatureType() string {
+    return TypeBusinessFeatureEmojiStatus
+}
+
+// The ability to display folder names for each chat in the chat list
+type BusinessFeatureChatFolderTags struct{
+    meta
+}
+
+func (entity *BusinessFeatureChatFolderTags) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureChatFolderTags
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureChatFolderTags) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureChatFolderTags) GetType() string {
+    return TypeBusinessFeatureChatFolderTags
+}
+
+func (*BusinessFeatureChatFolderTags) BusinessFeatureType() string {
+    return TypeBusinessFeatureChatFolderTags
+}
+
+// Allowed to use many additional features for stories
+type BusinessFeatureUpgradedStories struct{
+    meta
+}
+
+func (entity *BusinessFeatureUpgradedStories) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatureUpgradedStories
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatureUpgradedStories) GetClass() string {
+    return ClassBusinessFeature
+}
+
+func (*BusinessFeatureUpgradedStories) GetType() string {
+    return TypeBusinessFeatureUpgradedStories
+}
+
+func (*BusinessFeatureUpgradedStories) BusinessFeatureType() string {
+    return TypeBusinessFeatureUpgradedStories
+}
+
 // Stories of the current user are displayed before stories of non-Premium contacts, supergroups, and channels
 type PremiumStoryFeaturePriorityOrder struct{
     meta
@@ -33478,6 +34393,45 @@ func (premiumFeatures *PremiumFeatures) UnmarshalJSON(data []byte) error {
     return nil
 }
 
+// Contains information about features, available to Business user accounts
+type BusinessFeatures struct {
+    meta
+    // The list of available business features
+    Features []BusinessFeature `json:"features"`
+}
+
+func (entity *BusinessFeatures) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeatures
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeatures) GetClass() string {
+    return ClassBusinessFeatures
+}
+
+func (*BusinessFeatures) GetType() string {
+    return TypeBusinessFeatures
+}
+
+func (businessFeatures *BusinessFeatures) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        Features []json.RawMessage `json:"features"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    fieldFeatures, _ := UnmarshalListOfBusinessFeature(tmp.Features)
+    businessFeatures.Features = fieldFeatures
+
+    return nil
+}
+
 // A limit was exceeded
 type PremiumSourceLimitExceeded struct {
     meta
@@ -33560,6 +34514,49 @@ func (premiumSourceFeature *PremiumSourceFeature) UnmarshalJSON(data []byte) err
 
     fieldFeature, _ := UnmarshalPremiumFeature(tmp.Feature)
     premiumSourceFeature.Feature = fieldFeature
+
+    return nil
+}
+
+// A user tried to use a Business feature
+type PremiumSourceBusinessFeature struct {
+    meta
+    // The used feature; pass null if none specific feature was used
+    Feature BusinessFeature `json:"feature"`
+}
+
+func (entity *PremiumSourceBusinessFeature) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub PremiumSourceBusinessFeature
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*PremiumSourceBusinessFeature) GetClass() string {
+    return ClassPremiumSource
+}
+
+func (*PremiumSourceBusinessFeature) GetType() string {
+    return TypePremiumSourceBusinessFeature
+}
+
+func (*PremiumSourceBusinessFeature) PremiumSourceType() string {
+    return TypePremiumSourceBusinessFeature
+}
+
+func (premiumSourceBusinessFeature *PremiumSourceBusinessFeature) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        Feature json.RawMessage `json:"feature"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    fieldFeature, _ := UnmarshalBusinessFeature(tmp.Feature)
+    premiumSourceBusinessFeature.Feature = fieldFeature
 
     return nil
 }
@@ -33703,6 +34700,50 @@ func (premiumFeaturePromotionAnimation *PremiumFeaturePromotionAnimation) Unmars
     return nil
 }
 
+// Describes a promotion animation for a Business feature
+type BusinessFeaturePromotionAnimation struct {
+    meta
+    // Business feature
+    Feature BusinessFeature `json:"feature"`
+    // Promotion animation for the feature
+    Animation *Animation `json:"animation"`
+}
+
+func (entity *BusinessFeaturePromotionAnimation) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub BusinessFeaturePromotionAnimation
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*BusinessFeaturePromotionAnimation) GetClass() string {
+    return ClassBusinessFeaturePromotionAnimation
+}
+
+func (*BusinessFeaturePromotionAnimation) GetType() string {
+    return TypeBusinessFeaturePromotionAnimation
+}
+
+func (businessFeaturePromotionAnimation *BusinessFeaturePromotionAnimation) UnmarshalJSON(data []byte) error {
+    var tmp struct {
+        Feature json.RawMessage `json:"feature"`
+        Animation *Animation `json:"animation"`
+    }
+
+    err := json.Unmarshal(data, &tmp)
+    if err != nil {
+        return err
+    }
+
+    businessFeaturePromotionAnimation.Animation = tmp.Animation
+
+    fieldFeature, _ := UnmarshalBusinessFeature(tmp.Feature)
+    businessFeaturePromotionAnimation.Feature = fieldFeature
+
+    return nil
+}
+
 // Contains state of Telegram Premium subscription and promotion videos for Premium features
 type PremiumState struct {
     meta
@@ -33712,6 +34753,8 @@ type PremiumState struct {
     PaymentOptions []*PremiumStatePaymentOption `json:"payment_options"`
     // The list of available promotion animations for Premium features
     Animations []*PremiumFeaturePromotionAnimation `json:"animations"`
+    // The list of available promotion animations for Business features
+    BusinessAnimations []*BusinessFeaturePromotionAnimation `json:"business_animations"`
 }
 
 func (entity *PremiumState) MarshalJSON() ([]byte, error) {
@@ -35111,7 +36154,7 @@ func (*CheckChatUsernameResultUsernameOccupied) CheckChatUsernameResultType() st
     return TypeCheckChatUsernameResultUsernameOccupied
 }
 
-// The username can be purchased at fragment.com
+// The username can be purchased at https://fragment.com. Information about the username can be received using getCollectibleItemInfo
 type CheckChatUsernameResultUsernamePurchasable struct{
     meta
 }
@@ -37278,6 +38321,31 @@ func (*UserPrivacySettingRuleAllowContacts) UserPrivacySettingRuleType() string 
     return TypeUserPrivacySettingRuleAllowContacts
 }
 
+// A rule to allow all Premium Users to do something; currently, allowed only for userPrivacySettingAllowChatInvites
+type UserPrivacySettingRuleAllowPremiumUsers struct{
+    meta
+}
+
+func (entity *UserPrivacySettingRuleAllowPremiumUsers) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UserPrivacySettingRuleAllowPremiumUsers
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UserPrivacySettingRuleAllowPremiumUsers) GetClass() string {
+    return ClassUserPrivacySettingRule
+}
+
+func (*UserPrivacySettingRuleAllowPremiumUsers) GetType() string {
+    return TypeUserPrivacySettingRuleAllowPremiumUsers
+}
+
+func (*UserPrivacySettingRuleAllowPremiumUsers) UserPrivacySettingRuleType() string {
+    return TypeUserPrivacySettingRuleAllowPremiumUsers
+}
+
 // A rule to allow certain specified users to do something
 type UserPrivacySettingRuleAllowUsers struct {
     meta
@@ -37598,6 +38666,31 @@ func (*UserPrivacySettingShowBio) GetType() string {
 
 func (*UserPrivacySettingShowBio) UserPrivacySettingType() string {
     return TypeUserPrivacySettingShowBio
+}
+
+// A privacy setting for managing whether the user's birthdate is visible
+type UserPrivacySettingShowBirthdate struct{
+    meta
+}
+
+func (entity *UserPrivacySettingShowBirthdate) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UserPrivacySettingShowBirthdate
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UserPrivacySettingShowBirthdate) GetClass() string {
+    return ClassUserPrivacySetting
+}
+
+func (*UserPrivacySettingShowBirthdate) GetType() string {
+    return TypeUserPrivacySettingShowBirthdate
+}
+
+func (*UserPrivacySettingShowBirthdate) UserPrivacySettingType() string {
+    return TypeUserPrivacySettingShowBirthdate
 }
 
 // A privacy setting for managing whether the user can be invited to chats
@@ -39491,7 +40584,7 @@ func (*InternalLinkTypeMessageDraft) InternalLinkTypeType() string {
 // The link contains a request of Telegram passport data. Call getPassportAuthorizationForm with the given parameters to process the link if the link was received from outside of the application; otherwise, ignore it
 type InternalLinkTypePassportDataRequest struct {
     meta
-    // User identifier of the service's bot
+    // User identifier of the service's bot; the corresponding user may be unknown yet
     BotUserId int64 `json:"bot_user_id"`
     // Telegram Passport element types requested by the service
     Scope string `json:"scope"`
@@ -42242,6 +43335,31 @@ func (*SuggestedActionGiftPremiumForChristmas) SuggestedActionType() string {
     return TypeSuggestedActionGiftPremiumForChristmas
 }
 
+// Suggests the user to set birthdate
+type SuggestedActionSetBirthdate struct{
+    meta
+}
+
+func (entity *SuggestedActionSetBirthdate) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub SuggestedActionSetBirthdate
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*SuggestedActionSetBirthdate) GetClass() string {
+    return ClassSuggestedAction
+}
+
+func (*SuggestedActionSetBirthdate) GetType() string {
+    return TypeSuggestedActionSetBirthdate
+}
+
+func (*SuggestedActionSetBirthdate) SuggestedActionType() string {
+    return TypeSuggestedActionSetBirthdate
+}
+
 // Contains a counter
 type Count struct {
     meta
@@ -42586,6 +43704,8 @@ type InputSticker struct {
     meta
     // File with the sticker; must fit in a 512x512 square. For WEBP stickers the file must be in WEBP or PNG format, which will be converted to WEBP server-side. See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
     Sticker InputFile `json:"sticker"`
+    // Format of the sticker
+    Format StickerFormat `json:"format"`
     // String with 1-20 emoji corresponding to the sticker
     Emojis string `json:"emojis"`
     // Position where the mask is placed; pass null if not specified
@@ -42613,6 +43733,7 @@ func (*InputSticker) GetType() string {
 func (inputSticker *InputSticker) UnmarshalJSON(data []byte) error {
     var tmp struct {
         Sticker json.RawMessage `json:"sticker"`
+        Format json.RawMessage `json:"format"`
         Emojis string `json:"emojis"`
         MaskPosition *MaskPosition `json:"mask_position"`
         Keywords []string `json:"keywords"`
@@ -42629,6 +43750,9 @@ func (inputSticker *InputSticker) UnmarshalJSON(data []byte) error {
 
     fieldSticker, _ := UnmarshalInputFile(tmp.Sticker)
     inputSticker.Sticker = fieldSticker
+
+    fieldFormat, _ := UnmarshalStickerFormat(tmp.Format)
+    inputSticker.Format = fieldFormat
 
     return nil
 }
@@ -47356,7 +48480,7 @@ func (*UpdateSavedMessagesTags) UpdateType() string {
 // The parameters of speech recognition without Telegram Premium subscription has changed
 type UpdateSpeechRecognitionTrial struct {
     meta
-    // The maximum allowed duration of media for speech recognition without Telegram Premium subscription
+    // The maximum allowed duration of media for speech recognition without Telegram Premium subscription, in seconds
     MaxMediaDuration int32 `json:"max_media_duration"`
     // The total number of allowed speech recognitions per week; 0 if none
     WeeklyCount int32 `json:"weekly_count"`
@@ -47522,6 +48646,33 @@ func (updateSuggestedActions *UpdateSuggestedActions) UnmarshalJSON(data []byte)
     return nil
 }
 
+// The list of contacts that had birthdays recently or will have birthday soon has changed
+type UpdateContactCloseBirthdays struct {
+    meta
+    // List of contact users with close birthday
+    CloseBirthdayUsers []*CloseBirthdayUser `json:"close_birthday_users"`
+}
+
+func (entity *UpdateContactCloseBirthdays) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateContactCloseBirthdays
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateContactCloseBirthdays) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateContactCloseBirthdays) GetType() string {
+    return TypeUpdateContactCloseBirthdays
+}
+
+func (*UpdateContactCloseBirthdays) UpdateType() string {
+    return TypeUpdateContactCloseBirthdays
+}
+
 // Adding users to a chat has failed because of their privacy settings. An invite link can be shared with the users if appropriate
 type UpdateAddChatMembersPrivacyForbidden struct {
     meta
@@ -47597,6 +48748,122 @@ func (updateAutosaveSettings *UpdateAutosaveSettings) UnmarshalJSON(data []byte)
     updateAutosaveSettings.Scope = fieldScope
 
     return nil
+}
+
+// A business connection has changed; for bots only
+type UpdateBusinessConnection struct {
+    meta
+    // New data about the connection
+    Connection *BusinessConnection `json:"connection"`
+}
+
+func (entity *UpdateBusinessConnection) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateBusinessConnection
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateBusinessConnection) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateBusinessConnection) GetType() string {
+    return TypeUpdateBusinessConnection
+}
+
+func (*UpdateBusinessConnection) UpdateType() string {
+    return TypeUpdateBusinessConnection
+}
+
+// A new message was added to a business account; for bots only
+type UpdateNewBusinessMessage struct {
+    meta
+    // Unique identifier of the business connection
+    ConnectionId string `json:"connection_id"`
+    // The new message
+    Message *BusinessMessage `json:"message"`
+}
+
+func (entity *UpdateNewBusinessMessage) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateNewBusinessMessage
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateNewBusinessMessage) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateNewBusinessMessage) GetType() string {
+    return TypeUpdateNewBusinessMessage
+}
+
+func (*UpdateNewBusinessMessage) UpdateType() string {
+    return TypeUpdateNewBusinessMessage
+}
+
+// A message in a business account was edited; for bots only
+type UpdateBusinessMessageEdited struct {
+    meta
+    // Unique identifier of the business connection
+    ConnectionId string `json:"connection_id"`
+    // The edited message
+    Message *BusinessMessage `json:"message"`
+}
+
+func (entity *UpdateBusinessMessageEdited) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateBusinessMessageEdited
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateBusinessMessageEdited) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateBusinessMessageEdited) GetType() string {
+    return TypeUpdateBusinessMessageEdited
+}
+
+func (*UpdateBusinessMessageEdited) UpdateType() string {
+    return TypeUpdateBusinessMessageEdited
+}
+
+// Messages in a business account were deleted; for bots only
+type UpdateBusinessMessagesDeleted struct {
+    meta
+    // Unique identifier of the business connection
+    ConnectionId string `json:"connection_id"`
+    // Identifier of a chat in the business account in which messages were deleted
+    ChatId int64 `json:"chat_id"`
+    // Unique message identifiers of the deleted messages
+    MessageIds []int64 `json:"message_ids"`
+}
+
+func (entity *UpdateBusinessMessagesDeleted) MarshalJSON() ([]byte, error) {
+    entity.meta.Type = entity.GetType()
+
+    type stub UpdateBusinessMessagesDeleted
+
+    return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateBusinessMessagesDeleted) GetClass() string {
+    return ClassUpdate
+}
+
+func (*UpdateBusinessMessagesDeleted) GetType() string {
+    return TypeUpdateBusinessMessagesDeleted
+}
+
+func (*UpdateBusinessMessagesDeleted) UpdateType() string {
+    return TypeUpdateBusinessMessagesDeleted
 }
 
 // A new incoming inline query; for bots only
