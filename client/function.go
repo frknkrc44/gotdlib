@@ -208,7 +208,7 @@ type CheckAuthenticationEmailCodeRequest struct {
     Code EmailAddressAuthentication `json:"code"`
 }
 
-// Checks the authentication of a email address. Works only when the current authorization state is authorizationStateWaitEmailCode
+// Checks the authentication of an email address. Works only when the current authorization state is authorizationStateWaitEmailCode
 func (client *Client) CheckAuthenticationEmailCode(req *CheckAuthenticationEmailCodeRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -461,6 +461,32 @@ func (client *Client) SendAuthenticationFirebaseSms(req *SendAuthenticationFireb
     return UnmarshalOk(result.Data)
 }
 
+type ReportAuthenticationCodeMissingRequest struct { 
+    // Current mobile network code
+    MobileNetworkCode string `json:"mobile_network_code"`
+}
+
+// Reports that authentication code wasn't delivered via SMS; for official mobile apps only. Works only when the current authorization state is authorizationStateWaitCode
+func (client *Client) ReportAuthenticationCodeMissing(req *ReportAuthenticationCodeMissingRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "reportAuthenticationCodeMissing",
+        },
+        Data: map[string]interface{}{
+            "mobile_network_code": req.MobileNetworkCode,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type CheckAuthenticationBotTokenRequest struct { 
     // The bot token
     Token string `json:"token"`
@@ -677,7 +703,7 @@ type SetLoginEmailAddressRequest struct {
     NewLoginEmailAddress string `json:"new_login_email_address"`
 }
 
-// Changes the login email address of the user. The email address can be changed only if the current user already has login email and passwordState.login_email_address_pattern is non-empty. The change will not be applied until the new login email address is confirmed with checkLoginEmailAddressCode. To use Apple ID/Google ID instead of a email address, call checkLoginEmailAddressCode directly
+// Changes the login email address of the user. The email address can be changed only if the current user already has login email and passwordState.login_email_address_pattern is non-empty. The change will not be applied until the new login email address is confirmed with checkLoginEmailAddressCode. To use Apple ID/Google ID instead of an email address, call checkLoginEmailAddressCode directly
 func (client *Client) SetLoginEmailAddress(req *SetLoginEmailAddressRequest) (*EmailAddressAuthenticationCodeInfo, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -1792,6 +1818,25 @@ func (client *Client) SearchChatsNearby(req *SearchChatsNearbyRequest) (*ChatsNe
     return UnmarshalChatsNearby(result.Data)
 }
 
+// Returns a list of channel chats recommended to the current user
+func (client *Client) GetRecommendedChats() (*Chats, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getRecommendedChats",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalChats(result.Data)
+}
+
 type GetChatSimilarChatsRequest struct { 
     // Identifier of the target chat; must be an identifier of a channel chat
     ChatId int64 `json:"chat_id"`
@@ -2641,6 +2686,8 @@ func (client *Client) SearchChatMessages(req *SearchChatMessagesRequest) (*Found
 type SearchMessagesRequest struct { 
     // Chat list in which to search messages; pass null to search in all chats regardless of their chat list. Only Main and Archive chat lists are supported
     ChatList ChatList `json:"chat_list"`
+    // Pass true to search only for messages in channels
+    OnlyInChannels bool `json:"only_in_channels"`
     // Query to search for
     Query string `json:"query"`
     // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
@@ -2663,6 +2710,7 @@ func (client *Client) SearchMessages(req *SearchMessagesRequest) (*FoundMessages
         },
         Data: map[string]interface{}{
             "chat_list": req.ChatList,
+            "only_in_channels": req.OnlyInChannels,
             "query": req.Query,
             "offset": req.Offset,
             "limit": req.Limit,
@@ -3483,7 +3531,7 @@ type GetChatAvailableMessageSendersRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Returns list of message sender identifiers, which can be used to send messages in a chat
+// Returns the list of message sender identifiers, which can be used to send messages in a chat
 func (client *Client) GetChatAvailableMessageSenders(req *GetChatAvailableMessageSendersRequest) (*ChatMessageSenders, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4000,6 +4048,8 @@ type EditMessageLiveLocationRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New location content of the message; pass null to stop sharing the live location
     Location *Location `json:"location"`
+    // New time relative to the message send date, for which the location can be updated, in seconds. If 0x7FFFFFFF specified, then the location can be updated forever. Otherwise, must not exceed the current live_period by more than a day, and the live location expiration date must remain in the next 90 days. Pass 0 to keep the current live_period
+    LivePeriod int32 `json:"live_period"`
     // The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
     Heading int32 `json:"heading"`
     // The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled
@@ -4017,6 +4067,7 @@ func (client *Client) EditMessageLiveLocation(req *EditMessageLiveLocationReques
             "message_id": req.MessageId,
             "reply_markup": req.ReplyMarkup,
             "location": req.Location,
+            "live_period": req.LivePeriod,
             "heading": req.Heading,
             "proximity_alert_radius": req.ProximityAlertRadius,
         },
@@ -4173,6 +4224,8 @@ type EditInlineMessageLiveLocationRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New location content of the message; pass null to stop sharing the live location
     Location *Location `json:"location"`
+    // New time relative to the message send date, for which the location can be updated, in seconds. If 0x7FFFFFFF specified, then the location can be updated forever. Otherwise, must not exceed the current live_period by more than a day, and the live location expiration date must remain in the next 90 days. Pass 0 to keep the current live_period
+    LivePeriod int32 `json:"live_period"`
     // The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
     Heading int32 `json:"heading"`
     // The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled
@@ -4189,6 +4242,7 @@ func (client *Client) EditInlineMessageLiveLocation(req *EditInlineMessageLiveLo
             "inline_message_id": req.InlineMessageId,
             "reply_markup": req.ReplyMarkup,
             "location": req.Location,
+            "live_period": req.LivePeriod,
             "heading": req.Heading,
             "proximity_alert_radius": req.ProximityAlertRadius,
         },
@@ -4670,6 +4724,38 @@ func (client *Client) AddQuickReplyShortcutInlineQueryResultMessage(req *AddQuic
     return UnmarshalQuickReplyMessage(result.Data)
 }
 
+type AddQuickReplyShortcutMessageAlbumRequest struct { 
+    // Name of the target shortcut
+    ShortcutName string `json:"shortcut_name"`
+    // Identifier of a quick reply message in the same shortcut to be replied; pass 0 if none
+    ReplyToMessageId int64 `json:"reply_to_message_id"`
+    // Contents of messages to be sent. At most 10 messages can be added to an album
+    InputMessageContents []InputMessageContent `json:"input_message_contents"`
+}
+
+// Adds 2-10 messages grouped together into an album to a quick reply shortcut. Currently, only audio, document, photo and video messages can be grouped into an album. Documents and audio files can be only grouped in an album with messages of the same type. Returns sent messages
+func (client *Client) AddQuickReplyShortcutMessageAlbum(req *AddQuickReplyShortcutMessageAlbumRequest) (*QuickReplyMessages, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "addQuickReplyShortcutMessageAlbum",
+        },
+        Data: map[string]interface{}{
+            "shortcut_name": req.ShortcutName,
+            "reply_to_message_id": req.ReplyToMessageId,
+            "input_message_contents": req.InputMessageContents,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalQuickReplyMessages(result.Data)
+}
+
 type ReaddQuickReplyShortcutMessagesRequest struct { 
     // Name of the target shortcut
     ShortcutName string `json:"shortcut_name"`
@@ -4731,7 +4817,7 @@ func (client *Client) EditQuickReplyMessage(req *EditQuickReplyMessageRequest) (
     return UnmarshalOk(result.Data)
 }
 
-// Returns list of custom emojis, which can be used as forum topic icon by all users
+// Returns the list of custom emojis, which can be used as forum topic icon by all users
 func (client *Client) GetForumTopicDefaultIcons() (*Stickers, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -5992,6 +6078,25 @@ func (client *Client) HideSuggestedAction(req *HideSuggestedActionRequest) (*Ok,
         Data: map[string]interface{}{
             "action": req.Action,
         },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Hides the list of contacts that have close birthdays for 24 hours
+func (client *Client) HideContactCloseBirthdays() (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "hideContactCloseBirthdays",
+        },
+        Data: map[string]interface{}{},
     })
     if err != nil {
         return nil, err
@@ -9402,7 +9507,7 @@ func (client *Client) GetSavedNotificationSound(req *GetSavedNotificationSoundRe
     return UnmarshalNotificationSounds(result.Data)
 }
 
-// Returns list of saved notification sounds. If a sound isn't in the list, then default sound needs to be used
+// Returns the list of saved notification sounds. If a sound isn't in the list, then default sound needs to be used
 func (client *Client) GetSavedNotificationSounds() (*NotificationSounds, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9480,7 +9585,7 @@ type GetChatNotificationSettingsExceptionsRequest struct {
     CompareSound bool `json:"compare_sound"`
 }
 
-// Returns list of chats with non-default notification settings for new messages
+// Returns the list of chats with non-default notification settings for new messages
 func (client *Client) GetChatNotificationSettingsExceptions(req *GetChatNotificationSettingsExceptionsRequest) (*Chats, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9557,7 +9662,33 @@ func (client *Client) SetScopeNotificationSettings(req *SetScopeNotificationSett
     return UnmarshalOk(result.Data)
 }
 
-// Resets all notification settings to their default values. By default, all chats are unmuted and message previews are shown
+type SetReactionNotificationSettingsRequest struct { 
+    // The new notification settings for reactions
+    NotificationSettings *ReactionNotificationSettings `json:"notification_settings"`
+}
+
+// Changes notification settings for reactions
+func (client *Client) SetReactionNotificationSettings(req *SetReactionNotificationSettingsRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setReactionNotificationSettings",
+        },
+        Data: map[string]interface{}{
+            "notification_settings": req.NotificationSettings,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Resets all chat and scope notification settings to their default values. By default, all chats are unmuted and message previews are shown
 func (client *Client) ResetAllNotificationSettings() (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -9777,7 +9908,7 @@ type SendStoryRequest struct {
     // Full identifier of the original story, which content was used to create the story
     FromStoryFullId *StoryFullId `json:"from_story_full_id"`
     // Pass true to keep the story accessible after expiration
-    IsPinned bool `json:"is_pinned"`
+    IsPostedToChatPage bool `json:"is_posted_to_chat_page"`
     // Pass true if the content of the story must be protected from forwarding and screenshotting
     ProtectContent bool `json:"protect_content"`
 }
@@ -9796,7 +9927,7 @@ func (client *Client) SendStory(req *SendStoryRequest) (*Story, error) {
             "privacy_settings": req.PrivacySettings,
             "active_period": req.ActivePeriod,
             "from_story_full_id": req.FromStoryFullId,
-            "is_pinned": req.IsPinned,
+            "is_posted_to_chat_page": req.IsPostedToChatPage,
             "protect_content": req.ProtectContent,
         },
     })
@@ -9878,25 +10009,25 @@ func (client *Client) SetStoryPrivacySettings(req *SetStoryPrivacySettingsReques
     return UnmarshalOk(result.Data)
 }
 
-type ToggleStoryIsPinnedRequest struct { 
+type ToggleStoryIsPostedToChatPageRequest struct { 
     // Identifier of the chat that posted the story
     StorySenderChatId int64 `json:"story_sender_chat_id"`
     // Identifier of the story
     StoryId int32 `json:"story_id"`
     // Pass true to make the story accessible after expiration; pass false to make it private
-    IsPinned bool `json:"is_pinned"`
+    IsPostedToChatPage bool `json:"is_posted_to_chat_page"`
 }
 
-// Toggles whether a story is accessible after expiration. Can be called only if story.can_toggle_is_pinned == true
-func (client *Client) ToggleStoryIsPinned(req *ToggleStoryIsPinnedRequest) (*Ok, error) {
+// Toggles whether a story is accessible after expiration. Can be called only if story.can_toggle_is_posted_to_chat_page == true
+func (client *Client) ToggleStoryIsPostedToChatPage(req *ToggleStoryIsPostedToChatPageRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "toggleStoryIsPinned",
+            Type: "toggleStoryIsPostedToChatPage",
         },
         Data: map[string]interface{}{
             "story_sender_chat_id": req.StorySenderChatId,
             "story_id": req.StoryId,
-            "is_pinned": req.IsPinned,
+            "is_posted_to_chat_page": req.IsPostedToChatPage,
         },
     })
     if err != nil {
@@ -9939,7 +10070,7 @@ func (client *Client) DeleteStory(req *DeleteStoryRequest) (*Ok, error) {
     return UnmarshalOk(result.Data)
 }
 
-// Returns list of chats with non-default notification settings for stories
+// Returns the list of chats with non-default notification settings for stories
 func (client *Client) GetStoryNotificationSettingsExceptions() (*Chats, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10039,20 +10170,20 @@ func (client *Client) GetChatActiveStories(req *GetChatActiveStoriesRequest) (*C
     return UnmarshalChatActiveStories(result.Data)
 }
 
-type GetChatPinnedStoriesRequest struct { 
+type GetChatPostedToChatPageStoriesRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
-    // Identifier of the story starting from which stories must be returned; use 0 to get results from the last story
+    // Identifier of the story starting from which stories must be returned; use 0 to get results from pinned and the newest story
     FromStoryId int32 `json:"from_story_id"`
     // The maximum number of stories to be returned For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
 }
 
-// Returns the list of pinned stories posted by the given chat. The stories are returned in a reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
-func (client *Client) GetChatPinnedStories(req *GetChatPinnedStoriesRequest) (*Stories, error) {
+// Returns the list of stories that posted by the given chat to its chat page. If from_story_id == 0, then pinned stories are returned first. Then, stories are returned in a reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
+func (client *Client) GetChatPostedToChatPageStories(req *GetChatPostedToChatPageStoriesRequest) (*Stories, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "getChatPinnedStories",
+            Type: "getChatPostedToChatPageStories",
         },
         Data: map[string]interface{}{
             "chat_id": req.ChatId,
@@ -10101,6 +10232,35 @@ func (client *Client) GetChatArchivedStories(req *GetChatArchivedStoriesRequest)
     }
 
     return UnmarshalStories(result.Data)
+}
+
+type SetChatPinnedStoriesRequest struct { 
+    // Identifier of the chat that posted the stories
+    ChatId int64 `json:"chat_id"`
+    // New list of pinned stories. All stories must be posted to the chat page first. There can be up to getOption("pinned_story_count_max") pinned stories on a chat page
+    StoryIds []int32 `json:"story_ids"`
+}
+
+// Changes the list of pinned stories on a chat page; requires can_edit_stories right in the chat
+func (client *Client) SetChatPinnedStories(req *SetChatPinnedStoriesRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setChatPinnedStories",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "story_ids": req.StoryIds,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
 }
 
 type OpenStoryRequest struct { 
@@ -10403,7 +10563,7 @@ type GetChatBoostLevelFeaturesRequest struct {
     Level int32 `json:"level"`
 }
 
-// Returns list of features available on the specific chat boost level; this is an offline request
+// Returns the list of features available on the specific chat boost level; this is an offline request
 func (client *Client) GetChatBoostLevelFeatures(req *GetChatBoostLevelFeaturesRequest) (*ChatBoostLevelFeatures, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10430,7 +10590,7 @@ type GetChatBoostFeaturesRequest struct {
     IsChannel bool `json:"is_channel"`
 }
 
-// Returns list of features available for different chat boost levels; this is an offline request
+// Returns the list of features available for different chat boost levels; this is an offline request
 func (client *Client) GetChatBoostFeatures(req *GetChatBoostFeaturesRequest) (*ChatBoostFeatures, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10588,7 +10748,7 @@ type GetChatBoostsRequest struct {
     Limit int32 `json:"limit"`
 }
 
-// Returns list of boosts applied to a chat; requires administrator rights in the chat
+// Returns the list of boosts applied to a chat; requires administrator rights in the chat
 func (client *Client) GetChatBoosts(req *GetChatBoostsRequest) (*FoundChatBoosts, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10619,7 +10779,7 @@ type GetUserChatBoostsRequest struct {
     UserId int64 `json:"user_id"`
 }
 
-// Returns list of boosts applied to a chat by a given user; requires administrator rights in the chat; for bots only
+// Returns the list of boosts applied to a chat by a given user; requires administrator rights in the chat; for bots only
 func (client *Client) GetUserChatBoosts(req *GetUserChatBoostsRequest) (*FoundChatBoosts, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -10966,7 +11126,7 @@ type PreliminaryUploadFileRequest struct {
     Priority int32 `json:"priority"`
 }
 
-// Preliminary uploads a file to the cloud before sending it in a message, which can be useful for uploading of being recorded voice and video notes. Updates updateFile will be used to notify about upload progress and successful completion of the upload. The file will not have a persistent remote identifier until it is sent in a message
+// Preliminary uploads a file to the cloud before sending it in a message, which can be useful for uploading of being recorded voice and video notes. In all other cases there is no need to preliminary upload a file. Updates updateFile will be used to notify about upload progress. The upload will not be completed until the file is sent in a message
 func (client *Client) PreliminaryUploadFile(req *PreliminaryUploadFileRequest) (*File, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -11590,7 +11750,7 @@ type GetChatInviteLinkCountsRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Returns list of chat administrators with number of their invite links. Requires owner privileges in the chat
+// Returns the list of chat administrators with number of their invite links. Requires owner privileges in the chat
 func (client *Client) GetChatInviteLinkCounts(req *GetChatInviteLinkCountsRequest) (*ChatInviteLinkCounts, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -12154,7 +12314,7 @@ type GetVideoChatAvailableParticipantsRequest struct {
     ChatId int64 `json:"chat_id"`
 }
 
-// Returns list of participant identifiers, on whose behalf a video chat in the chat can be joined
+// Returns the list of participant identifiers, on whose behalf a video chat in the chat can be joined
 func (client *Client) GetVideoChatAvailableParticipants(req *GetVideoChatAvailableParticipantsRequest) (*MessageSenders, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -14324,7 +14484,7 @@ type GetCustomEmojiStickersRequest struct {
     CustomEmojiIds []JsonInt64 `json:"custom_emoji_ids"`
 }
 
-// Returns list of custom emoji stickers by their identifiers. Stickers are returned in arbitrary order. Only found stickers are returned
+// Returns the list of custom emoji stickers by their identifiers. Stickers are returned in arbitrary order. Only found stickers are returned
 func (client *Client) GetCustomEmojiStickers(req *GetCustomEmojiStickersRequest) (*Stickers, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -14958,6 +15118,32 @@ func (client *Client) SetLocation(req *SetLocationRequest) (*Ok, error) {
     return UnmarshalOk(result.Data)
 }
 
+type ToggleHasSponsoredMessagesEnabledRequest struct { 
+    // Pass true to enable sponsored messages for the current user; false to disable them
+    HasSponsoredMessagesEnabled bool `json:"has_sponsored_messages_enabled"`
+}
+
+// Toggles whether the current user has sponsored messages enabled. The setting has no effect for users without Telegram Premium for which sponsored messages are always enabled
+func (client *Client) ToggleHasSponsoredMessagesEnabled(req *ToggleHasSponsoredMessagesEnabledRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "toggleHasSponsoredMessagesEnabled",
+        },
+        Data: map[string]interface{}{
+            "has_sponsored_messages_enabled": req.HasSponsoredMessagesEnabled,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type SetBusinessLocationRequest struct { 
     // The new location of the business; pass null to remove the location
     Location *BusinessLocation `json:"location"`
@@ -15133,6 +15319,32 @@ func (client *Client) SendPhoneNumberFirebaseSms(req *SendPhoneNumberFirebaseSms
         },
         Data: map[string]interface{}{
             "token": req.Token,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+type ReportPhoneNumberCodeMissingRequest struct { 
+    // Current mobile network code
+    MobileNetworkCode string `json:"mobile_network_code"`
+}
+
+// Reports that authentication code wasn't delivered via SMS to the specified phone number; for official mobile apps only
+func (client *Client) ReportPhoneNumberCodeMissing(req *ReportPhoneNumberCodeMissingRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "reportPhoneNumberCodeMissing",
+        },
+        Data: map[string]interface{}{
+            "mobile_network_code": req.MobileNetworkCode,
         },
     })
     if err != nil {
@@ -15556,7 +15768,7 @@ type GetCommandsRequest struct {
     LanguageCode string `json:"language_code"`
 }
 
-// Returns list of commands supported by the bot for the given user scope and language; for bots only
+// Returns the list of commands supported by the bot for the given user scope and language; for bots only
 func (client *Client) GetCommands(req *GetCommandsRequest) (*BotCommands, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18001,7 +18213,7 @@ func (client *Client) GetAccountTtl() (*AccountTtl, error) {
 type DeleteAccountRequest struct { 
     // The reason why the account was deleted; optional
     Reason string `json:"reason"`
-    // The 2-step verification password of the current user. If not specified, account deletion can be canceled within one week
+    // The 2-step verification password of the current user. If the current user isn't authorized, then an empty string can be passed and account deletion can be canceled within one week
     Password string `json:"password"`
 }
 
@@ -18267,7 +18479,7 @@ type GetChatRevenueTransactionsRequest struct {
     Limit int32 `json:"limit"`
 }
 
-// Returns list of revenue transactions for a chat. Currently, this method can be used only for channels if supergroupFullInfo.can_get_revenue_statistics == true
+// Returns the list of revenue transactions for a chat. Currently, this method can be used only for channels if supergroupFullInfo.can_get_revenue_statistics == true
 func (client *Client) GetChatRevenueTransactions(req *GetChatRevenueTransactionsRequest) (*ChatRevenueTransactions, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -20734,7 +20946,7 @@ func (client *Client) RemoveProxy(req *RemoveProxyRequest) (*Ok, error) {
     return UnmarshalOk(result.Data)
 }
 
-// Returns list of proxies that are currently set up. Can be called before authorization
+// Returns the list of proxies that are currently set up. Can be called before authorization
 func (client *Client) GetProxies() (*Proxies, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -20927,7 +21139,7 @@ func GetLogVerbosityLevel() (*LogVerbosityLevel, error) {
 func (client *Client) GetLogVerbosityLevel() (*LogVerbosityLevel, error) {
     return GetLogVerbosityLevel()}
 
-// Returns list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
+// Returns the list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
 func GetLogTags() (*LogTags, error) {
     result, err := Execute(Request{
         meta: meta{
@@ -20947,7 +21159,7 @@ func GetLogTags() (*LogTags, error) {
 }
 
 // deprecated
-// Returns list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
+// Returns the list of available TDLib internal log tags, for example, ["actor", "binlog", "connections", "notifications", "proxy"]. Can be called synchronously
 func (client *Client) GetLogTags() (*LogTags, error) {
     return GetLogTags()}
 
@@ -21586,6 +21798,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateScopeNotificationSettings:
         return UnmarshalUpdateScopeNotificationSettings(result.Data)
 
+    case TypeUpdateReactionNotificationSettings:
+        return UnmarshalUpdateReactionNotificationSettings(result.Data)
+
     case TypeUpdateNotification:
         return UnmarshalUpdateNotification(result.Data)
 
@@ -21759,6 +21974,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateSavedMessagesTags:
         return UnmarshalUpdateSavedMessagesTags(result.Data)
+
+    case TypeUpdateChatRevenueAmount:
+        return UnmarshalUpdateChatRevenueAmount(result.Data)
 
     case TypeUpdateSpeechRecognitionTrial:
         return UnmarshalUpdateSpeechRecognitionTrial(result.Data)
