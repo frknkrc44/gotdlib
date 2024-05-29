@@ -625,6 +625,86 @@ func UnmarshalListOfInputChatPhoto(dataList []json.RawMessage) ([]InputChatPhoto
     return list, nil
 }
 
+func UnmarshalStarTransactionDirection(data json.RawMessage) (StarTransactionDirection, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeStarTransactionDirectionIncoming:
+        return UnmarshalStarTransactionDirectionIncoming(data)
+
+    case TypeStarTransactionDirectionOutgoing:
+        return UnmarshalStarTransactionDirectionOutgoing(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfStarTransactionDirection(dataList []json.RawMessage) ([]StarTransactionDirection, error) {
+    list := []StarTransactionDirection{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalStarTransactionDirection(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
+func UnmarshalStarTransactionSource(data json.RawMessage) (StarTransactionSource, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeStarTransactionSourceTelegram:
+        return UnmarshalStarTransactionSourceTelegram(data)
+
+    case TypeStarTransactionSourceAppStore:
+        return UnmarshalStarTransactionSourceAppStore(data)
+
+    case TypeStarTransactionSourceGooglePlay:
+        return UnmarshalStarTransactionSourceGooglePlay(data)
+
+    case TypeStarTransactionSourceFragment:
+        return UnmarshalStarTransactionSourceFragment(data)
+
+    case TypeStarTransactionSourceUser:
+        return UnmarshalStarTransactionSourceUser(data)
+
+    case TypeStarTransactionSourceUnsupported:
+        return UnmarshalStarTransactionSourceUnsupported(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfStarTransactionSource(dataList []json.RawMessage) ([]StarTransactionSource, error) {
+    list := []StarTransactionSource{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalStarTransactionSource(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
 func UnmarshalPremiumGiveawayParticipantStatus(data json.RawMessage) (PremiumGiveawayParticipantStatus, error) {
     var meta meta
 
@@ -1065,6 +1145,40 @@ func UnmarshalListOfReactionType(dataList []json.RawMessage) ([]ReactionType, er
 
     for _, data := range dataList {
         entity, err := UnmarshalReactionType(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
+func UnmarshalMessageEffectType(data json.RawMessage) (MessageEffectType, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeMessageEffectTypeEmojiReaction:
+        return UnmarshalMessageEffectTypeEmojiReaction(data)
+
+    case TypeMessageEffectTypePremiumSticker:
+        return UnmarshalMessageEffectTypePremiumSticker(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfMessageEffectType(dataList []json.RawMessage) ([]MessageEffectType, error) {
+    list := []MessageEffectType{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalMessageEffectType(data)
         if err != nil {
             return nil, err
         }
@@ -2173,6 +2287,74 @@ func UnmarshalListOfPaymentProvider(dataList []json.RawMessage) ([]PaymentProvid
     return list, nil
 }
 
+func UnmarshalPaymentFormType(data json.RawMessage) (PaymentFormType, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypePaymentFormTypeRegular:
+        return UnmarshalPaymentFormTypeRegular(data)
+
+    case TypePaymentFormTypeStars:
+        return UnmarshalPaymentFormTypeStars(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfPaymentFormType(dataList []json.RawMessage) ([]PaymentFormType, error) {
+    list := []PaymentFormType{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalPaymentFormType(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
+func UnmarshalPaymentReceiptType(data json.RawMessage) (PaymentReceiptType, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypePaymentReceiptTypeRegular:
+        return UnmarshalPaymentReceiptTypeRegular(data)
+
+    case TypePaymentReceiptTypeStars:
+        return UnmarshalPaymentReceiptTypeStars(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfPaymentReceiptType(dataList []json.RawMessage) ([]PaymentReceiptType, error) {
+    list := []PaymentReceiptType{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalPaymentReceiptType(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
 func UnmarshalInputInvoice(data json.RawMessage) (InputInvoice, error) {
     var meta meta
 
@@ -2855,6 +3037,9 @@ func UnmarshalTextEntityType(data json.RawMessage) (TextEntityType, error) {
 
     case TypeTextEntityTypeBlockQuote:
         return UnmarshalTextEntityTypeBlockQuote(data)
+
+    case TypeTextEntityTypeExpandableBlockQuote:
+        return UnmarshalTextEntityTypeExpandableBlockQuote(data)
 
     case TypeTextEntityTypeTextUrl:
         return UnmarshalTextEntityTypeTextUrl(data)
@@ -3630,6 +3815,40 @@ func UnmarshalListOfChatBoostSource(dataList []json.RawMessage) ([]ChatBoostSour
 
     for _, data := range dataList {
         entity, err := UnmarshalChatBoostSource(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
+func UnmarshalResendCodeReason(data json.RawMessage) (ResendCodeReason, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeResendCodeReasonUserRequest:
+        return UnmarshalResendCodeReasonUserRequest(data)
+
+    case TypeResendCodeReasonVerificationFailed:
+        return UnmarshalResendCodeReasonVerificationFailed(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfResendCodeReason(dataList []json.RawMessage) ([]ResendCodeReason, error) {
+    list := []ResendCodeReason{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalResendCodeReason(data)
         if err != nil {
             return nil, err
         }
@@ -4803,6 +5022,9 @@ func UnmarshalStorePaymentPurpose(data json.RawMessage) (StorePaymentPurpose, er
     case TypeStorePaymentPurposePremiumGiveaway:
         return UnmarshalStorePaymentPurposePremiumGiveaway(data)
 
+    case TypeStorePaymentPurposeStars:
+        return UnmarshalStorePaymentPurposeStars(data)
+
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
     }
@@ -4836,6 +5058,9 @@ func UnmarshalTelegramPaymentPurpose(data json.RawMessage) (TelegramPaymentPurpo
 
     case TypeTelegramPaymentPurposePremiumGiveaway:
         return UnmarshalTelegramPaymentPurposePremiumGiveaway(data)
+
+    case TypeTelegramPaymentPurposeStars:
+        return UnmarshalTelegramPaymentPurposeStars(data)
 
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
@@ -6947,6 +7172,9 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateMessageUnreadReactions:
         return UnmarshalUpdateMessageUnreadReactions(data)
 
+    case TypeUpdateMessageFactCheck:
+        return UnmarshalUpdateMessageFactCheck(data)
+
     case TypeUpdateMessageLiveLocationViewed:
         return UnmarshalUpdateMessageLiveLocationViewed(data)
 
@@ -7148,6 +7376,9 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateFileRemovedFromDownloads:
         return UnmarshalUpdateFileRemovedFromDownloads(data)
 
+    case TypeUpdateApplicationVerificationRequired:
+        return UnmarshalUpdateApplicationVerificationRequired(data)
+
     case TypeUpdateCall:
         return UnmarshalUpdateCall(data)
 
@@ -7250,11 +7481,17 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
     case TypeUpdateActiveEmojiReactions:
         return UnmarshalUpdateActiveEmojiReactions(data)
 
+    case TypeUpdateAvailableMessageEffects:
+        return UnmarshalUpdateAvailableMessageEffects(data)
+
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(data)
 
     case TypeUpdateSavedMessagesTags:
         return UnmarshalUpdateSavedMessagesTags(data)
+
+    case TypeUpdateOwnedStarCount:
+        return UnmarshalUpdateOwnedStarCount(data)
 
     case TypeUpdateChatRevenueAmount:
         return UnmarshalUpdateChatRevenueAmount(data)
@@ -8452,6 +8689,14 @@ func UnmarshalChatAdministratorRights(data json.RawMessage) (*ChatAdministratorR
     return &resp, err
 }
 
+func UnmarshalProductInfo(data json.RawMessage) (*ProductInfo, error) {
+    var resp ProductInfo
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalPremiumPaymentOption(data json.RawMessage) (*PremiumPaymentOption, error) {
     var resp PremiumPaymentOption
 
@@ -8486,6 +8731,102 @@ func UnmarshalPremiumGiftCodePaymentOptions(data json.RawMessage) (*PremiumGiftC
 
 func UnmarshalPremiumGiftCodeInfo(data json.RawMessage) (*PremiumGiftCodeInfo, error) {
     var resp PremiumGiftCodeInfo
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarPaymentOption(data json.RawMessage) (*StarPaymentOption, error) {
+    var resp StarPaymentOption
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarPaymentOptions(data json.RawMessage) (*StarPaymentOptions, error) {
+    var resp StarPaymentOptions
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionDirectionIncoming(data json.RawMessage) (*StarTransactionDirectionIncoming, error) {
+    var resp StarTransactionDirectionIncoming
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionDirectionOutgoing(data json.RawMessage) (*StarTransactionDirectionOutgoing, error) {
+    var resp StarTransactionDirectionOutgoing
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionSourceTelegram(data json.RawMessage) (*StarTransactionSourceTelegram, error) {
+    var resp StarTransactionSourceTelegram
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionSourceAppStore(data json.RawMessage) (*StarTransactionSourceAppStore, error) {
+    var resp StarTransactionSourceAppStore
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionSourceGooglePlay(data json.RawMessage) (*StarTransactionSourceGooglePlay, error) {
+    var resp StarTransactionSourceGooglePlay
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionSourceFragment(data json.RawMessage) (*StarTransactionSourceFragment, error) {
+    var resp StarTransactionSourceFragment
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionSourceUser(data json.RawMessage) (*StarTransactionSourceUser, error) {
+    var resp StarTransactionSourceUser
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionSourceUnsupported(data json.RawMessage) (*StarTransactionSourceUnsupported, error) {
+    var resp StarTransactionSourceUnsupported
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransaction(data json.RawMessage) (*StarTransaction, error) {
+    var resp StarTransaction
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactions(data json.RawMessage) (*StarTransactions, error) {
+    var resp StarTransactions
 
     err := json.Unmarshal(data, &resp)
 
@@ -9204,6 +9545,30 @@ func UnmarshalUnreadReaction(data json.RawMessage) (*UnreadReaction, error) {
     return &resp, err
 }
 
+func UnmarshalMessageEffectTypeEmojiReaction(data json.RawMessage) (*MessageEffectTypeEmojiReaction, error) {
+    var resp MessageEffectTypeEmojiReaction
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalMessageEffectTypePremiumSticker(data json.RawMessage) (*MessageEffectTypePremiumSticker, error) {
+    var resp MessageEffectTypePremiumSticker
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalMessageEffect(data json.RawMessage) (*MessageEffect, error) {
+    var resp MessageEffect
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalMessageSendingStatePending(data json.RawMessage) (*MessageSendingStatePending, error) {
     var resp MessageSendingStatePending
 
@@ -9262,6 +9627,14 @@ func UnmarshalInputMessageReplyToMessage(data json.RawMessage) (*InputMessageRep
 
 func UnmarshalInputMessageReplyToStory(data json.RawMessage) (*InputMessageReplyToStory, error) {
     var resp InputMessageReplyToStory
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalFactCheck(data json.RawMessage) (*FactCheck, error) {
+    var resp FactCheck
 
     err := json.Unmarshal(data, &resp)
 
@@ -10892,6 +11265,22 @@ func UnmarshalPaymentOption(data json.RawMessage) (*PaymentOption, error) {
     return &resp, err
 }
 
+func UnmarshalPaymentFormTypeRegular(data json.RawMessage) (*PaymentFormTypeRegular, error) {
+    var resp PaymentFormTypeRegular
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPaymentFormTypeStars(data json.RawMessage) (*PaymentFormTypeStars, error) {
+    var resp PaymentFormTypeStars
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalPaymentForm(data json.RawMessage) (*PaymentForm, error) {
     var resp PaymentForm
 
@@ -10910,6 +11299,22 @@ func UnmarshalValidatedOrderInfo(data json.RawMessage) (*ValidatedOrderInfo, err
 
 func UnmarshalPaymentResult(data json.RawMessage) (*PaymentResult, error) {
     var resp PaymentResult
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPaymentReceiptTypeRegular(data json.RawMessage) (*PaymentReceiptTypeRegular, error) {
+    var resp PaymentReceiptTypeRegular
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPaymentReceiptTypeStars(data json.RawMessage) (*PaymentReceiptTypeStars, error) {
+    var resp PaymentReceiptTypeStars
 
     err := json.Unmarshal(data, &resp)
 
@@ -12260,6 +12665,14 @@ func UnmarshalTextEntityTypeBlockQuote(data json.RawMessage) (*TextEntityTypeBlo
     return &resp, err
 }
 
+func UnmarshalTextEntityTypeExpandableBlockQuote(data json.RawMessage) (*TextEntityTypeExpandableBlockQuote, error) {
+    var resp TextEntityTypeExpandableBlockQuote
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalTextEntityTypeTextUrl(data json.RawMessage) (*TextEntityTypeTextUrl, error) {
     var resp TextEntityTypeTextUrl
 
@@ -13334,6 +13747,22 @@ func UnmarshalChatBoostSlot(data json.RawMessage) (*ChatBoostSlot, error) {
 
 func UnmarshalChatBoostSlots(data json.RawMessage) (*ChatBoostSlots, error) {
     var resp ChatBoostSlots
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalResendCodeReasonUserRequest(data json.RawMessage) (*ResendCodeReasonUserRequest, error) {
+    var resp ResendCodeReasonUserRequest
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalResendCodeReasonVerificationFailed(data json.RawMessage) (*ResendCodeReasonVerificationFailed, error) {
+    var resp ResendCodeReasonVerificationFailed
 
     err := json.Unmarshal(data, &resp)
 
@@ -15220,6 +15649,14 @@ func UnmarshalStorePaymentPurposePremiumGiveaway(data json.RawMessage) (*StorePa
     return &resp, err
 }
 
+func UnmarshalStorePaymentPurposeStars(data json.RawMessage) (*StorePaymentPurposeStars, error) {
+    var resp StorePaymentPurposeStars
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalTelegramPaymentPurposePremiumGiftCodes(data json.RawMessage) (*TelegramPaymentPurposePremiumGiftCodes, error) {
     var resp TelegramPaymentPurposePremiumGiftCodes
 
@@ -15230,6 +15667,14 @@ func UnmarshalTelegramPaymentPurposePremiumGiftCodes(data json.RawMessage) (*Tel
 
 func UnmarshalTelegramPaymentPurposePremiumGiveaway(data json.RawMessage) (*TelegramPaymentPurposePremiumGiveaway, error) {
     var resp TelegramPaymentPurposePremiumGiveaway
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalTelegramPaymentPurposeStars(data json.RawMessage) (*TelegramPaymentPurposeStars, error) {
+    var resp TelegramPaymentPurposeStars
 
     err := json.Unmarshal(data, &resp)
 
@@ -18148,6 +18593,14 @@ func UnmarshalUpdateMessageUnreadReactions(data json.RawMessage) (*UpdateMessage
     return &resp, err
 }
 
+func UnmarshalUpdateMessageFactCheck(data json.RawMessage) (*UpdateMessageFactCheck, error) {
+    var resp UpdateMessageFactCheck
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalUpdateMessageLiveLocationViewed(data json.RawMessage) (*UpdateMessageLiveLocationViewed, error) {
     var resp UpdateMessageLiveLocationViewed
 
@@ -18684,6 +19137,14 @@ func UnmarshalUpdateFileRemovedFromDownloads(data json.RawMessage) (*UpdateFileR
     return &resp, err
 }
 
+func UnmarshalUpdateApplicationVerificationRequired(data json.RawMessage) (*UpdateApplicationVerificationRequired, error) {
+    var resp UpdateApplicationVerificationRequired
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalUpdateCall(data json.RawMessage) (*UpdateCall, error) {
     var resp UpdateCall
 
@@ -18956,6 +19417,14 @@ func UnmarshalUpdateActiveEmojiReactions(data json.RawMessage) (*UpdateActiveEmo
     return &resp, err
 }
 
+func UnmarshalUpdateAvailableMessageEffects(data json.RawMessage) (*UpdateAvailableMessageEffects, error) {
+    var resp UpdateAvailableMessageEffects
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalUpdateDefaultReactionType(data json.RawMessage) (*UpdateDefaultReactionType, error) {
     var resp UpdateDefaultReactionType
 
@@ -18966,6 +19435,14 @@ func UnmarshalUpdateDefaultReactionType(data json.RawMessage) (*UpdateDefaultRea
 
 func UnmarshalUpdateSavedMessagesTags(data json.RawMessage) (*UpdateSavedMessagesTags, error) {
     var resp UpdateSavedMessagesTags
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalUpdateOwnedStarCount(data json.RawMessage) (*UpdateOwnedStarCount, error) {
+    var resp UpdateOwnedStarCount
 
     err := json.Unmarshal(data, &resp)
 
@@ -19713,6 +20190,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeChatAdministratorRights:
         return UnmarshalChatAdministratorRights(data)
 
+    case TypeProductInfo:
+        return UnmarshalProductInfo(data)
+
     case TypePremiumPaymentOption:
         return UnmarshalPremiumPaymentOption(data)
 
@@ -19727,6 +20207,42 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypePremiumGiftCodeInfo:
         return UnmarshalPremiumGiftCodeInfo(data)
+
+    case TypeStarPaymentOption:
+        return UnmarshalStarPaymentOption(data)
+
+    case TypeStarPaymentOptions:
+        return UnmarshalStarPaymentOptions(data)
+
+    case TypeStarTransactionDirectionIncoming:
+        return UnmarshalStarTransactionDirectionIncoming(data)
+
+    case TypeStarTransactionDirectionOutgoing:
+        return UnmarshalStarTransactionDirectionOutgoing(data)
+
+    case TypeStarTransactionSourceTelegram:
+        return UnmarshalStarTransactionSourceTelegram(data)
+
+    case TypeStarTransactionSourceAppStore:
+        return UnmarshalStarTransactionSourceAppStore(data)
+
+    case TypeStarTransactionSourceGooglePlay:
+        return UnmarshalStarTransactionSourceGooglePlay(data)
+
+    case TypeStarTransactionSourceFragment:
+        return UnmarshalStarTransactionSourceFragment(data)
+
+    case TypeStarTransactionSourceUser:
+        return UnmarshalStarTransactionSourceUser(data)
+
+    case TypeStarTransactionSourceUnsupported:
+        return UnmarshalStarTransactionSourceUnsupported(data)
+
+    case TypeStarTransaction:
+        return UnmarshalStarTransaction(data)
+
+    case TypeStarTransactions:
+        return UnmarshalStarTransactions(data)
 
     case TypePremiumGiveawayParticipantStatusEligible:
         return UnmarshalPremiumGiveawayParticipantStatusEligible(data)
@@ -19995,6 +20511,15 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUnreadReaction:
         return UnmarshalUnreadReaction(data)
 
+    case TypeMessageEffectTypeEmojiReaction:
+        return UnmarshalMessageEffectTypeEmojiReaction(data)
+
+    case TypeMessageEffectTypePremiumSticker:
+        return UnmarshalMessageEffectTypePremiumSticker(data)
+
+    case TypeMessageEffect:
+        return UnmarshalMessageEffect(data)
+
     case TypeMessageSendingStatePending:
         return UnmarshalMessageSendingStatePending(data)
 
@@ -20018,6 +20543,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeInputMessageReplyToStory:
         return UnmarshalInputMessageReplyToStory(data)
+
+    case TypeFactCheck:
+        return UnmarshalFactCheck(data)
 
     case TypeMessage:
         return UnmarshalMessage(data)
@@ -20628,6 +21156,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypePaymentOption:
         return UnmarshalPaymentOption(data)
 
+    case TypePaymentFormTypeRegular:
+        return UnmarshalPaymentFormTypeRegular(data)
+
+    case TypePaymentFormTypeStars:
+        return UnmarshalPaymentFormTypeStars(data)
+
     case TypePaymentForm:
         return UnmarshalPaymentForm(data)
 
@@ -20636,6 +21170,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypePaymentResult:
         return UnmarshalPaymentResult(data)
+
+    case TypePaymentReceiptTypeRegular:
+        return UnmarshalPaymentReceiptTypeRegular(data)
+
+    case TypePaymentReceiptTypeStars:
+        return UnmarshalPaymentReceiptTypeStars(data)
 
     case TypePaymentReceipt:
         return UnmarshalPaymentReceipt(data)
@@ -21141,6 +21681,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeTextEntityTypeBlockQuote:
         return UnmarshalTextEntityTypeBlockQuote(data)
 
+    case TypeTextEntityTypeExpandableBlockQuote:
+        return UnmarshalTextEntityTypeExpandableBlockQuote(data)
+
     case TypeTextEntityTypeTextUrl:
         return UnmarshalTextEntityTypeTextUrl(data)
 
@@ -21545,6 +22088,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeChatBoostSlots:
         return UnmarshalChatBoostSlots(data)
+
+    case TypeResendCodeReasonUserRequest:
+        return UnmarshalResendCodeReasonUserRequest(data)
+
+    case TypeResendCodeReasonVerificationFailed:
+        return UnmarshalResendCodeReasonVerificationFailed(data)
 
     case TypeCallDiscardReasonEmpty:
         return UnmarshalCallDiscardReasonEmpty(data)
@@ -22251,11 +22800,17 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeStorePaymentPurposePremiumGiveaway:
         return UnmarshalStorePaymentPurposePremiumGiveaway(data)
 
+    case TypeStorePaymentPurposeStars:
+        return UnmarshalStorePaymentPurposeStars(data)
+
     case TypeTelegramPaymentPurposePremiumGiftCodes:
         return UnmarshalTelegramPaymentPurposePremiumGiftCodes(data)
 
     case TypeTelegramPaymentPurposePremiumGiveaway:
         return UnmarshalTelegramPaymentPurposePremiumGiveaway(data)
+
+    case TypeTelegramPaymentPurposeStars:
+        return UnmarshalTelegramPaymentPurposeStars(data)
 
     case TypeDeviceTokenFirebaseCloudMessaging:
         return UnmarshalDeviceTokenFirebaseCloudMessaging(data)
@@ -23349,6 +23904,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUpdateMessageUnreadReactions:
         return UnmarshalUpdateMessageUnreadReactions(data)
 
+    case TypeUpdateMessageFactCheck:
+        return UnmarshalUpdateMessageFactCheck(data)
+
     case TypeUpdateMessageLiveLocationViewed:
         return UnmarshalUpdateMessageLiveLocationViewed(data)
 
@@ -23550,6 +24108,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUpdateFileRemovedFromDownloads:
         return UnmarshalUpdateFileRemovedFromDownloads(data)
 
+    case TypeUpdateApplicationVerificationRequired:
+        return UnmarshalUpdateApplicationVerificationRequired(data)
+
     case TypeUpdateCall:
         return UnmarshalUpdateCall(data)
 
@@ -23652,11 +24213,17 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeUpdateActiveEmojiReactions:
         return UnmarshalUpdateActiveEmojiReactions(data)
 
+    case TypeUpdateAvailableMessageEffects:
+        return UnmarshalUpdateAvailableMessageEffects(data)
+
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(data)
 
     case TypeUpdateSavedMessagesTags:
         return UnmarshalUpdateSavedMessagesTags(data)
+
+    case TypeUpdateOwnedStarCount:
+        return UnmarshalUpdateOwnedStarCount(data)
 
     case TypeUpdateChatRevenueAmount:
         return UnmarshalUpdateChatRevenueAmount(data)

@@ -184,13 +184,20 @@ func (client *Client) SetAuthenticationEmailAddress(req *SetAuthenticationEmailA
     return UnmarshalOk(result.Data)
 }
 
+type ResendAuthenticationCodeRequest struct { 
+    // Reason of code resending; pass null if unknown
+    Reason ResendCodeReason `json:"reason"`
+}
+
 // Resends an authentication code to the user. Works only when the current authorization state is authorizationStateWaitCode, the next_code_type of the result is not null and the server-specified timeout has passed, or when the current authorization state is authorizationStateWaitEmailCode
-func (client *Client) ResendAuthenticationCode() (*Ok, error) {
+func (client *Client) ResendAuthenticationCode(req *ResendAuthenticationCodeRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "resendAuthenticationCode",
         },
-        Data: map[string]interface{}{},
+        Data: map[string]interface{}{
+            "reason": req.Reason,
+        },
     })
     if err != nil {
         return nil, err
@@ -436,7 +443,7 @@ func (client *Client) RecoverAuthenticationPassword(req *RecoverAuthenticationPa
 }
 
 type SendAuthenticationFirebaseSmsRequest struct { 
-    // SafetyNet Attestation API token for the Android application, or secret from push notification for the iOS application
+    // Play Integrity API or SafetyNet Attestation API token for the Android application, or secret from push notification for the iOS application
     Token string `json:"token"`
 }
 
@@ -466,7 +473,7 @@ type ReportAuthenticationCodeMissingRequest struct {
     MobileNetworkCode string `json:"mobile_network_code"`
 }
 
-// Reports that authentication code wasn't delivered via SMS; for official mobile apps only. Works only when the current authorization state is authorizationStateWaitCode
+// Reports that authentication code wasn't delivered via SMS; for official mobile applications only. Works only when the current authorization state is authorizationStateWaitCode
 func (client *Client) ReportAuthenticationCodeMissing(req *ReportAuthenticationCodeMissingRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -2870,6 +2877,112 @@ func (client *Client) SearchOutgoingDocumentMessages(req *SearchOutgoingDocument
     return UnmarshalFoundMessages(result.Data)
 }
 
+type SearchPublicHashtagMessagesRequest struct { 
+    // Hashtag to search for
+    Hashtag string `json:"hashtag"`
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Searches for public channel posts with the given hashtag. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchPublicHashtagMessages(req *SearchPublicHashtagMessagesRequest) (*FoundMessages, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "searchPublicHashtagMessages",
+        },
+        Data: map[string]interface{}{
+            "hashtag": req.Hashtag,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundMessages(result.Data)
+}
+
+type GetSearchedForHashtagsRequest struct { 
+    // Prefix of hashtags to return
+    Prefix string `json:"prefix"`
+    // The maximum number of hashtags to be returned
+    Limit int32 `json:"limit"`
+}
+
+// Returns recently searched for hashtags by their prefix
+func (client *Client) GetSearchedForHashtags(req *GetSearchedForHashtagsRequest) (*Hashtags, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSearchedForHashtags",
+        },
+        Data: map[string]interface{}{
+            "prefix": req.Prefix,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalHashtags(result.Data)
+}
+
+type RemoveSearchedForHashtagRequest struct { 
+    // Hashtag to delete
+    Hashtag string `json:"hashtag"`
+}
+
+// Removes a hashtag from the list of recently searched for hashtags
+func (client *Client) RemoveSearchedForHashtag(req *RemoveSearchedForHashtagRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "removeSearchedForHashtag",
+        },
+        Data: map[string]interface{}{
+            "hashtag": req.Hashtag,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
+// Clears the list of recently searched for hashtags
+func (client *Client) ClearSearchedForHashtags() (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "clearSearchedForHashtags",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type DeleteAllCallMessagesRequest struct { 
     // Pass true to delete the messages for all users
     Revoke bool `json:"revoke"`
@@ -3631,7 +3744,7 @@ type SendMessageAlbumRequest struct {
     ReplyTo InputMessageReplyTo `json:"reply_to"`
     // Options to be used to send the messages; pass null to use default options
     Options *MessageSendOptions `json:"options"`
-    // Contents of messages to be sent. At most 10 messages can be added to an album
+    // Contents of messages to be sent. At most 10 messages can be added to an album. All messages must have the same value of show_caption_above_media
     InputMessageContents []InputMessageContent `json:"input_message_contents"`
 }
 
@@ -4015,7 +4128,7 @@ type EditMessageTextRequest struct {
     InputMessageContent InputMessageContent `json:"input_message_content"`
 }
 
-// Edits the text of a message (or a text of a game message). Returns the edited message after the edit is completed on the server side
+// Edits the text of a message (or a text of a game message). Returns the edited message after the edit is completed on the server side. Can be used only if message.can_be_edited == true
 func (client *Client) EditMessageText(req *EditMessageTextRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4056,7 +4169,7 @@ type EditMessageLiveLocationRequest struct {
     ProximityAlertRadius int32 `json:"proximity_alert_radius"`
 }
 
-// Edits the message content of a live location. Messages can be edited for a limited period of time specified in the live location. Returns the edited message after the edit is completed on the server side
+// Edits the message content of a live location. Messages can be edited for a limited period of time specified in the live location. Returns the edited message after the edit is completed on the server side. Can be used only if message.can_be_edited == true
 func (client *Client) EditMessageLiveLocation(req *EditMessageLiveLocationRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4094,7 +4207,7 @@ type EditMessageMediaRequest struct {
     InputMessageContent InputMessageContent `json:"input_message_content"`
 }
 
-// Edits the content of a message with an animation, an audio, a document, a photo or a video, including message caption. If only the caption needs to be edited, use editMessageCaption instead. The media can't be edited if the message was set to self-destruct or to a self-destructing media. The type of message content in an album can't be changed with exception of replacing a photo with a video or vice versa. Returns the edited message after the edit is completed on the server side
+// Edits the content of a message with an animation, an audio, a document, a photo or a video, including message caption. If only the caption needs to be edited, use editMessageCaption instead. The media can't be edited if the message was set to self-destruct or to a self-destructing media. The type of message content in an album can't be changed with exception of replacing a photo with a video or vice versa. Returns the edited message after the edit is completed on the server side. Can be used only if message.can_be_edited == true
 func (client *Client) EditMessageMedia(req *EditMessageMediaRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4127,9 +4240,11 @@ type EditMessageCaptionRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New message content caption; 0-getOption("message_caption_length_max") characters; pass null to remove caption
     Caption *FormattedText `json:"caption"`
+    // Pass true to show the caption above the media; otherwise, caption will be shown below the media. Can be true only for animation, photo, and video messages
+    ShowCaptionAboveMedia bool `json:"show_caption_above_media"`
 }
 
-// Edits the message content caption. Returns the edited message after the edit is completed on the server side
+// Edits the message content caption. Returns the edited message after the edit is completed on the server side. Can be used only if message.can_be_edited == true
 func (client *Client) EditMessageCaption(req *EditMessageCaptionRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4140,6 +4255,7 @@ func (client *Client) EditMessageCaption(req *EditMessageCaptionRequest) (*Messa
             "message_id": req.MessageId,
             "reply_markup": req.ReplyMarkup,
             "caption": req.Caption,
+            "show_caption_above_media": req.ShowCaptionAboveMedia,
         },
     })
     if err != nil {
@@ -4162,7 +4278,7 @@ type EditMessageReplyMarkupRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
 }
 
-// Edits the message reply markup; for bots only. Returns the edited message after the edit is completed on the server side
+// Edits the message reply markup; for bots only. Returns the edited message after the edit is completed on the server side. Can be used only if message.can_be_edited == true
 func (client *Client) EditMessageReplyMarkup(req *EditMessageReplyMarkupRequest) (*Message, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -4297,6 +4413,8 @@ type EditInlineMessageCaptionRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New message content caption; pass null to remove caption; 0-getOption("message_caption_length_max") characters
     Caption *FormattedText `json:"caption"`
+    // Pass true to show the caption above the media; otherwise, caption will be shown below the media. Can be true only for animation, photo, and video messages
+    ShowCaptionAboveMedia bool `json:"show_caption_above_media"`
 }
 
 // Edits the caption of an inline message sent via a bot; for bots only
@@ -4309,6 +4427,7 @@ func (client *Client) EditInlineMessageCaption(req *EditInlineMessageCaptionRequ
             "inline_message_id": req.InlineMessageId,
             "reply_markup": req.ReplyMarkup,
             "caption": req.Caption,
+            "show_caption_above_media": req.ShowCaptionAboveMedia,
         },
     })
     if err != nil {
@@ -4383,6 +4502,38 @@ func (client *Client) EditMessageSchedulingState(req *EditMessageSchedulingState
     return UnmarshalOk(result.Data)
 }
 
+type SetMessageFactCheckRequest struct { 
+    // The channel chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // New text of the fact-check; 0-getOption("fact_check_length_max") characters; pass null to remove it. Only Bold, Italic, and TextUrl entities with https://t.me/ links are supported
+    Text *FormattedText `json:"text"`
+}
+
+// Changes the fact-check of a message. Can be only used if getOption("can_edit_fact_check") == true
+func (client *Client) SetMessageFactCheck(req *SetMessageFactCheckRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setMessageFactCheck",
+        },
+        Data: map[string]interface{}{
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "text": req.Text,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type SendBusinessMessageRequest struct { 
     // Unique identifier of business connection on behalf of which to send the request
     BusinessConnectionId string `json:"business_connection_id"`
@@ -4394,6 +4545,8 @@ type SendBusinessMessageRequest struct {
     DisableNotification bool `json:"disable_notification"`
     // Pass true if the content of the message must be protected from forwarding and saving
     ProtectContent bool `json:"protect_content"`
+    // Identifier of the effect to apply to the message
+    EffectId JsonInt64 `json:"effect_id"`
     // Markup for replying to the message; pass null if none
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // The content of the message to be sent
@@ -4412,6 +4565,7 @@ func (client *Client) SendBusinessMessage(req *SendBusinessMessageRequest) (*Bus
             "reply_to": req.ReplyTo,
             "disable_notification": req.DisableNotification,
             "protect_content": req.ProtectContent,
+            "effect_id": req.EffectId,
             "reply_markup": req.ReplyMarkup,
             "input_message_content": req.InputMessageContent,
         },
@@ -4438,7 +4592,9 @@ type SendBusinessMessageAlbumRequest struct {
     DisableNotification bool `json:"disable_notification"`
     // Pass true if the content of the message must be protected from forwarding and saving
     ProtectContent bool `json:"protect_content"`
-    // Contents of messages to be sent. At most 10 messages can be added to an album
+    // Identifier of the effect to apply to the message
+    EffectId JsonInt64 `json:"effect_id"`
+    // Contents of messages to be sent. At most 10 messages can be added to an album. All messages must have the same value of show_caption_above_media
     InputMessageContents []InputMessageContent `json:"input_message_contents"`
 }
 
@@ -4454,6 +4610,7 @@ func (client *Client) SendBusinessMessageAlbum(req *SendBusinessMessageAlbumRequ
             "reply_to": req.ReplyTo,
             "disable_notification": req.DisableNotification,
             "protect_content": req.ProtectContent,
+            "effect_id": req.EffectId,
             "input_message_contents": req.InputMessageContents,
         },
     })
@@ -4729,7 +4886,7 @@ type AddQuickReplyShortcutMessageAlbumRequest struct {
     ShortcutName string `json:"shortcut_name"`
     // Identifier of a quick reply message in the same shortcut to be replied; pass 0 if none
     ReplyToMessageId int64 `json:"reply_to_message_id"`
-    // Contents of messages to be sent. At most 10 messages can be added to an album
+    // Contents of messages to be sent. At most 10 messages can be added to an album. All messages must have the same value of show_caption_above_media
     InputMessageContents []InputMessageContent `json:"input_message_contents"`
 }
 
@@ -5508,6 +5665,32 @@ func (client *Client) SetSavedMessagesTagLabel(req *SetSavedMessagesTagLabelRequ
     return UnmarshalOk(result.Data)
 }
 
+type GetMessageEffectRequest struct { 
+    // Unique identifier of the effect
+    EffectId JsonInt64 `json:"effect_id"`
+}
+
+// Returns information about a message effect. Returns a 404 error if the effect is not found
+func (client *Client) GetMessageEffect(req *GetMessageEffectRequest) (*MessageEffect, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getMessageEffect",
+        },
+        Data: map[string]interface{}{
+            "effect_id": req.EffectId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalMessageEffect(result.Data)
+}
+
 type SearchQuoteRequest struct { 
     // Text in which to search for the quote
     Text *FormattedText `json:"text"`
@@ -5583,7 +5766,7 @@ type ParseTextEntitiesRequest struct {
     ParseMode TextParseMode `json:"parse_mode"`
 }
 
-// Parses Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities from a marked-up text. Can be called synchronously
+// Parses Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, ExpandableBlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities from a marked-up text. Can be called synchronously
 func ParseTextEntities(req *ParseTextEntitiesRequest) (*FormattedText, error) {
     result, err := Execute(Request{
         meta: meta{
@@ -5606,7 +5789,7 @@ func ParseTextEntities(req *ParseTextEntitiesRequest) (*FormattedText, error) {
 }
 
 // deprecated
-// Parses Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities from a marked-up text. Can be called synchronously
+// Parses Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, BlockQuote, ExpandableBlockQuote, Code, Pre, PreCode, TextUrl and MentionName entities from a marked-up text. Can be called synchronously
 func (client *Client) ParseTextEntities(req *ParseTextEntitiesRequest) (*FormattedText, error) {
     return ParseTextEntities(req)}
 
@@ -11515,6 +11698,35 @@ func (client *Client) SearchFileDownloads(req *SearchFileDownloadsRequest) (*Fou
     return UnmarshalFoundFileDownloads(result.Data)
 }
 
+type SetApplicationVerificationTokenRequest struct { 
+    // Unique identifier for the verification process as received from updateApplicationVerificationRequired
+    VerificationId int64 `json:"verification_id"`
+    // Play Integrity API token for the Android application, or secret from push notification for the iOS application; pass an empty string to abort verification and receive error VERIFICATION_FAILED for the request
+    Token string `json:"token"`
+}
+
+// Application verification has been completed. Can be called before authorization
+func (client *Client) SetApplicationVerificationToken(req *SetApplicationVerificationTokenRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "setApplicationVerificationToken",
+        },
+        Data: map[string]interface{}{
+            "verification_id": req.VerificationId,
+            "token": req.Token,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
+}
+
 type GetMessageFileTypeRequest struct { 
     // Beginning of the message file; up to 100 first lines
     MessageFileHead string `json:"message_file_head"`
@@ -13592,6 +13804,8 @@ func (client *Client) SuggestUserProfilePhoto(req *SuggestUserProfilePhotoReques
 type SearchUserByPhoneNumberRequest struct { 
     // Phone number to search for
     PhoneNumber string `json:"phone_number"`
+    // Pass true to get only locally available information without sending network requests
+    OnlyLocal bool `json:"only_local"`
 }
 
 // Searches a user by their phone number. Returns a 404 error if the user can't be found
@@ -13602,6 +13816,7 @@ func (client *Client) SearchUserByPhoneNumber(req *SearchUserByPhoneNumberReques
         },
         Data: map[string]interface{}{
             "phone_number": req.PhoneNumber,
+            "only_local": req.OnlyLocal,
         },
     })
     if err != nil {
@@ -15307,7 +15522,7 @@ func (client *Client) SendPhoneNumberCode(req *SendPhoneNumberCodeRequest) (*Aut
 }
 
 type SendPhoneNumberFirebaseSmsRequest struct { 
-    // SafetyNet Attestation API token for the Android application, or secret from push notification for the iOS application
+    // Play Integrity API or SafetyNet Attestation API token for the Android application, or secret from push notification for the iOS application
     Token string `json:"token"`
 }
 
@@ -15337,7 +15552,7 @@ type ReportPhoneNumberCodeMissingRequest struct {
     MobileNetworkCode string `json:"mobile_network_code"`
 }
 
-// Reports that authentication code wasn't delivered via SMS to the specified phone number; for official mobile apps only
+// Reports that authentication code wasn't delivered via SMS to the specified phone number; for official mobile applications only
 func (client *Client) ReportPhoneNumberCodeMissing(req *ReportPhoneNumberCodeMissingRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -15358,13 +15573,20 @@ func (client *Client) ReportPhoneNumberCodeMissing(req *ReportPhoneNumberCodeMis
     return UnmarshalOk(result.Data)
 }
 
+type ResendPhoneNumberCodeRequest struct { 
+    // Reason of code resending; pass null if unknown
+    Reason ResendCodeReason `json:"reason"`
+}
+
 // Resends the authentication code sent to a phone number. Works only if the previously received authenticationCodeInfo next_code_type was not null and the server-specified timeout has passed
-func (client *Client) ResendPhoneNumberCode() (*AuthenticationCodeInfo, error) {
+func (client *Client) ResendPhoneNumberCode(req *ResendPhoneNumberCodeRequest) (*AuthenticationCodeInfo, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "resendPhoneNumberCode",
         },
-        Data: map[string]interface{}{},
+        Data: map[string]interface{}{
+            "reason": req.Reason,
+        },
     })
     if err != nil {
         return nil, err
@@ -16725,7 +16947,7 @@ func (client *Client) ToggleSupergroupSignMessages(req *ToggleSupergroupSignMess
 }
 
 type ToggleSupergroupJoinToSendMessagesRequest struct { 
-    // Identifier of the supergroup
+    // Identifier of the supergroup that isn't a broadcast group
     SupergroupId int64 `json:"supergroup_id"`
     // New value of join_to_send_messages
     JoinToSendMessages bool `json:"join_to_send_messages"`
@@ -16754,7 +16976,7 @@ func (client *Client) ToggleSupergroupJoinToSendMessages(req *ToggleSupergroupJo
 }
 
 type ToggleSupergroupJoinByRequestRequest struct { 
-    // Identifier of the channel
+    // Identifier of the supergroup that isn't a broadcast group
     SupergroupId int64 `json:"supergroup_id"`
     // New value of join_by_request
     JoinByRequest bool `json:"join_by_request"`
@@ -17202,7 +17424,7 @@ type SendPaymentFormRequest struct {
     OrderInfoId string `json:"order_info_id"`
     // Identifier of a chosen shipping option, if applicable
     ShippingOptionId string `json:"shipping_option_id"`
-    // The credentials chosen by user for payment
+    // The credentials chosen by user for payment; pass null for a payment in Telegram stars
     Credentials InputCredentials `json:"credentials"`
     // Chosen by the user amount of tip in the smallest units of the currency
     TipAmount int64 `json:"tip_amount"`
@@ -17344,6 +17566,35 @@ func (client *Client) CreateInvoiceLink(req *CreateInvoiceLinkRequest) (*HttpUrl
     }
 
     return UnmarshalHttpUrl(result.Data)
+}
+
+type RefundStarPaymentRequest struct { 
+    // Identifier of the user that did the payment
+    UserId int64 `json:"user_id"`
+    // Telegram payment identifier
+    TelegramPaymentChargeId string `json:"telegram_payment_charge_id"`
+}
+
+// Refunds a previously done payment in Telegram Stars
+func (client *Client) RefundStarPayment(req *RefundStarPaymentRequest) (*Ok, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "refundStarPayment",
+        },
+        Data: map[string]interface{}{
+            "user_id": req.UserId,
+            "telegram_payment_charge_id": req.TelegramPaymentChargeId,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalOk(result.Data)
 }
 
 // Returns a user that can be contacted to get support
@@ -20295,16 +20546,64 @@ func (client *Client) GetPremiumGiveawayInfo(req *GetPremiumGiveawayInfoRequest)
    }
 }
 
-type CanPurchasePremiumRequest struct { 
+// Returns available options for Telegram stars purchase
+func (client *Client) GetStarPaymentOptions() (*StarPaymentOptions, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStarPaymentOptions",
+        },
+        Data: map[string]interface{}{},
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStarPaymentOptions(result.Data)
+}
+
+type GetStarTransactionsRequest struct { 
+    // Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // Direction of the transactions to receive; pass null to get all transactions
+    Direction StarTransactionDirection `json:"direction"`
+}
+
+// Returns the list of Telegram star transactions for the current user
+func (client *Client) GetStarTransactions(req *GetStarTransactionsRequest) (*StarTransactions, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStarTransactions",
+        },
+        Data: map[string]interface{}{
+            "offset": req.Offset,
+            "direction": req.Direction,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStarTransactions(result.Data)
+}
+
+type CanPurchaseFromStoreRequest struct { 
     // Transaction purpose
     Purpose StorePaymentPurpose `json:"purpose"`
 }
 
-// Checks whether Telegram Premium purchase is possible. Must be called before in-store Premium purchase
-func (client *Client) CanPurchasePremium(req *CanPurchasePremiumRequest) (*Ok, error) {
+// Checks whether an in-store purchase is possible. Must be called before any in-store purchase
+func (client *Client) CanPurchaseFromStore(req *CanPurchaseFromStoreRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "canPurchasePremium",
+            Type: "canPurchaseFromStore",
         },
         Data: map[string]interface{}{
             "purpose": req.Purpose,
@@ -21666,6 +21965,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateMessageUnreadReactions:
         return UnmarshalUpdateMessageUnreadReactions(result.Data)
 
+    case TypeUpdateMessageFactCheck:
+        return UnmarshalUpdateMessageFactCheck(result.Data)
+
     case TypeUpdateMessageLiveLocationViewed:
         return UnmarshalUpdateMessageLiveLocationViewed(result.Data)
 
@@ -21867,6 +22169,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateFileRemovedFromDownloads:
         return UnmarshalUpdateFileRemovedFromDownloads(result.Data)
 
+    case TypeUpdateApplicationVerificationRequired:
+        return UnmarshalUpdateApplicationVerificationRequired(result.Data)
+
     case TypeUpdateCall:
         return UnmarshalUpdateCall(result.Data)
 
@@ -21969,11 +22274,17 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateActiveEmojiReactions:
         return UnmarshalUpdateActiveEmojiReactions(result.Data)
 
+    case TypeUpdateAvailableMessageEffects:
+        return UnmarshalUpdateAvailableMessageEffects(result.Data)
+
     case TypeUpdateDefaultReactionType:
         return UnmarshalUpdateDefaultReactionType(result.Data)
 
     case TypeUpdateSavedMessagesTags:
         return UnmarshalUpdateSavedMessagesTags(result.Data)
+
+    case TypeUpdateOwnedStarCount:
+        return UnmarshalUpdateOwnedStarCount(result.Data)
 
     case TypeUpdateChatRevenueAmount:
         return UnmarshalUpdateChatRevenueAmount(result.Data)
