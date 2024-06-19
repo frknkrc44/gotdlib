@@ -19,21 +19,19 @@ func GetSenderId(sender tdlib.MessageSender) int64 {
 
 func GetTdParameters() *tdlib.SetTdlibParametersRequest {
 	return &tdlib.SetTdlibParametersRequest{
-		UseTestDc:              false,
-		DatabaseDirectory:      "./tdlib-db",
-		FilesDirectory:         "./tdlib-files",
-		UseFileDatabase:        true,
-		UseChatInfoDatabase:    true,
-		UseMessageDatabase:     true,
-		UseSecretChats:         false,
-		ApiId:                  132712,
-		ApiHash:                "e82c07ad653399a37baca8d1e498e472",
-		SystemLanguageCode:     "en",
-		DeviceModel:            "HuskyNG",
-		SystemVersion:          "3.0",
-		ApplicationVersion:     "3.0",
-		EnableStorageOptimizer: true,
-		IgnoreFileNames:        false,
+		UseTestDc:           false,
+		DatabaseDirectory:   "./tdlib-db",
+		FilesDirectory:      "./tdlib-files",
+		UseFileDatabase:     true,
+		UseChatInfoDatabase: true,
+		UseMessageDatabase:  true,
+		UseSecretChats:      false,
+		ApiId:               132712,
+		ApiHash:             "e82c07ad653399a37baca8d1e498e472",
+		SystemLanguageCode:  "en",
+		DeviceModel:         "HuskyNG",
+		SystemVersion:       "3.0",
+		ApplicationVersion:  "3.0",
 	}
 }
 

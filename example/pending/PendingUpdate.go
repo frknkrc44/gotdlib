@@ -91,7 +91,6 @@ func main() {
 				m, err := client.SendMessage(&tdlib.SendMessageRequest{
 					ChatId: chatId,
 					ReplyTo: &tdlib.InputMessageReplyToMessage{
-						ChatId:    chatId,
 						MessageId: msgId,
 					},
 					InputMessageContent: &tdlib.InputMessageText{

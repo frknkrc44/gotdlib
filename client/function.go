@@ -2877,23 +2877,23 @@ func (client *Client) SearchOutgoingDocumentMessages(req *SearchOutgoingDocument
     return UnmarshalFoundMessages(result.Data)
 }
 
-type SearchPublicHashtagMessagesRequest struct { 
-    // Hashtag to search for
-    Hashtag string `json:"hashtag"`
+type SearchPublicMessagesByTagRequest struct { 
+    // Hashtag or cashtag to search for
+    Tag string `json:"tag"`
     // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
     Offset string `json:"offset"`
     // The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
 }
 
-// Searches for public channel posts with the given hashtag. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
-func (client *Client) SearchPublicHashtagMessages(req *SearchPublicHashtagMessagesRequest) (*FoundMessages, error) {
+// Searches for public channel posts containing the given hashtag or cashtag. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchPublicMessagesByTag(req *SearchPublicMessagesByTagRequest) (*FoundMessages, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "searchPublicHashtagMessages",
+            Type: "searchPublicMessagesByTag",
         },
         Data: map[string]interface{}{
-            "hashtag": req.Hashtag,
+            "tag": req.Tag,
             "offset": req.Offset,
             "limit": req.Limit,
         },
@@ -2909,21 +2909,120 @@ func (client *Client) SearchPublicHashtagMessages(req *SearchPublicHashtagMessag
     return UnmarshalFoundMessages(result.Data)
 }
 
-type GetSearchedForHashtagsRequest struct { 
-    // Prefix of hashtags to return
-    Prefix string `json:"prefix"`
-    // The maximum number of hashtags to be returned
+type SearchPublicStoriesByTagRequest struct { 
+    // Hashtag or cashtag to search for
+    Tag string `json:"tag"`
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of stories to be returned; up to 100. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
     Limit int32 `json:"limit"`
 }
 
-// Returns recently searched for hashtags by their prefix
-func (client *Client) GetSearchedForHashtags(req *GetSearchedForHashtagsRequest) (*Hashtags, error) {
+// Searches for public stories containing the given hashtag or cashtag. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchPublicStoriesByTag(req *SearchPublicStoriesByTagRequest) (*FoundStories, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "getSearchedForHashtags",
+            Type: "searchPublicStoriesByTag",
         },
         Data: map[string]interface{}{
-            "prefix": req.Prefix,
+            "tag": req.Tag,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundStories(result.Data)
+}
+
+type SearchPublicStoriesByLocationRequest struct { 
+    // Address of the location
+    Address *LocationAddress `json:"address"`
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of stories to be returned; up to 100. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Searches for public stories by the given address location. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchPublicStoriesByLocation(req *SearchPublicStoriesByLocationRequest) (*FoundStories, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "searchPublicStoriesByLocation",
+        },
+        Data: map[string]interface{}{
+            "address": req.Address,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundStories(result.Data)
+}
+
+type SearchPublicStoriesByVenueRequest struct { 
+    // Provider of the venue
+    VenueProvider string `json:"venue_provider"`
+    // Identifier of the venue in the provider database
+    VenueId string `json:"venue_id"`
+    // Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of stories to be returned; up to 100. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
+    Limit int32 `json:"limit"`
+}
+
+// Searches for public stories from the given venue. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchPublicStoriesByVenue(req *SearchPublicStoriesByVenueRequest) (*FoundStories, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "searchPublicStoriesByVenue",
+        },
+        Data: map[string]interface{}{
+            "venue_provider": req.VenueProvider,
+            "venue_id": req.VenueId,
+            "offset": req.Offset,
+            "limit": req.Limit,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalFoundStories(result.Data)
+}
+
+type GetSearchedForTagsRequest struct { 
+    // Prefix of hashtags or cashtags to return
+    TagPrefix string `json:"tag_prefix"`
+    // The maximum number of items to be returned
+    Limit int32 `json:"limit"`
+}
+
+// Returns recently searched for hashtags or cashtags by their prefix
+func (client *Client) GetSearchedForTags(req *GetSearchedForTagsRequest) (*Hashtags, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getSearchedForTags",
+        },
+        Data: map[string]interface{}{
+            "tag_prefix": req.TagPrefix,
             "limit": req.Limit,
         },
     })
@@ -2938,19 +3037,19 @@ func (client *Client) GetSearchedForHashtags(req *GetSearchedForHashtagsRequest)
     return UnmarshalHashtags(result.Data)
 }
 
-type RemoveSearchedForHashtagRequest struct { 
-    // Hashtag to delete
-    Hashtag string `json:"hashtag"`
+type RemoveSearchedForTagRequest struct { 
+    // Hashtag or cashtag to delete
+    Tag string `json:"tag"`
 }
 
-// Removes a hashtag from the list of recently searched for hashtags
-func (client *Client) RemoveSearchedForHashtag(req *RemoveSearchedForHashtagRequest) (*Ok, error) {
+// Removes a hashtag or a cashtag from the list of recently searched for hashtags or cashtags
+func (client *Client) RemoveSearchedForTag(req *RemoveSearchedForTagRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "removeSearchedForHashtag",
+            Type: "removeSearchedForTag",
         },
         Data: map[string]interface{}{
-            "hashtag": req.Hashtag,
+            "tag": req.Tag,
         },
     })
     if err != nil {
@@ -2964,13 +3063,20 @@ func (client *Client) RemoveSearchedForHashtag(req *RemoveSearchedForHashtagRequ
     return UnmarshalOk(result.Data)
 }
 
-// Clears the list of recently searched for hashtags
-func (client *Client) ClearSearchedForHashtags() (*Ok, error) {
+type ClearSearchedForTagsRequest struct { 
+    // Pass true to clear the list of recently searched for cashtags; otherwise, the list of recently searched for hashtags will be cleared
+    ClearCashtags bool `json:"clear_cashtags"`
+}
+
+// Clears the list of recently searched for hashtags or cashtags
+func (client *Client) ClearSearchedForTags(req *ClearSearchedForTagsRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
-            Type: "clearSearchedForHashtags",
+            Type: "clearSearchedForTags",
         },
-        Data: map[string]interface{}{},
+        Data: map[string]interface{}{
+            "clear_cashtags": req.ClearCashtags,
+        },
     })
     if err != nil {
         return nil, err
@@ -4505,7 +4611,7 @@ func (client *Client) EditMessageSchedulingState(req *EditMessageSchedulingState
 type SetMessageFactCheckRequest struct { 
     // The channel chat the message belongs to
     ChatId int64 `json:"chat_id"`
-    // Identifier of the message
+    // Identifier of the message. The message must be one of the following types: messageAnimation, messageAudio, messageDocument, messagePhoto, messageText, messageVideo
     MessageId int64 `json:"message_id"`
     // New text of the fact-check; 0-getOption("fact_check_length_max") characters; pass null to remove it. Only Bold, Italic, and TextUrl entities with https://t.me/ links are supported
     Text *FormattedText `json:"text"`
@@ -4623,6 +4729,240 @@ func (client *Client) SendBusinessMessageAlbum(req *SendBusinessMessageAlbumRequ
     }
 
     return UnmarshalBusinessMessages(result.Data)
+}
+
+type EditBusinessMessageTextRequest struct { 
+    // Unique identifier of business connection on behalf of which the message was sent
+    BusinessConnectionId string `json:"business_connection_id"`
+    // The chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // The new message reply markup; pass null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+    // New text content of the message. Must be of type inputMessageText
+    InputMessageContent InputMessageContent `json:"input_message_content"`
+}
+
+// Edits the text of a text or game message sent on behalf of a business account; for bots only
+func (client *Client) EditBusinessMessageText(req *EditBusinessMessageTextRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "editBusinessMessageText",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reply_markup": req.ReplyMarkup,
+            "input_message_content": req.InputMessageContent,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
+}
+
+type EditBusinessMessageLiveLocationRequest struct { 
+    // Unique identifier of business connection on behalf of which the message was sent
+    BusinessConnectionId string `json:"business_connection_id"`
+    // The chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // The new message reply markup; pass null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+    // New location content of the message; pass null to stop sharing the live location
+    Location *Location `json:"location"`
+    // New time relative to the message send date, for which the location can be updated, in seconds. If 0x7FFFFFFF specified, then the location can be updated forever. Otherwise, must not exceed the current live_period by more than a day, and the live location expiration date must remain in the next 90 days. Pass 0 to keep the current live_period
+    LivePeriod int32 `json:"live_period"`
+    // The new direction in which the location moves, in degrees; 1-360. Pass 0 if unknown
+    Heading int32 `json:"heading"`
+    // The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled
+    ProximityAlertRadius int32 `json:"proximity_alert_radius"`
+}
+
+// Edits the content of a live location in a message sent on behalf of a business account; for bots only
+func (client *Client) EditBusinessMessageLiveLocation(req *EditBusinessMessageLiveLocationRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "editBusinessMessageLiveLocation",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reply_markup": req.ReplyMarkup,
+            "location": req.Location,
+            "live_period": req.LivePeriod,
+            "heading": req.Heading,
+            "proximity_alert_radius": req.ProximityAlertRadius,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
+}
+
+type EditBusinessMessageMediaRequest struct { 
+    // Unique identifier of business connection on behalf of which the message was sent
+    BusinessConnectionId string `json:"business_connection_id"`
+    // The chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // The new message reply markup; pass null if none; for bots only
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+    // New content of the message. Must be one of the following types: inputMessageAnimation, inputMessageAudio, inputMessageDocument, inputMessagePhoto or inputMessageVideo
+    InputMessageContent InputMessageContent `json:"input_message_content"`
+}
+
+// Edits the content of a message with an animation, an audio, a document, a photo or a video in a message sent on behalf of a business account; for bots only
+func (client *Client) EditBusinessMessageMedia(req *EditBusinessMessageMediaRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "editBusinessMessageMedia",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reply_markup": req.ReplyMarkup,
+            "input_message_content": req.InputMessageContent,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
+}
+
+type EditBusinessMessageCaptionRequest struct { 
+    // Unique identifier of business connection on behalf of which the message was sent
+    BusinessConnectionId string `json:"business_connection_id"`
+    // The chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // The new message reply markup; pass null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+    // New message content caption; pass null to remove caption; 0-getOption("message_caption_length_max") characters
+    Caption *FormattedText `json:"caption"`
+    // Pass true to show the caption above the media; otherwise, caption will be shown below the media. Can be true only for animation, photo, and video messages
+    ShowCaptionAboveMedia bool `json:"show_caption_above_media"`
+}
+
+// Edits the caption of a message sent on behalf of a business account; for bots only
+func (client *Client) EditBusinessMessageCaption(req *EditBusinessMessageCaptionRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "editBusinessMessageCaption",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reply_markup": req.ReplyMarkup,
+            "caption": req.Caption,
+            "show_caption_above_media": req.ShowCaptionAboveMedia,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
+}
+
+type EditBusinessMessageReplyMarkupRequest struct { 
+    // Unique identifier of business connection on behalf of which the message was sent
+    BusinessConnectionId string `json:"business_connection_id"`
+    // The chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message
+    MessageId int64 `json:"message_id"`
+    // The new message reply markup; pass null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+}
+
+// Edits the reply markup of a message sent on behalf of a business account; for bots only
+func (client *Client) EditBusinessMessageReplyMarkup(req *EditBusinessMessageReplyMarkupRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "editBusinessMessageReplyMarkup",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reply_markup": req.ReplyMarkup,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
+}
+
+type StopBusinessPollRequest struct { 
+    // Unique identifier of business connection on behalf of which the message with the poll was sent
+    BusinessConnectionId string `json:"business_connection_id"`
+    // The chat the message belongs to
+    ChatId int64 `json:"chat_id"`
+    // Identifier of the message containing the poll
+    MessageId int64 `json:"message_id"`
+    // The new message reply markup; pass null if none
+    ReplyMarkup ReplyMarkup `json:"reply_markup"`
+}
+
+// Stops a poll sent on behalf of a business account; for bots only
+func (client *Client) StopBusinessPoll(req *StopBusinessPollRequest) (*BusinessMessage, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "stopBusinessPoll",
+        },
+        Data: map[string]interface{}{
+            "business_connection_id": req.BusinessConnectionId,
+            "chat_id": req.ChatId,
+            "message_id": req.MessageId,
+            "reply_markup": req.ReplyMarkup,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalBusinessMessage(result.Data)
 }
 
 type CheckQuickReplyShortcutNameRequest struct { 
@@ -4974,7 +5314,7 @@ func (client *Client) EditQuickReplyMessage(req *EditQuickReplyMessageRequest) (
     return UnmarshalOk(result.Data)
 }
 
-// Returns the list of custom emojis, which can be used as forum topic icon by all users
+// Returns the list of custom emoji, which can be used as forum topic icon by all users
 func (client *Client) GetForumTopicDefaultIcons() (*Stickers, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -13891,7 +14231,7 @@ func (client *Client) GetUserProfilePhotos(req *GetUserProfilePhotosRequest) (*C
 type GetStickersRequest struct { 
     // Type of the stickers to return
     StickerType StickerType `json:"sticker_type"`
-    // Search query; a space-separated list of emoji or a keyword prefix. If empty, returns all known installed stickers
+    // Search query; a space-separated list of emojis or a keyword prefix. If empty, returns all known installed stickers
     Query string `json:"query"`
     // The maximum number of stickers to be returned
     Limit int32 `json:"limit"`
@@ -13961,7 +14301,7 @@ func (client *Client) GetAllStickerEmojis(req *GetAllStickerEmojisRequest) (*Emo
 type SearchStickersRequest struct { 
     // Type of the stickers to return
     StickerType StickerType `json:"sticker_type"`
-    // Space-separated list of emoji to search for; must be non-empty
+    // Space-separated list of emojis to search for; must be non-empty
     Emojis string `json:"emojis"`
     // The maximum number of stickers to be returned; 0-100
     Limit int32 `json:"limit"`
@@ -14621,7 +14961,7 @@ type GetEmojiCategoriesRequest struct {
     Type EmojiCategoryType `json:"type"`
 }
 
-// Returns available emojis categories
+// Returns available emoji categories
 func (client *Client) GetEmojiCategories(req *GetEmojiCategoriesRequest) (*EmojiCategories, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -18753,6 +19093,67 @@ func (client *Client) GetChatRevenueTransactions(req *GetChatRevenueTransactions
     return UnmarshalChatRevenueTransactions(result.Data)
 }
 
+type GetStarRevenueStatisticsRequest struct { 
+    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of a channel chat with supergroupFullInfo.can_get_revenue_statistics == true
+    OwnerId MessageSender `json:"owner_id"`
+    // Pass true if a dark theme is used by the application
+    IsDark bool `json:"is_dark"`
+}
+
+// Returns detailed Telegram star revenue statistics
+func (client *Client) GetStarRevenueStatistics(req *GetStarRevenueStatisticsRequest) (*StarRevenueStatistics, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStarRevenueStatistics",
+        },
+        Data: map[string]interface{}{
+            "owner_id": req.OwnerId,
+            "is_dark": req.IsDark,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalStarRevenueStatistics(result.Data)
+}
+
+type GetStarWithdrawalUrlRequest struct { 
+    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of a channel chat with supergroupFullInfo.can_get_revenue_statistics == true
+    OwnerId MessageSender `json:"owner_id"`
+    // The number of Telegram stars to withdraw. Must be at least getOption("star_withdrawal_count_min")
+    StarCount int64 `json:"star_count"`
+    // The 2-step verification password of the current user
+    Password string `json:"password"`
+}
+
+// Returns URL for Telegram star withdrawal
+func (client *Client) GetStarWithdrawalUrl(req *GetStarWithdrawalUrlRequest) (*HttpUrl, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStarWithdrawalUrl",
+        },
+        Data: map[string]interface{}{
+            "owner_id": req.OwnerId,
+            "star_count": req.StarCount,
+            "password": req.Password,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalHttpUrl(result.Data)
+}
+
 type GetChatStatisticsRequest struct { 
     // Chat identifier
     ChatId int64 `json:"chat_id"`
@@ -20116,7 +20517,7 @@ type SetStickerEmojisRequest struct {
     Emojis string `json:"emojis"`
 }
 
-// Changes the list of emoji corresponding to a sticker. The sticker must belong to a regular or custom emoji sticker set that is owned by the current user
+// Changes the list of emojis corresponding to a sticker. The sticker must belong to a regular or custom emoji sticker set that is owned by the current user
 func (client *Client) SetStickerEmojis(req *SetStickerEmojisRequest) (*Ok, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -20566,21 +20967,27 @@ func (client *Client) GetStarPaymentOptions() (*StarPaymentOptions, error) {
 }
 
 type GetStarTransactionsRequest struct { 
-    // Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results
-    Offset string `json:"offset"`
+    // Identifier of the owner of the Telegram stars; can be the identifier of the current user, identifier of an owned bot, or identifier of a channel chat with supergroupFullInfo.can_get_revenue_statistics == true
+    OwnerId MessageSender `json:"owner_id"`
     // Direction of the transactions to receive; pass null to get all transactions
     Direction StarTransactionDirection `json:"direction"`
+    // Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results
+    Offset string `json:"offset"`
+    // The maximum number of transactions to return
+    Limit int32 `json:"limit"`
 }
 
-// Returns the list of Telegram star transactions for the current user
+// Returns the list of Telegram star transactions for the specified owner
 func (client *Client) GetStarTransactions(req *GetStarTransactionsRequest) (*StarTransactions, error) {
     result, err := client.Send(Request{
         meta: meta{
             Type: "getStarTransactions",
         },
         Data: map[string]interface{}{
-            "offset": req.Offset,
+            "owner_id": req.OwnerId,
             "direction": req.Direction,
+            "offset": req.Offset,
+            "limit": req.Limit,
         },
     })
     if err != nil {
@@ -22289,6 +22696,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
     case TypeUpdateChatRevenueAmount:
         return UnmarshalUpdateChatRevenueAmount(result.Data)
 
+    case TypeUpdateStarRevenueStatus:
+        return UnmarshalUpdateStarRevenueStatus(result.Data)
+
     case TypeUpdateSpeechRecognitionTrial:
         return UnmarshalUpdateSpeechRecognitionTrial(result.Data)
 
@@ -22336,6 +22746,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
     case TypeUpdateNewInlineCallbackQuery:
         return UnmarshalUpdateNewInlineCallbackQuery(result.Data)
+
+    case TypeUpdateNewBusinessCallbackQuery:
+        return UnmarshalUpdateNewBusinessCallbackQuery(result.Data)
 
     case TypeUpdateNewShippingQuery:
         return UnmarshalUpdateNewShippingQuery(result.Data)
