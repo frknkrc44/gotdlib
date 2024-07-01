@@ -4346,7 +4346,7 @@ type EditMessageCaptionRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New message content caption; 0-getOption("message_caption_length_max") characters; pass null to remove caption
     Caption *FormattedText `json:"caption"`
-    // Pass true to show the caption above the media; otherwise, caption will be shown below the media. Can be true only for animation, photo, and video messages
+    // Pass true to show the caption above the media; otherwise, the caption will be shown below the media. Can be true only for animation, photo, and video messages
     ShowCaptionAboveMedia bool `json:"show_caption_above_media"`
 }
 
@@ -4519,7 +4519,7 @@ type EditInlineMessageCaptionRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New message content caption; pass null to remove caption; 0-getOption("message_caption_length_max") characters
     Caption *FormattedText `json:"caption"`
-    // Pass true to show the caption above the media; otherwise, caption will be shown below the media. Can be true only for animation, photo, and video messages
+    // Pass true to show the caption above the media; otherwise, the caption will be shown below the media. Can be true only for animation, photo, and video messages
     ShowCaptionAboveMedia bool `json:"show_caption_above_media"`
 }
 
@@ -4865,7 +4865,7 @@ type EditBusinessMessageCaptionRequest struct {
     ReplyMarkup ReplyMarkup `json:"reply_markup"`
     // New message content caption; pass null to remove caption; 0-getOption("message_caption_length_max") characters
     Caption *FormattedText `json:"caption"`
-    // Pass true to show the caption above the media; otherwise, caption will be shown below the media. Can be true only for animation, photo, and video messages
+    // Pass true to show the caption above the media; otherwise, the caption will be shown below the media. Can be true only for animation, photo, and video messages
     ShowCaptionAboveMedia bool `json:"show_caption_above_media"`
 }
 
@@ -17701,7 +17701,7 @@ type GetPaymentFormRequest struct {
     Theme *ThemeParameters `json:"theme"`
 }
 
-// Returns an invoice payment form. This method must be called when the user presses inline button of the type inlineKeyboardButtonTypeBuy
+// Returns an invoice payment form. This method must be called when the user presses inline button of the type inlineKeyboardButtonTypeBuy, or wants to buy access to media in a messagePaidMedia message
 func (client *Client) GetPaymentForm(req *GetPaymentFormRequest) (*PaymentForm, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19039,7 +19039,7 @@ type GetChatRevenueWithdrawalUrlRequest struct {
     Password string `json:"password"`
 }
 
-// Returns URL for chat revenue withdrawal; requires owner privileges in the chat. Currently, this method can be used only for channels if supergroupFullInfo.can_get_revenue_statistics == true and getOption("can_withdraw_chat_revenue")
+// Returns a URL for chat revenue withdrawal; requires owner privileges in the chat. Currently, this method can be used only for channels if supergroupFullInfo.can_get_revenue_statistics == true and getOption("can_withdraw_chat_revenue")
 func (client *Client) GetChatRevenueWithdrawalUrl(req *GetChatRevenueWithdrawalUrlRequest) (*HttpUrl, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19094,7 +19094,7 @@ func (client *Client) GetChatRevenueTransactions(req *GetChatRevenueTransactions
 }
 
 type GetStarRevenueStatisticsRequest struct { 
-    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of a channel chat with supergroupFullInfo.can_get_revenue_statistics == true
+    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of an owned channel chat
     OwnerId MessageSender `json:"owner_id"`
     // Pass true if a dark theme is used by the application
     IsDark bool `json:"is_dark"`
@@ -19123,7 +19123,7 @@ func (client *Client) GetStarRevenueStatistics(req *GetStarRevenueStatisticsRequ
 }
 
 type GetStarWithdrawalUrlRequest struct { 
-    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of a channel chat with supergroupFullInfo.can_get_revenue_statistics == true
+    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of an owned channel chat
     OwnerId MessageSender `json:"owner_id"`
     // The number of Telegram stars to withdraw. Must be at least getOption("star_withdrawal_count_min")
     StarCount int64 `json:"star_count"`
@@ -19131,7 +19131,7 @@ type GetStarWithdrawalUrlRequest struct {
     Password string `json:"password"`
 }
 
-// Returns URL for Telegram star withdrawal
+// Returns a URL for Telegram star withdrawal
 func (client *Client) GetStarWithdrawalUrl(req *GetStarWithdrawalUrlRequest) (*HttpUrl, error) {
     result, err := client.Send(Request{
         meta: meta{
@@ -19141,6 +19141,32 @@ func (client *Client) GetStarWithdrawalUrl(req *GetStarWithdrawalUrlRequest) (*H
             "owner_id": req.OwnerId,
             "star_count": req.StarCount,
             "password": req.Password,
+        },
+    })
+    if err != nil {
+        return nil, err
+    }
+
+    if result.Type == "error" {
+        return nil, buildResponseError(result.Data)
+    }
+
+    return UnmarshalHttpUrl(result.Data)
+}
+
+type GetStarAdAccountUrlRequest struct { 
+    // Identifier of the owner of the Telegram stars; can be identifier of an owned bot, or identifier of an owned channel chat
+    OwnerId MessageSender `json:"owner_id"`
+}
+
+// Returns a URL for a Telegram Ad platform account that can be used to set up advertisments for the chat paid in the owned Telegram stars
+func (client *Client) GetStarAdAccountUrl(req *GetStarAdAccountUrlRequest) (*HttpUrl, error) {
+    result, err := client.Send(Request{
+        meta: meta{
+            Type: "getStarAdAccountUrl",
+        },
+        Data: map[string]interface{}{
+            "owner_id": req.OwnerId,
         },
     })
     if err != nil {

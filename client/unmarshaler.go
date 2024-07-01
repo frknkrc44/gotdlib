@@ -200,6 +200,40 @@ func UnmarshalListOfAuthorizationState(dataList []json.RawMessage) ([]Authorizat
     return list, nil
 }
 
+func UnmarshalFirebaseDeviceVerificationParameters(data json.RawMessage) (FirebaseDeviceVerificationParameters, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeFirebaseDeviceVerificationParametersSafetyNet:
+        return UnmarshalFirebaseDeviceVerificationParametersSafetyNet(data)
+
+    case TypeFirebaseDeviceVerificationParametersPlayIntegrity:
+        return UnmarshalFirebaseDeviceVerificationParametersPlayIntegrity(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfFirebaseDeviceVerificationParameters(dataList []json.RawMessage) ([]FirebaseDeviceVerificationParameters, error) {
+    list := []FirebaseDeviceVerificationParameters{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalFirebaseDeviceVerificationParameters(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
 func UnmarshalInputFile(data json.RawMessage) (InputFile, error) {
     var meta meta
 
@@ -680,8 +714,11 @@ func UnmarshalStarTransactionPartner(data json.RawMessage) (StarTransactionPartn
     case TypeStarTransactionPartnerFragment:
         return UnmarshalStarTransactionPartnerFragment(data)
 
-    case TypeStarTransactionPartnerUser:
-        return UnmarshalStarTransactionPartnerUser(data)
+    case TypeStarTransactionPartnerTelegramAds:
+        return UnmarshalStarTransactionPartnerTelegramAds(data)
+
+    case TypeStarTransactionPartnerBot:
+        return UnmarshalStarTransactionPartnerBot(data)
 
     case TypeStarTransactionPartnerChannel:
         return UnmarshalStarTransactionPartnerChannel(data)
@@ -2398,7 +2435,7 @@ func UnmarshalListOfInputInvoice(dataList []json.RawMessage) ([]InputInvoice, er
     return list, nil
 }
 
-func UnmarshalMessageExtendedMedia(data json.RawMessage) (MessageExtendedMedia, error) {
+func UnmarshalPaidMedia(data json.RawMessage) (PaidMedia, error) {
     var meta meta
 
     err := json.Unmarshal(data, &meta)
@@ -2407,28 +2444,28 @@ func UnmarshalMessageExtendedMedia(data json.RawMessage) (MessageExtendedMedia, 
     }
 
     switch meta.Type {
-    case TypeMessageExtendedMediaPreview:
-        return UnmarshalMessageExtendedMediaPreview(data)
+    case TypePaidMediaPreview:
+        return UnmarshalPaidMediaPreview(data)
 
-    case TypeMessageExtendedMediaPhoto:
-        return UnmarshalMessageExtendedMediaPhoto(data)
+    case TypePaidMediaPhoto:
+        return UnmarshalPaidMediaPhoto(data)
 
-    case TypeMessageExtendedMediaVideo:
-        return UnmarshalMessageExtendedMediaVideo(data)
+    case TypePaidMediaVideo:
+        return UnmarshalPaidMediaVideo(data)
 
-    case TypeMessageExtendedMediaUnsupported:
-        return UnmarshalMessageExtendedMediaUnsupported(data)
+    case TypePaidMediaUnsupported:
+        return UnmarshalPaidMediaUnsupported(data)
 
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
     }
 }
 
-func UnmarshalListOfMessageExtendedMedia(dataList []json.RawMessage) ([]MessageExtendedMedia, error) {
-    list := []MessageExtendedMedia{}
+func UnmarshalListOfPaidMedia(dataList []json.RawMessage) ([]PaidMedia, error) {
+    list := []PaidMedia{}
 
     for _, data := range dataList {
-        entity, err := UnmarshalMessageExtendedMedia(data)
+        entity, err := UnmarshalPaidMedia(data)
         if err != nil {
             return nil, err
         }
@@ -2770,6 +2807,9 @@ func UnmarshalMessageContent(data json.RawMessage) (MessageContent, error) {
     case TypeMessageDocument:
         return UnmarshalMessageDocument(data)
 
+    case TypeMessagePaidMedia:
+        return UnmarshalMessagePaidMedia(data)
+
     case TypeMessagePhoto:
         return UnmarshalMessagePhoto(data)
 
@@ -3078,6 +3118,40 @@ func UnmarshalListOfTextEntityType(dataList []json.RawMessage) ([]TextEntityType
     return list, nil
 }
 
+func UnmarshalInputPaidMediaType(data json.RawMessage) (InputPaidMediaType, error) {
+    var meta meta
+
+    err := json.Unmarshal(data, &meta)
+    if err != nil {
+        return nil, err
+    }
+
+    switch meta.Type {
+    case TypeInputPaidMediaTypePhoto:
+        return UnmarshalInputPaidMediaTypePhoto(data)
+
+    case TypeInputPaidMediaTypeVideo:
+        return UnmarshalInputPaidMediaTypeVideo(data)
+
+    default:
+        return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
+    }
+}
+
+func UnmarshalListOfInputPaidMediaType(dataList []json.RawMessage) ([]InputPaidMediaType, error) {
+    list := []InputPaidMediaType{}
+
+    for _, data := range dataList {
+        entity, err := UnmarshalInputPaidMediaType(data)
+        if err != nil {
+            return nil, err
+        }
+        list = append(list, entity)
+    }
+
+    return list, nil
+}
+
 func UnmarshalMessageSchedulingState(data json.RawMessage) (MessageSchedulingState, error) {
     var meta meta
 
@@ -3166,6 +3240,9 @@ func UnmarshalInputMessageContent(data json.RawMessage) (InputMessageContent, er
 
     case TypeInputMessageDocument:
         return UnmarshalInputMessageDocument(data)
+
+    case TypeInputMessagePaidMedia:
+        return UnmarshalInputMessagePaidMedia(data)
 
     case TypeInputMessagePhoto:
         return UnmarshalInputMessagePhoto(data)
@@ -4838,6 +4915,9 @@ func UnmarshalPremiumFeature(data json.RawMessage) (PremiumFeature, error) {
     case TypePremiumFeatureBusiness:
         return UnmarshalPremiumFeatureBusiness(data)
 
+    case TypePremiumFeatureMessageEffects:
+        return UnmarshalPremiumFeatureMessageEffects(data)
+
     default:
         return nil, fmt.Errorf("Error unmarshaling. Unknown type: " +  meta.Type)
     }
@@ -5552,6 +5632,9 @@ func UnmarshalPushMessageContent(data json.RawMessage) (PushMessageContent, erro
 
     case TypePushMessageContentLocation:
         return UnmarshalPushMessageContentLocation(data)
+
+    case TypePushMessageContentPaidMedia:
+        return UnmarshalPushMessageContentPaidMedia(data)
 
     case TypePushMessageContentPhoto:
         return UnmarshalPushMessageContentPhoto(data)
@@ -7931,6 +8014,22 @@ func UnmarshalAuthorizationStateClosed(data json.RawMessage) (*AuthorizationStat
     return &resp, err
 }
 
+func UnmarshalFirebaseDeviceVerificationParametersSafetyNet(data json.RawMessage) (*FirebaseDeviceVerificationParametersSafetyNet, error) {
+    var resp FirebaseDeviceVerificationParametersSafetyNet
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalFirebaseDeviceVerificationParametersPlayIntegrity(data json.RawMessage) (*FirebaseDeviceVerificationParametersPlayIntegrity, error) {
+    var resp FirebaseDeviceVerificationParametersPlayIntegrity
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalPasswordState(data json.RawMessage) (*PasswordState, error) {
     var resp PasswordState
 
@@ -8819,8 +8918,16 @@ func UnmarshalStarTransactionPartnerFragment(data json.RawMessage) (*StarTransac
     return &resp, err
 }
 
-func UnmarshalStarTransactionPartnerUser(data json.RawMessage) (*StarTransactionPartnerUser, error) {
-    var resp StarTransactionPartnerUser
+func UnmarshalStarTransactionPartnerTelegramAds(data json.RawMessage) (*StarTransactionPartnerTelegramAds, error) {
+    var resp StarTransactionPartnerTelegramAds
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalStarTransactionPartnerBot(data json.RawMessage) (*StarTransactionPartnerBot, error) {
+    var resp StarTransactionPartnerBot
 
     err := json.Unmarshal(data, &resp)
 
@@ -11395,32 +11502,32 @@ func UnmarshalInputInvoiceTelegram(data json.RawMessage) (*InputInvoiceTelegram,
     return &resp, err
 }
 
-func UnmarshalMessageExtendedMediaPreview(data json.RawMessage) (*MessageExtendedMediaPreview, error) {
-    var resp MessageExtendedMediaPreview
+func UnmarshalPaidMediaPreview(data json.RawMessage) (*PaidMediaPreview, error) {
+    var resp PaidMediaPreview
 
     err := json.Unmarshal(data, &resp)
 
     return &resp, err
 }
 
-func UnmarshalMessageExtendedMediaPhoto(data json.RawMessage) (*MessageExtendedMediaPhoto, error) {
-    var resp MessageExtendedMediaPhoto
+func UnmarshalPaidMediaPhoto(data json.RawMessage) (*PaidMediaPhoto, error) {
+    var resp PaidMediaPhoto
 
     err := json.Unmarshal(data, &resp)
 
     return &resp, err
 }
 
-func UnmarshalMessageExtendedMediaVideo(data json.RawMessage) (*MessageExtendedMediaVideo, error) {
-    var resp MessageExtendedMediaVideo
+func UnmarshalPaidMediaVideo(data json.RawMessage) (*PaidMediaVideo, error) {
+    var resp PaidMediaVideo
 
     err := json.Unmarshal(data, &resp)
 
     return &resp, err
 }
 
-func UnmarshalMessageExtendedMediaUnsupported(data json.RawMessage) (*MessageExtendedMediaUnsupported, error) {
-    var resp MessageExtendedMediaUnsupported
+func UnmarshalPaidMediaUnsupported(data json.RawMessage) (*PaidMediaUnsupported, error) {
+    var resp PaidMediaUnsupported
 
     err := json.Unmarshal(data, &resp)
 
@@ -12045,6 +12152,14 @@ func UnmarshalMessageAudio(data json.RawMessage) (*MessageAudio, error) {
 
 func UnmarshalMessageDocument(data json.RawMessage) (*MessageDocument, error) {
     var resp MessageDocument
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalMessagePaidMedia(data json.RawMessage) (*MessagePaidMedia, error) {
+    var resp MessagePaidMedia
 
     err := json.Unmarshal(data, &resp)
 
@@ -12755,6 +12870,30 @@ func UnmarshalInputThumbnail(data json.RawMessage) (*InputThumbnail, error) {
     return &resp, err
 }
 
+func UnmarshalInputPaidMediaTypePhoto(data json.RawMessage) (*InputPaidMediaTypePhoto, error) {
+    var resp InputPaidMediaTypePhoto
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalInputPaidMediaTypeVideo(data json.RawMessage) (*InputPaidMediaTypeVideo, error) {
+    var resp InputPaidMediaTypeVideo
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalInputPaidMedia(data json.RawMessage) (*InputPaidMedia, error) {
+    var resp InputPaidMedia
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalMessageSchedulingStateSendAtDate(data json.RawMessage) (*MessageSchedulingStateSendAtDate, error) {
     var resp MessageSchedulingStateSendAtDate
 
@@ -12829,6 +12968,14 @@ func UnmarshalInputMessageAudio(data json.RawMessage) (*InputMessageAudio, error
 
 func UnmarshalInputMessageDocument(data json.RawMessage) (*InputMessageDocument, error) {
     var resp InputMessageDocument
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalInputMessagePaidMedia(data json.RawMessage) (*InputMessagePaidMedia, error) {
+    var resp InputMessagePaidMedia
 
     err := json.Unmarshal(data, &resp)
 
@@ -15443,6 +15590,14 @@ func UnmarshalPremiumFeatureBusiness(data json.RawMessage) (*PremiumFeatureBusin
     return &resp, err
 }
 
+func UnmarshalPremiumFeatureMessageEffects(data json.RawMessage) (*PremiumFeatureMessageEffects, error) {
+    var resp PremiumFeatureMessageEffects
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
 func UnmarshalBusinessFeatureLocation(data json.RawMessage) (*BusinessFeatureLocation, error) {
     var resp BusinessFeatureLocation
 
@@ -16245,6 +16400,14 @@ func UnmarshalPushMessageContentInvoice(data json.RawMessage) (*PushMessageConte
 
 func UnmarshalPushMessageContentLocation(data json.RawMessage) (*PushMessageContentLocation, error) {
     var resp PushMessageContentLocation
+
+    err := json.Unmarshal(data, &resp)
+
+    return &resp, err
+}
+
+func UnmarshalPushMessageContentPaidMedia(data json.RawMessage) (*PushMessageContentPaidMedia, error) {
+    var resp PushMessageContentPaidMedia
 
     err := json.Unmarshal(data, &resp)
 
@@ -19997,6 +20160,12 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeAuthorizationStateClosed:
         return UnmarshalAuthorizationStateClosed(data)
 
+    case TypeFirebaseDeviceVerificationParametersSafetyNet:
+        return UnmarshalFirebaseDeviceVerificationParametersSafetyNet(data)
+
+    case TypeFirebaseDeviceVerificationParametersPlayIntegrity:
+        return UnmarshalFirebaseDeviceVerificationParametersPlayIntegrity(data)
+
     case TypePasswordState:
         return UnmarshalPasswordState(data)
 
@@ -20330,8 +20499,11 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeStarTransactionPartnerFragment:
         return UnmarshalStarTransactionPartnerFragment(data)
 
-    case TypeStarTransactionPartnerUser:
-        return UnmarshalStarTransactionPartnerUser(data)
+    case TypeStarTransactionPartnerTelegramAds:
+        return UnmarshalStarTransactionPartnerTelegramAds(data)
+
+    case TypeStarTransactionPartnerBot:
+        return UnmarshalStarTransactionPartnerBot(data)
 
     case TypeStarTransactionPartnerChannel:
         return UnmarshalStarTransactionPartnerChannel(data)
@@ -21296,17 +21468,17 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeInputInvoiceTelegram:
         return UnmarshalInputInvoiceTelegram(data)
 
-    case TypeMessageExtendedMediaPreview:
-        return UnmarshalMessageExtendedMediaPreview(data)
+    case TypePaidMediaPreview:
+        return UnmarshalPaidMediaPreview(data)
 
-    case TypeMessageExtendedMediaPhoto:
-        return UnmarshalMessageExtendedMediaPhoto(data)
+    case TypePaidMediaPhoto:
+        return UnmarshalPaidMediaPhoto(data)
 
-    case TypeMessageExtendedMediaVideo:
-        return UnmarshalMessageExtendedMediaVideo(data)
+    case TypePaidMediaVideo:
+        return UnmarshalPaidMediaVideo(data)
 
-    case TypeMessageExtendedMediaUnsupported:
-        return UnmarshalMessageExtendedMediaUnsupported(data)
+    case TypePaidMediaUnsupported:
+        return UnmarshalPaidMediaUnsupported(data)
 
     case TypePremiumGiveawayParameters:
         return UnmarshalPremiumGiveawayParameters(data)
@@ -21541,6 +21713,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeMessageDocument:
         return UnmarshalMessageDocument(data)
+
+    case TypeMessagePaidMedia:
+        return UnmarshalMessagePaidMedia(data)
 
     case TypeMessagePhoto:
         return UnmarshalMessagePhoto(data)
@@ -21806,6 +21981,15 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypeInputThumbnail:
         return UnmarshalInputThumbnail(data)
 
+    case TypeInputPaidMediaTypePhoto:
+        return UnmarshalInputPaidMediaTypePhoto(data)
+
+    case TypeInputPaidMediaTypeVideo:
+        return UnmarshalInputPaidMediaTypeVideo(data)
+
+    case TypeInputPaidMedia:
+        return UnmarshalInputPaidMedia(data)
+
     case TypeMessageSchedulingStateSendAtDate:
         return UnmarshalMessageSchedulingStateSendAtDate(data)
 
@@ -21835,6 +22019,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypeInputMessageDocument:
         return UnmarshalInputMessageDocument(data)
+
+    case TypeInputMessagePaidMedia:
+        return UnmarshalInputMessagePaidMedia(data)
 
     case TypeInputMessagePhoto:
         return UnmarshalInputMessagePhoto(data)
@@ -22814,6 +23001,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
     case TypePremiumFeatureBusiness:
         return UnmarshalPremiumFeatureBusiness(data)
 
+    case TypePremiumFeatureMessageEffects:
+        return UnmarshalPremiumFeatureMessageEffects(data)
+
     case TypeBusinessFeatureLocation:
         return UnmarshalBusinessFeatureLocation(data)
 
@@ -23116,6 +23306,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
     case TypePushMessageContentLocation:
         return UnmarshalPushMessageContentLocation(data)
+
+    case TypePushMessageContentPaidMedia:
+        return UnmarshalPushMessageContentPaidMedia(data)
 
     case TypePushMessageContentPhoto:
         return UnmarshalPushMessageContentPhoto(data)
