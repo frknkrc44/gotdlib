@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	tdlib "github.com/c0re100/gotdlib/client"
+	tdlib "github.com/frknkrc44/gotdlib/client"
 )
 
 func GetTdParameters() *tdlib.SetTdlibParametersRequest {

@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"flag"
-	"github.com/c0re100/gotdlib/tlparser"
+	"github.com/frknkrc44/gotdlib/tlparser"
 	"log"
 	"net/http"
 	"os"

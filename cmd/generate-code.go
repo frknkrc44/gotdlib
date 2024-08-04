@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/c0re100/gotdlib/codegen"
-	"github.com/c0re100/gotdlib/tlparser"
+	"github.com/frknkrc44/gotdlib/codegen"
+	"github.com/frknkrc44/gotdlib/tlparser"
 )
 
 type config struct {
