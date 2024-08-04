@@ -21,6 +21,8 @@ func Parse(reader io.Reader) (*Schema, error) {
 		line := scanner.Text()
 
 		switch {
+		case strings.HasPrefix(line, "//-To"):
+			continue
 		case strings.HasPrefix(line, "//@description"):
 			if hitFunctions {
 				schema.Functions = append(schema.Functions, parseFunction(line, scanner))
