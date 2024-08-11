@@ -20346,12 +20346,6 @@
             ]
         },
         {
-            "name": "//-To",
-            "description": "",
-            "class": "https://my.telegram.org",
-            "properties": []
-        },
-        {
             "name": "deviceTokenFirebaseCloudMessaging",
             "description": "A token for Firebase Cloud Messaging",
             "class": "DeviceToken",
