@@ -2036,6 +2036,82 @@
             ]
         },
         {
+            "name": "botVerificationParameters",
+            "description": "Describes parameters of verification that is provided by a bot",
+            "class": "BotVerificationParameters",
+            "properties": [
+                {
+                    "name": "icon_custom_emoji_id",
+                    "type": "int64",
+                    "description": "Identifier of the custom emoji that is used as the verification sign"
+                },
+                {
+                    "name": "organization_name",
+                    "type": "string",
+                    "description": "Name of the organization that provides verification"
+                },
+                {
+                    "name": "default_custom_description",
+                    "type": "formattedText",
+                    "description": "Default custom description of verification reason to be used as placeholder in setMessageSenderBotVerification; may be null if none"
+                },
+                {
+                    "name": "can_set_custom_description",
+                    "type": "Bool",
+                    "description": "True, if the bot is allowed to provide custom description for verified entities"
+                }
+            ]
+        },
+        {
+            "name": "botVerification",
+            "description": "Describes verification status provided by a bot",
+            "class": "BotVerification",
+            "properties": [
+                {
+                    "name": "bot_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the bot that provided the verification"
+                },
+                {
+                    "name": "icon_custom_emoji_id",
+                    "type": "int64",
+                    "description": "Identifier of the custom emoji that is used as the verification sign"
+                },
+                {
+                    "name": "custom_description",
+                    "type": "formattedText",
+                    "description": "Custom description of verification reason set by the bot"
+                }
+            ]
+        },
+        {
+            "name": "verificationStatus",
+            "description": "Contains information about verification status of a chat or a user",
+            "class": "VerificationStatus",
+            "properties": [
+                {
+                    "name": "is_verified",
+                    "type": "Bool",
+                    "description": "True, if the chat or the user is verified by Telegram"
+                },
+                {
+                    "name": "is_scam",
+                    "type": "Bool",
+                    "description": "True, if the chat or the user is marked as scam by Telegram"
+                },
+                {
+                    "name": "is_fake",
+                    "type": "Bool",
+                    "description": "True, if the chat or the user is marked as fake by Telegram"
+                },
+                {
+                    "name": "bot_verification_icon_custom_emoji_id",
+                    "type": "int64",
+                    "description": "Identifier of the custom emoji to be shown as verification sign provided by a bot for the user; 0 if none"
+                }
+            ]
+        },
+        {
             "name": "chatLocation",
             "description": "Represents a location to which a chat is connected",
             "class": "ChatLocation",
@@ -2935,6 +3011,36 @@
             ]
         },
         {
+            "name": "affiliateTypeCurrentUser",
+            "description": "The affiliate is the current user",
+            "class": "AffiliateType",
+            "properties": []
+        },
+        {
+            "name": "affiliateTypeBot",
+            "description": "The affiliate is a bot owned by the current user",
+            "class": "AffiliateType",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "User identifier of the bot"
+                }
+            ]
+        },
+        {
+            "name": "affiliateTypeChannel",
+            "description": "The affiliate is a channel chat where the current user has can_post_messages administrator right",
+            "class": "AffiliateType",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the channel chat"
+                }
+            ]
+        },
+        {
             "name": "affiliateProgramSortOrderProfitability",
             "description": "The affiliate programs must be sorted by the profitability",
             "class": "AffiliateProgramSortOrder",
@@ -2982,7 +3088,7 @@
                 {
                     "name": "end_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the affiliate program will be closed; 0 if the affiliate program isn't scheduled to be closed. If positive, then the program can't be connected using connectChatAffiliateProgram, but active connections will work until the date"
+                    "description": "Point in time (Unix timestamp) when the affiliate program will be closed; 0 if the affiliate program isn't scheduled to be closed. If positive, then the program can't be connected using connectAffiliateProgram, but active connections will work until the date"
                 },
                 {
                     "name": "daily_revenue_per_user_amount",
@@ -3024,7 +3130,7 @@
                     "description": "User identifier of the bot created the program"
                 },
                 {
-                    "name": "parameters",
+                    "name": "info",
                     "type": "affiliateProgramInfo",
                     "description": "Information about the affiliate program"
                 }
@@ -3053,9 +3159,9 @@
             ]
         },
         {
-            "name": "chatAffiliateProgram",
-            "description": "Describes an affiliate program that was connected to a chat",
-            "class": "ChatAffiliateProgram",
+            "name": "connectedAffiliateProgram",
+            "description": "Describes an affiliate program that was connected to an affiliate",
+            "class": "ConnectedAffiliateProgram",
             "properties": [
                 {
                     "name": "url",
@@ -3095,18 +3201,18 @@
             ]
         },
         {
-            "name": "chatAffiliatePrograms",
-            "description": "Represents a list of affiliate programs that were connected to a chat",
-            "class": "ChatAffiliatePrograms",
+            "name": "connectedAffiliatePrograms",
+            "description": "Represents a list of affiliate programs that were connected to an affiliate",
+            "class": "ConnectedAffiliatePrograms",
             "properties": [
                 {
                     "name": "total_count",
                     "type": "int32",
-                    "description": "The total number of affiliate programs that were connected to the chat"
+                    "description": "The total number of affiliate programs that were connected to the affiliate"
                 },
                 {
                     "name": "programs",
-                    "type": "vector\u003cchatAffiliateProgram\u003e",
+                    "type": "vector\u003cconnectedAffiliateProgram\u003e",
                     "description": "The list of connected affiliate programs"
                 },
                 {
@@ -3429,6 +3535,114 @@
             ]
         },
         {
+            "name": "upgradedGiftModel",
+            "description": "Describes a model of an upgraded gift",
+            "class": "UpgradedGiftModel",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the model"
+                },
+                {
+                    "name": "sticker",
+                    "type": "sticker",
+                    "description": "The sticker representing the upgraded gift"
+                },
+                {
+                    "name": "rarity_per_mille",
+                    "type": "int32",
+                    "description": "The number of upgraded gift that receive this model for each 1000 gifts upgraded"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftSymbol",
+            "description": "Describes a symbol shown on the pattern of an upgraded gift",
+            "class": "UpgradedGiftSymbol",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the symbol"
+                },
+                {
+                    "name": "sticker",
+                    "type": "sticker",
+                    "description": "The sticker representing the upgraded gift"
+                },
+                {
+                    "name": "rarity_per_mille",
+                    "type": "int32",
+                    "description": "The number of upgraded gift that receive this symbol for each 1000 gifts upgraded"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftBackdrop",
+            "description": "Describes a backdrop of an upgraded gift",
+            "class": "UpgradedGiftBackdrop",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the backdrop"
+                },
+                {
+                    "name": "center_color",
+                    "type": "int32",
+                    "description": "A color in the center of the backdrop in the RGB format"
+                },
+                {
+                    "name": "edge_color",
+                    "type": "int32",
+                    "description": "A color on the edges of the backdrop in the RGB format"
+                },
+                {
+                    "name": "symbol_color",
+                    "type": "int32",
+                    "description": "A color to be applied for the symbol in the RGB format"
+                },
+                {
+                    "name": "text_color",
+                    "type": "int32",
+                    "description": "A color for the text on the backdrop in the RGB format"
+                },
+                {
+                    "name": "rarity_per_mille",
+                    "type": "int32",
+                    "description": "The number of upgraded gift that receive this backdrop for each 1000 gifts upgraded"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftOriginalDetails",
+            "description": "Describes the original details about the gift",
+            "class": "UpgradedGiftOriginalDetails",
+            "properties": [
+                {
+                    "name": "sender_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that sent the gift; 0 if the gift was private"
+                },
+                {
+                    "name": "receiver_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that received the gift"
+                },
+                {
+                    "name": "text",
+                    "type": "formattedText",
+                    "description": "Message added to the gift"
+                },
+                {
+                    "name": "date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the gift was sent"
+                }
+            ]
+        },
+        {
             "name": "gift",
             "description": "Describes a gift that can be sent to another user",
             "class": "Gift",
@@ -3451,7 +3665,12 @@
                 {
                     "name": "default_sell_star_count",
                     "type": "int53",
-                    "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift by default. If the gift was paid with just bought Telegram Stars, then full value can be claimed"
+                    "description": "Number of Telegram Stars that can be claimed by the receiver instead of the regular gift by default. If the gift was paid with just bought Telegram Stars, then full value can be claimed"
+                },
+                {
+                    "name": "upgrade_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that must be paid to upgrade the gift; 0 if upgrade isn't possible"
                 },
                 {
                     "name": "is_for_birthday",
@@ -3493,6 +3712,119 @@
             ]
         },
         {
+            "name": "upgradedGift",
+            "description": "Describes an upgraded gift that can be gifted to another user or transferred to TON blockchain as an NFT",
+            "class": "UpgradedGift",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": "int64",
+                    "description": "Unique identifier of the gift"
+                },
+                {
+                    "name": "title",
+                    "type": "string",
+                    "description": "The title of the upgraded gift"
+                },
+                {
+                    "name": "number",
+                    "type": "int32",
+                    "description": "Unique number of the upgraded gift among gifts upgraded from the same gift"
+                },
+                {
+                    "name": "total_upgraded_count",
+                    "type": "int32",
+                    "description": "Total number of gifts that were upgraded from the same gift"
+                },
+                {
+                    "name": "max_upgraded_count",
+                    "type": "int32",
+                    "description": "The maximum number of gifts that can be upgraded from the same gift"
+                },
+                {
+                    "name": "owner_user_id",
+                    "type": "int53",
+                    "description": "User identifier of the user that owns the upgraded gift; 0 if none"
+                },
+                {
+                    "name": "model",
+                    "type": "upgradedGiftModel",
+                    "description": "Model of the upgraded gift"
+                },
+                {
+                    "name": "symbol",
+                    "type": "upgradedGiftSymbol",
+                    "description": "Symbol of the upgraded gift"
+                },
+                {
+                    "name": "backdrop",
+                    "type": "upgradedGiftBackdrop",
+                    "description": "Backdrop of the upgraded gift"
+                },
+                {
+                    "name": "original_details",
+                    "type": "upgradedGiftOriginalDetails",
+                    "description": "Information about the originally sent gift; may be null if unknown"
+                }
+            ]
+        },
+        {
+            "name": "upgradeGiftResult",
+            "description": "Contains result of gift upgrading",
+            "class": "UpgradeGiftResult",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The upgraded gift"
+                },
+                {
+                    "name": "is_saved",
+                    "type": "Bool",
+                    "description": "True, if the gift is displayed on the user's profile page"
+                },
+                {
+                    "name": "can_be_transferred",
+                    "type": "Bool",
+                    "description": "True, if the gift can be transferred to another user"
+                },
+                {
+                    "name": "transfer_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that must be paid to transfer the upgraded gift"
+                },
+                {
+                    "name": "export_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to TON blockchain as an NFT"
+                }
+            ]
+        },
+        {
+            "name": "sentGiftRegular",
+            "description": "Regular gift",
+            "class": "SentGift",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "gift",
+                    "description": "The gift"
+                }
+            ]
+        },
+        {
+            "name": "sentGiftUpgraded",
+            "description": "Upgraded gift",
+            "class": "SentGift",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The gift"
+                }
+            ]
+        },
+        {
             "name": "userGift",
             "description": "Represents a gift received by a user",
             "class": "UserGift",
@@ -3515,7 +3847,22 @@
                 {
                     "name": "is_saved",
                     "type": "Bool",
-                    "description": "True, if the gift is displayed on the user's profile page; may be false only for the receiver of the gift"
+                    "description": "True, if the gift is displayed on the user's profile page; only for the receiver of the gift"
+                },
+                {
+                    "name": "can_be_upgraded",
+                    "type": "Bool",
+                    "description": "True, if the gift is a regular gift that can be upgraded to a unique gift; only for the receiver of the gift"
+                },
+                {
+                    "name": "can_be_transferred",
+                    "type": "Bool",
+                    "description": "True, if the gift is an upgraded gift that can be transferred to another user; only for the receiver of the gift"
+                },
+                {
+                    "name": "was_refunded",
+                    "type": "Bool",
+                    "description": "True, if the gift was refunded and isn't available anymore"
                 },
                 {
                     "name": "date",
@@ -3524,18 +3871,33 @@
                 },
                 {
                     "name": "gift",
-                    "type": "gift",
+                    "type": "SentGift",
                     "description": "The gift"
                 },
                 {
                     "name": "message_id",
                     "type": "int53",
-                    "description": "Identifier of the message with the gift in the chat with the sender of the gift; can be 0 or an identifier of a deleted message; only for the gift receiver"
+                    "description": "Identifier of the message with the gift in the chat with the sender of the gift; can be 0 or an identifier of a deleted message; only for the receiver of the gift"
                 },
                 {
                     "name": "sell_star_count",
                     "type": "int53",
-                    "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; 0 if the gift can't be sold by the current user"
+                    "description": "Number of Telegram Stars that can be claimed by the receiver instead of the regular gift; 0 if the gift can't be sold by the current user"
+                },
+                {
+                    "name": "prepaid_upgrade_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift"
+                },
+                {
+                    "name": "transfer_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that must be paid to transfer the upgraded gift; only for the receiver of the gift"
+                },
+                {
+                    "name": "export_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the upgraded gift can be transferred to TON blockchain as an NFT; 0 if NFT export isn't possible; only for the receiver of the gift"
                 }
             ]
         },
@@ -3558,6 +3920,28 @@
                     "name": "next_offset",
                     "type": "string",
                     "description": "The offset for the next request. If empty, then there are no more results"
+                }
+            ]
+        },
+        {
+            "name": "giftUpgradePreview",
+            "description": "Contains examples of possible upgraded gifts for the given regular gift",
+            "class": "GiftUpgradePreview",
+            "properties": [
+                {
+                    "name": "models",
+                    "type": "vector\u003cupgradedGiftModel\u003e",
+                    "description": "Examples of possible models that can be chosen for the gift after upgrade"
+                },
+                {
+                    "name": "symbols",
+                    "type": "vector\u003cupgradedGiftSymbol\u003e",
+                    "description": "Examples of possible symbols that can be chosen for the gift after upgrade"
+                },
+                {
+                    "name": "backdrops",
+                    "type": "vector\u003cupgradedGiftBackdrop\u003e",
+                    "description": "Examples of possible backdrops that can be chosen for the gift after upgrade"
                 }
             ]
         },
@@ -3883,7 +4267,7 @@
         },
         {
             "name": "starTransactionTypeGiftPurchase",
-            "description": "The transaction is a purchase of a gift to another user; for regular users and bots only",
+            "description": "The transaction is a purchase of a regular gift to another user; for regular users and bots only",
             "class": "StarTransactionType",
             "properties": [
                 {
@@ -3894,6 +4278,23 @@
                 {
                     "name": "gift",
                     "type": "gift",
+                    "description": "The gift"
+                }
+            ]
+        },
+        {
+            "name": "starTransactionTypeGiftTransfer",
+            "description": "The transaction is a transfer of an upgraded gift to another user; for regular users only",
+            "class": "StarTransactionType",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that received the gift"
+                },
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
                     "description": "The gift"
                 }
             ]
@@ -3912,6 +4313,18 @@
                     "name": "gift",
                     "type": "gift",
                     "description": "The gift"
+                }
+            ]
+        },
+        {
+            "name": "starTransactionTypeGiftUpgrade",
+            "description": "The transaction is an upgrade of a gift; for regular users only",
+            "class": "StarTransactionType",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The upgraded gift"
                 }
             ]
         },
@@ -4385,9 +4798,9 @@
                     "description": "The user is a close friend of the current user; implies that the user is a contact"
                 },
                 {
-                    "name": "is_verified",
-                    "type": "Bool",
-                    "description": "True, if the user is verified"
+                    "name": "verification_status",
+                    "type": "verificationStatus",
+                    "description": "Information about verification status of the user; may be null if none"
                 },
                 {
                     "name": "is_premium",
@@ -4403,16 +4816,6 @@
                     "name": "restriction_reason",
                     "type": "string",
                     "description": "If non-empty, it contains a human-readable description of the reason why access to this user must be restricted"
-                },
-                {
-                    "name": "is_scam",
-                    "type": "Bool",
-                    "description": "True, if many users reported this user as a scam"
-                },
-                {
-                    "name": "is_fake",
-                    "type": "Bool",
-                    "description": "True, if many users reported this user as a fake account"
                 },
                 {
                     "name": "has_active_stories",
@@ -4525,6 +4928,11 @@
                     "name": "web_app_header_dark_color",
                     "type": "int32",
                     "description": "Default dark header color for bot Web Apps; -1 if not specified"
+                },
+                {
+                    "name": "verification_parameters",
+                    "type": "botVerificationParameters",
+                    "description": "Parameters of the verification that can be provided by the bot; may be null if none or the current user isn't the owner of the bot"
                 },
                 {
                     "name": "can_get_revenue_statistics",
@@ -4657,6 +5065,11 @@
                     "name": "group_in_common_count",
                     "type": "int32",
                     "description": "Number of group chats where both the other user and the current user are a member; 0 for the current user"
+                },
+                {
+                    "name": "bot_verification",
+                    "type": "botVerification",
+                    "description": "Information about verification status of the user provided by a bot; may be null if none or unknown"
                 },
                 {
                     "name": "business_info",
@@ -5287,19 +5700,9 @@
                     "description": "True, if the chat is a public supergroup or channel, i.e. it has a username or it is a location-based supergroup"
                 },
                 {
-                    "name": "is_verified",
-                    "type": "Bool",
-                    "description": "True, if the chat is verified"
-                },
-                {
-                    "name": "is_scam",
-                    "type": "Bool",
-                    "description": "True, if many users reported this chat as a scam"
-                },
-                {
-                    "name": "is_fake",
-                    "type": "Bool",
-                    "description": "True, if many users reported this chat as a fake account"
+                    "name": "verification_status",
+                    "type": "verificationStatus",
+                    "description": "Information about verification status of the chat; may be null if none"
                 }
             ]
         },
@@ -5524,9 +5927,9 @@
                     "description": "True, if the supergroup is a forum with topics"
                 },
                 {
-                    "name": "is_verified",
-                    "type": "Bool",
-                    "description": "True, if the supergroup or channel is verified"
+                    "name": "verification_status",
+                    "type": "verificationStatus",
+                    "description": "Information about verification status of the supergroup or channel; may be null if none"
                 },
                 {
                     "name": "has_sensitive_content",
@@ -5537,16 +5940,6 @@
                     "name": "restriction_reason",
                     "type": "string",
                     "description": "If non-empty, contains a human-readable description of the reason why access to this supergroup or channel must be restricted"
-                },
-                {
-                    "name": "is_scam",
-                    "type": "Bool",
-                    "description": "True, if many users reported this supergroup or channel as a scam"
-                },
-                {
-                    "name": "is_fake",
-                    "type": "Bool",
-                    "description": "True, if many users reported this supergroup or channel as a fake account"
                 },
                 {
                     "name": "has_active_stories",
@@ -5719,6 +6112,11 @@
                     "name": "bot_commands",
                     "type": "vector\u003cbotCommands\u003e",
                     "description": "List of commands of bots in the group"
+                },
+                {
+                    "name": "bot_verification",
+                    "type": "botVerification",
+                    "description": "Information about verification status of the supergroup or the channel provided by a bot; may be null if none or unknown"
                 },
                 {
                     "name": "upgraded_from_basic_group_id",
@@ -7484,14 +7882,31 @@
             ]
         },
         {
+            "name": "chatFolderName",
+            "description": "Describes name of a chat folder",
+            "class": "ChatFolderName",
+            "properties": [
+                {
+                    "name": "text",
+                    "type": "formattedText",
+                    "description": "The text of the chat folder name; 1-12 characters without line feeds. May contain only CustomEmoji entities"
+                },
+                {
+                    "name": "animate_custom_emoji",
+                    "type": "Bool",
+                    "description": "True, if custom emoji in the name must be animated"
+                }
+            ]
+        },
+        {
             "name": "chatFolder",
             "description": "Represents a folder for user chats",
             "class": "ChatFolder",
             "properties": [
                 {
-                    "name": "title",
-                    "type": "string",
-                    "description": "The title of the folder; 1-12 characters without line feeds"
+                    "name": "name",
+                    "type": "chatFolderName",
+                    "description": "The name of the folder"
                 },
                 {
                     "name": "icon",
@@ -7576,9 +7991,9 @@
                     "description": "Unique chat folder identifier"
                 },
                 {
-                    "name": "title",
-                    "type": "string",
-                    "description": "The title of the folder; 1-12 characters without line feeds"
+                    "name": "name",
+                    "type": "chatFolderName",
+                    "description": "The name of the folder"
                 },
                 {
                     "name": "icon",
@@ -14016,7 +14431,7 @@
         },
         {
             "name": "messageGift",
-            "description": "A gift was received or sent by the current user",
+            "description": "A regular gift was received or sent by the current user",
             "class": "MessageContent",
             "properties": [
                 {
@@ -14032,7 +14447,12 @@
                 {
                     "name": "sell_star_count",
                     "type": "int53",
-                    "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; 0 if the gift can't be sold by the receiver"
+                    "description": "Number of Telegram Stars that can be claimed by the receiver instead of the regular gift; 0 if the gift can't be sold by the receiver"
+                },
+                {
+                    "name": "prepaid_upgrade_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift"
                 },
                 {
                     "name": "is_private",
@@ -14045,9 +14465,88 @@
                     "description": "True, if the gift is displayed on the user's profile page; only for the receiver of the gift"
                 },
                 {
+                    "name": "can_be_upgraded",
+                    "type": "Bool",
+                    "description": "True, if the gift can be upgraded to a unique gift; only for the receiver of the gift"
+                },
+                {
                     "name": "was_converted",
                     "type": "Bool",
                     "description": "True, if the gift was converted to Telegram Stars; only for the receiver of the gift"
+                },
+                {
+                    "name": "was_upgraded",
+                    "type": "Bool",
+                    "description": "True, if the gift was upgraded to a unique gift"
+                },
+                {
+                    "name": "was_refunded",
+                    "type": "Bool",
+                    "description": "True, if the gift was refunded and isn't available anymore"
+                },
+                {
+                    "name": "upgrade_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the service message messageUpgradedGift or messageRefundedUpgradedGift with upgraded version of the gift; can be 0 if none or an identifier of a deleted message. Use getUserGift to get information about the gift"
+                }
+            ]
+        },
+        {
+            "name": "messageUpgradedGift",
+            "description": "An upgraded gift was received or sent by the current user",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The gift"
+                },
+                {
+                    "name": "is_upgrade",
+                    "type": "Bool",
+                    "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred gift"
+                },
+                {
+                    "name": "is_saved",
+                    "type": "Bool",
+                    "description": "True, if the gift is displayed on the user's profile page; only for the receiver of the gift"
+                },
+                {
+                    "name": "can_be_transferred",
+                    "type": "Bool",
+                    "description": "True, if the gift can be transferred to another user; only for the receiver of the gift"
+                },
+                {
+                    "name": "was_transferred",
+                    "type": "Bool",
+                    "description": "True, if the gift was transferred to another user; only for the receiver of the gift"
+                },
+                {
+                    "name": "transfer_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that must be paid to transfer the upgraded gift; only for the receiver of the gift"
+                },
+                {
+                    "name": "export_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to TON blockchain as an NFT; 0 if NFT export isn't possible; only for the receiver of the gift"
+                }
+            ]
+        },
+        {
+            "name": "messageRefundedUpgradedGift",
+            "description": "A gift which purchase, upgrade or transfer were refunded",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "gift",
+                    "description": "The gift"
+                },
+                {
+                    "name": "is_upgrade",
+                    "type": "Bool",
+                    "description": "True, if the gift was obtained by upgrading of a previously received gift"
                 }
             ]
         },
@@ -15420,6 +15919,24 @@
             "name": "searchMessagesFilterPinned",
             "description": "Returns only pinned messages",
             "class": "SearchMessagesFilter",
+            "properties": []
+        },
+        {
+            "name": "searchMessagesChatTypeFilterPrivate",
+            "description": "Returns only messages in private chats",
+            "class": "SearchMessagesChatTypeFilter",
+            "properties": []
+        },
+        {
+            "name": "searchMessagesChatTypeFilterGroup",
+            "description": "Returns only messages in basic group and supergroup chats",
+            "class": "SearchMessagesChatTypeFilter",
+            "properties": []
+        },
+        {
+            "name": "searchMessagesChatTypeFilterChannel",
+            "description": "Returns only messages in channel chats",
+            "class": "SearchMessagesChatTypeFilter",
             "properties": []
         },
         {
@@ -17449,6 +17966,18 @@
             "properties": []
         },
         {
+            "name": "callDiscardReasonAllowGroupCall",
+            "description": "The call was ended because it has been used successfully to transfer private encryption key for the associated group call",
+            "class": "CallDiscardReason",
+            "properties": [
+                {
+                    "name": "encrypted_group_call_key",
+                    "type": "bytes",
+                    "description": "Encrypted using the call private key encryption key for the associated group call"
+                }
+            ]
+        },
+        {
             "name": "callProtocol",
             "description": "Specifies the supported call protocols",
             "class": "CallProtocol",
@@ -18107,6 +18636,11 @@
                     "name": "state",
                     "type": "CallState",
                     "description": "Call state"
+                },
+                {
+                    "name": "group_call_id",
+                    "type": "int32",
+                    "description": "Identifier of the group call associated with the call; 0 if the group call isn't created yet. The group call can be received through the method getGroupCall"
                 }
             ]
         },
@@ -18844,11 +19378,6 @@
                     "description": "URL of the result, if it exists"
                 },
                 {
-                    "name": "hide_url",
-                    "type": "Bool",
-                    "description": "True, if the URL must be not shown"
-                },
-                {
                     "name": "title",
                     "type": "string",
                     "description": "Title of the result"
@@ -19349,11 +19878,6 @@
                     "name": "url",
                     "type": "string",
                     "description": "URL of the result, if it exists"
-                },
-                {
-                    "name": "hide_url",
-                    "type": "Bool",
-                    "description": "True, if the URL must be not shown"
                 },
                 {
                     "name": "title",
@@ -22651,6 +23175,18 @@
             ]
         },
         {
+            "name": "pushMessageContentUpgradedGift",
+            "description": "A message with an upgraded gift",
+            "class": "PushMessageContent",
+            "properties": [
+                {
+                    "name": "is_upgrade",
+                    "type": "Bool",
+                    "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred gift"
+                }
+            ]
+        },
+        {
             "name": "pushMessageContentScreenshotTaken",
             "description": "A screenshot of a message in the chat has been taken",
             "class": "PushMessageContent",
@@ -25528,6 +26064,12 @@
         {
             "name": "suggestedActionSetBirthdate",
             "description": "Suggests the user to set birthdate",
+            "class": "SuggestedAction",
+            "properties": []
+        },
+        {
+            "name": "suggestedActionSetProfilePhoto",
+            "description": "Suggests the user to set profile photo",
             "class": "SuggestedAction",
             "properties": []
         },
@@ -29620,8 +30162,16 @@
             "description": "Describes type of subscription paid in Telegram Stars"
         },
         {
+            "name": "AffiliateType",
+            "description": "Describes type of affiliate for an affiliate program"
+        },
+        {
             "name": "AffiliateProgramSortOrder",
             "description": "Describes the order of the found affiliate programs"
+        },
+        {
+            "name": "SentGift",
+            "description": "Represents a gift received by a user"
         },
         {
             "name": "StarTransactionDirection",
@@ -29858,6 +30408,10 @@
         {
             "name": "SearchMessagesFilter",
             "description": "Represents a filter for message search results"
+        },
+        {
+            "name": "SearchMessagesChatTypeFilter",
+            "description": "Represents a filter for type of the chats in which to search messages"
         },
         {
             "name": "ChatAction",
@@ -31806,11 +32360,6 @@
                     "description": "Chat list in which to search messages; pass null to search in all chats regardless of their chat list. Only Main and Archive chat lists are supported"
                 },
                 {
-                    "name": "only_in_channels",
-                    "type": "Bool",
-                    "description": "Pass true to search only for messages in channels"
-                },
-                {
                     "name": "query",
                     "type": "string",
                     "description": "Query to search for"
@@ -31829,6 +32378,11 @@
                     "name": "filter",
                     "type": "SearchMessagesFilter",
                     "description": "Additional filter for messages to search; pass null to search for all messages. Filters searchMessagesFilterMention, searchMessagesFilterUnreadMention, searchMessagesFilterUnreadReaction, searchMessagesFilterFailedToSend, and searchMessagesFilterPinned are unsupported in this function"
+                },
+                {
+                    "name": "chat_type_filter",
+                    "type": "SearchMessagesChatTypeFilter",
+                    "description": "Additional filter for type of the chat of the searched messages; pass null to search for messages in all chats"
                 },
                 {
                     "name": "min_date",
@@ -38972,6 +39526,11 @@
                     "name": "is_video",
                     "type": "Bool",
                     "description": "Pass true to create a video call"
+                },
+                {
+                    "name": "group_call_id",
+                    "type": "int32",
+                    "description": "Identifier of the group call to which the user will be added after exchanging private key via the call; pass 0 if none; currently, ignored"
                 }
             ],
             "is_synchronous": false,
@@ -39173,6 +39732,20 @@
                     "name": "is_rtmp_stream",
                     "type": "Bool",
                     "description": "Pass true to create an RTMP stream instead of an ordinary video chat"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "createGroupCall",
+            "description": "Creates a group call from a one-to-one call",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "call_id",
+                    "type": "int32",
+                    "description": "Call identifier"
                 }
             ],
             "is_synchronous": false,
@@ -41788,6 +42361,49 @@
             "type": 1
         },
         {
+            "name": "setMessageSenderBotVerification",
+            "description": "Changes the verification status of a user or a chat by an owned bot",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "bot_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the owned bot, which will verify the user or the chat"
+                },
+                {
+                    "name": "verified_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the supergroup or channel chat, which will be verified by the bot"
+                },
+                {
+                    "name": "custom_description",
+                    "type": "string",
+                    "description": "Custom description of verification reason; 0-getOption(\"bot_verification_custom_description_length_max\"). If empty, then \"was verified by organization \"organization_name\"\" will be used as description. Can be specified only if the bot is allowed to provide custom description"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "removeMessageSenderBotVerification",
+            "description": "Removes the verification status of a user or a chat by an owned bot",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "bot_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the owned bot, which verified the user or the chat"
+                },
+                {
+                    "name": "verified_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the supergroup or channel chat, which verification is removed"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "getActiveSessions",
             "description": "Returns all active sessions of the current user",
             "class": "Sessions",
@@ -42502,6 +43118,11 @@
                     "name": "is_private",
                     "type": "Bool",
                     "description": "Pass true to show the current user as sender and gift text only to the gift receiver; otherwise, everyone will be able to see them"
+                },
+                {
+                    "name": "pay_for_upgrade",
+                    "type": "Bool",
+                    "description": "Pass true to additionally pay for the gift upgrade and allow the receiver to upgrade it for free"
                 }
             ],
             "is_synchronous": false,
@@ -42551,6 +43172,73 @@
             "type": 1
         },
         {
+            "name": "getGiftUpgradePreview",
+            "description": "Returns examples of possible upgraded gifts for a regular gift",
+            "class": "GiftUpgradePreview",
+            "properties": [
+                {
+                    "name": "gift_id",
+                    "type": "int64",
+                    "description": "Identifier of the gift"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "upgradeGift",
+            "description": "Upgrades a gift received by the current user. Unless the gift has prepaid_upgrade_star_count \u003e 0, the user must pay gift.upgrade_star_count Telegram Stars for the upgrade",
+            "class": "UpgradeGiftResult",
+            "properties": [
+                {
+                    "name": "sender_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that sent the gift"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the gift in the chat with the user"
+                },
+                {
+                    "name": "keep_original_details",
+                    "type": "Bool",
+                    "description": "Pass true to keep the original gift text, sender and receiver in the upgraded gift"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "transferGift",
+            "description": "Sends a gift upgraded by the current user to another user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "sender_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that sent the gift"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the upgraded gift in the chat with the user"
+                },
+                {
+                    "name": "receiver_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that will receive the gift"
+                },
+                {
+                    "name": "star_count",
+                    "type": "int53",
+                    "description": "The amount of Telegram Stars required for the transfer"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "getUserGifts",
             "description": "Returns gifts saved to profile by the given user",
             "class": "UserGifts",
@@ -42569,6 +43257,20 @@
                     "name": "limit",
                     "type": "int32",
                     "description": "The maximum number of gifts to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned objects is chosen by TDLib and can be smaller than the specified limit"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getUserGift",
+            "description": "Returns information about a gift received or sent by the current user",
+            "class": "UserGift",
+            "properties": [
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the gift"
                 }
             ],
             "is_synchronous": false,
@@ -44677,13 +45379,13 @@
         },
         {
             "name": "searchAffiliatePrograms",
-            "description": "Searches affiliate programs that can be applied to the given chat",
+            "description": "Searches affiliate programs that can be connected to the given affiliate",
             "class": "FoundAffiliatePrograms",
             "properties": [
                 {
-                    "name": "chat_id",
-                    "type": "int53",
-                    "description": "Identifier of the chat for which affiliate programs are searched for. Can be an identifier of the Saved Messages chat, of a chat with an owned bot, or of a channel chat with can_post_messages administrator right"
+                    "name": "affiliate",
+                    "type": "AffiliateType",
+                    "description": "The affiliate for which affiliate programs are searched for"
                 },
                 {
                     "name": "sort_order",
@@ -44705,14 +45407,14 @@
             "type": 1
         },
         {
-            "name": "connectChatAffiliateProgram",
-            "description": "Connects an affiliate program to the given chat. Returns information about the connected affiliate program",
-            "class": "ChatAffiliateProgram",
+            "name": "connectAffiliateProgram",
+            "description": "Connects an affiliate program to the given affiliate. Returns information about the connected affiliate program",
+            "class": "ConnectedAffiliateProgram",
             "properties": [
                 {
-                    "name": "chat_id",
-                    "type": "int53",
-                    "description": "Identifier of the chat to which the affiliate program will be connected. Can be an identifier of the Saved Messages chat, of a chat with an owned bot, or of a channel chat with can_post_messages administrator right"
+                    "name": "affiliate",
+                    "type": "AffiliateType",
+                    "description": "The affiliate to which the affiliate program will be connected"
                 },
                 {
                     "name": "bot_user_id",
@@ -44724,14 +45426,14 @@
             "type": 1
         },
         {
-            "name": "disconnectChatAffiliateProgram",
-            "description": "Disconnects an affiliate program from the given chat and immediately deactivates its referral link. Returns updated information about the disconnected affiliate program",
-            "class": "ChatAffiliateProgram",
+            "name": "disconnectAffiliateProgram",
+            "description": "Disconnects an affiliate program from the given affiliate and immediately deactivates its referral link. Returns updated information about the disconnected affiliate program",
+            "class": "ConnectedAffiliateProgram",
             "properties": [
                 {
-                    "name": "chat_id",
-                    "type": "int53",
-                    "description": "Identifier of the chat for which the affiliate program is connected"
+                    "name": "affiliate",
+                    "type": "AffiliateType",
+                    "description": "The affiliate to which the affiliate program is connected"
                 },
                 {
                     "name": "url",
@@ -44743,14 +45445,14 @@
             "type": 1
         },
         {
-            "name": "getChatAffiliateProgram",
-            "description": "Returns an affiliate program that were connected to the given chat by identifier of the bot that created the program",
-            "class": "ChatAffiliateProgram",
+            "name": "getConnectedAffiliateProgram",
+            "description": "Returns an affiliate program that were connected to the given affiliate by identifier of the bot that created the program",
+            "class": "ConnectedAffiliateProgram",
             "properties": [
                 {
-                    "name": "chat_id",
-                    "type": "int53",
-                    "description": "Identifier of the chat for which the affiliate program was connected. Can be an identifier of the Saved Messages chat, of a chat with an owned bot, or of a channel chat with can_post_messages administrator right"
+                    "name": "affiliate",
+                    "type": "AffiliateType",
+                    "description": "The affiliate to which the affiliate program will be connected"
                 },
                 {
                     "name": "bot_user_id",
@@ -44762,14 +45464,14 @@
             "type": 1
         },
         {
-            "name": "getChatAffiliatePrograms",
-            "description": "Returns affiliate programs that were connected to the given chat",
-            "class": "ChatAffiliatePrograms",
+            "name": "getConnectedAffiliatePrograms",
+            "description": "Returns affiliate programs that were connected to the given affiliate",
+            "class": "ConnectedAffiliatePrograms",
             "properties": [
                 {
-                    "name": "chat_id",
-                    "type": "int53",
-                    "description": "Identifier of the chat for which the affiliate programs were connected. Can be an identifier of the Saved Messages chat, of a chat with an owned bot, or of a channel chat with can_post_messages administrator right"
+                    "name": "affiliate",
+                    "type": "AffiliateType",
+                    "description": "The affiliate to which the affiliate program were connected"
                 },
                 {
                     "name": "offset",
