@@ -1160,6 +1160,114 @@
             ]
         },
         {
+            "name": "checklistTask",
+            "description": "Describes a task in a checklist",
+            "class": "ChecklistTask",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": "int32",
+                    "description": "Unique identifier of the task"
+                },
+                {
+                    "name": "text",
+                    "type": "formattedText",
+                    "description": "Text of the task; may contain only Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, Url, EmailAddress, Mention, Hashtag, Cashtag and PhoneNumber entities"
+                },
+                {
+                    "name": "completed_by_user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that completed the task; 0 if the task isn't completed"
+                },
+                {
+                    "name": "completion_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the task was completed; 0 if the task isn't completed"
+                }
+            ]
+        },
+        {
+            "name": "inputChecklistTask",
+            "description": "Describes a task in a checklist to be sent",
+            "class": "InputChecklistTask",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": "int32",
+                    "description": "Unique identifier of the task; must be positive"
+                },
+                {
+                    "name": "text",
+                    "type": "formattedText",
+                    "description": "Text of the task; 1-getOption(\"checklist_task_text_length_max\") characters without line feeds. May contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities"
+                }
+            ]
+        },
+        {
+            "name": "checklist",
+            "description": "Describes a checklist",
+            "class": "Checklist",
+            "properties": [
+                {
+                    "name": "title",
+                    "type": "formattedText",
+                    "description": "Title of the checklist; may contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities"
+                },
+                {
+                    "name": "tasks",
+                    "type": "vector\u003cchecklistTask\u003e",
+                    "description": "List of tasks in the checklist"
+                },
+                {
+                    "name": "others_can_add_tasks",
+                    "type": "Bool",
+                    "description": "True, if users other than creator of the list can add tasks to the list"
+                },
+                {
+                    "name": "can_add_tasks",
+                    "type": "Bool",
+                    "description": "True, if the current user can add tasks to the list if they have Telegram Premium subscription"
+                },
+                {
+                    "name": "others_can_mark_tasks_as_done",
+                    "type": "Bool",
+                    "description": "True, if users other than creator of the list can mark tasks as done or not done. If true, then the checklist is called \"group checklist\""
+                },
+                {
+                    "name": "can_mark_tasks_as_done",
+                    "type": "Bool",
+                    "description": "True, if the current user can mark tasks as done or not done if they have Telegram Premium subscription"
+                }
+            ]
+        },
+        {
+            "name": "inputChecklist",
+            "description": "Describes a checklist to be sent",
+            "class": "InputChecklist",
+            "properties": [
+                {
+                    "name": "title",
+                    "type": "formattedText",
+                    "description": "Title of the checklist; 1-getOption(\"checklist_title_length_max\") characters. May contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities"
+                },
+                {
+                    "name": "tasks",
+                    "type": "vector\u003cinputChecklistTask\u003e",
+                    "description": "List of tasks in the checklist; 1-getOption(\"checklist_task_count_max\") tasks"
+                },
+                {
+                    "name": "others_can_add_tasks",
+                    "type": "Bool",
+                    "description": "True, if other users can add tasks to the list"
+                },
+                {
+                    "name": "others_can_mark_tasks_as_done",
+                    "type": "Bool",
+                    "description": "True, if other users can mark tasks as done or not done"
+                }
+            ]
+        },
+        {
             "name": "animation",
             "description": "Describes an animation file. The animation must be encoded in GIF or MPEG4 format",
             "class": "Animation",
@@ -1788,6 +1896,33 @@
                     "name": "video",
                     "type": "file",
                     "description": "File containing the video"
+                }
+            ]
+        },
+        {
+            "name": "videoStoryboard",
+            "description": "Describes a storyboard for a video",
+            "class": "VideoStoryboard",
+            "properties": [
+                {
+                    "name": "storyboard_file",
+                    "type": "file",
+                    "description": "A JPEG file that contains tiled previews of video"
+                },
+                {
+                    "name": "width",
+                    "type": "int32",
+                    "description": "Width of a tile"
+                },
+                {
+                    "name": "height",
+                    "type": "int32",
+                    "description": "Height of a tile"
+                },
+                {
+                    "name": "map_file",
+                    "type": "file",
+                    "description": "File that describes mapping of position in the video to a tile in the JPEG file"
                 }
             ]
         },
@@ -2841,7 +2976,7 @@
                 {
                     "name": "can_send_polls",
                     "type": "Bool",
-                    "description": "True, if the user can send polls"
+                    "description": "True, if the user can send polls and checklists"
                 },
                 {
                     "name": "can_send_other_messages",
@@ -2883,7 +3018,7 @@
                 {
                     "name": "can_manage_chat",
                     "type": "Bool",
-                    "description": "True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report supergroup spam messages and ignore slow mode. Implied by any other privilege; applicable to supergroups and channels only"
+                    "description": "True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report supergroup spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other privilege; applicable to supergroups and channels only"
                 },
                 {
                     "name": "can_change_info",
@@ -2893,7 +3028,7 @@
                 {
                     "name": "can_post_messages",
                     "type": "Bool",
-                    "description": "True, if the administrator can create channel posts or view channel statistics; applicable to channels only"
+                    "description": "True, if the administrator can create channel posts, answer to channel direct messages, or view channel statistics; applicable to channels only"
                 },
                 {
                     "name": "can_edit_messages",
@@ -4887,7 +5022,7 @@
         },
         {
             "name": "starTransactionTypePaidMessageReceive",
-            "description": "The transaction is a receiving of a paid message; for regular users and supergroup chats only",
+            "description": "The transaction is a receiving of a paid message; for regular users, supergroup and channel chats only",
             "class": "StarTransactionType",
             "properties": [
                 {
@@ -6592,9 +6727,29 @@
                     "description": "True, if the supergroup is a forum with topics"
                 },
                 {
+                    "name": "is_direct_messages_group",
+                    "type": "Bool",
+                    "description": "True, if the supergroup is a direct message group for a channel chat"
+                },
+                {
+                    "name": "is_administered_direct_messages_group",
+                    "type": "Bool",
+                    "description": "True, if the supergroup is a direct messages group for a channel chat that is administered by the current user"
+                },
+                {
                     "name": "verification_status",
                     "type": "verificationStatus",
                     "description": "Information about verification status of the supergroup or channel; may be null if none"
+                },
+                {
+                    "name": "has_direct_messages_group",
+                    "type": "Bool",
+                    "description": "True, if the channel has direct messages group"
+                },
+                {
+                    "name": "has_forum_tabs",
+                    "type": "Bool",
+                    "description": "True, if the supergroup is a forum, which topics are shown in the same way as in channel direct messages groups"
                 },
                 {
                     "name": "has_sensitive_content",
@@ -6662,6 +6817,11 @@
                     "name": "linked_chat_id",
                     "type": "int53",
                     "description": "Chat identifier of a discussion group for the channel, or a channel, for which the supergroup is the designated discussion group; 0 if none or unknown"
+                },
+                {
+                    "name": "direct_messages_chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of a direct messages group for the channel, or a channel, for which the supergroup is the designated direct messages group; 0 if none"
                 },
                 {
                     "name": "slow_mode_delay",
@@ -6772,6 +6932,11 @@
                     "name": "unrestrict_boost_count",
                     "type": "int32",
                     "description": "Number of times the supergroup must be boosted by a user to ignore slow mode and chat permission restrictions; 0 if unspecified"
+                },
+                {
+                    "name": "outgoing_paid_message_star_count",
+                    "type": "int53",
+                    "description": "Number of Telegram Stars that must be paid by the current user for each sent message to the supergroup"
                 },
                 {
                     "name": "sticker_set_id",
@@ -7376,6 +7541,42 @@
             ]
         },
         {
+            "name": "messageTopicForum",
+            "description": "A topic in a forum supergroup chat",
+            "class": "MessageTopic",
+            "properties": [
+                {
+                    "name": "forum_topic_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the forum topic; all messages in a non-forum supergroup chats belongs to the General topic"
+                }
+            ]
+        },
+        {
+            "name": "messageTopicDirectMessages",
+            "description": "A topic in a channel direct messages chat administered by the current user",
+            "class": "MessageTopic",
+            "properties": [
+                {
+                    "name": "direct_messages_chat_topic_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the topic"
+                }
+            ]
+        },
+        {
+            "name": "messageTopicSavedMessages",
+            "description": "A topic in Saved Messages chat",
+            "class": "MessageTopic",
+            "properties": [
+                {
+                    "name": "saved_messages_topic_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the Saved Messages topic"
+                }
+            ]
+        },
+        {
             "name": "messageEffectTypeEmojiReaction",
             "description": "An effect from an emoji reaction",
             "class": "MessageEffectType",
@@ -7562,7 +7763,7 @@
                 {
                     "name": "content",
                     "type": "MessageContent",
-                    "description": "Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote"
+                    "description": "Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageChecklist, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote"
                 }
             ]
         },
@@ -7704,7 +7905,7 @@
                 {
                     "name": "can_be_saved",
                     "type": "Bool",
-                    "description": "True, if content of the message can be saved locally or copied using inputMessageForwarded or forwardMessages with copy options"
+                    "description": "True, if content of the message can be saved locally"
                 },
                 {
                     "name": "has_timestamped_media",
@@ -7715,11 +7916,6 @@
                     "name": "is_channel_post",
                     "type": "Bool",
                     "description": "True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts"
-                },
-                {
-                    "name": "is_topic_message",
-                    "type": "Bool",
-                    "description": "True, if the message is a forum topic message"
                 },
                 {
                     "name": "contains_unread_mention",
@@ -7772,9 +7968,9 @@
                     "description": "If non-zero, the identifier of the message thread the message belongs to; unique within the chat to which the message belongs"
                 },
                 {
-                    "name": "saved_messages_topic_id",
-                    "type": "int53",
-                    "description": "Identifier of the Saved Messages topic for the message; 0 for messages not from Saved Messages"
+                    "name": "topic_id",
+                    "type": "MessageTopic",
+                    "description": "Identifier of the topic within the chat to which the message belongs; may be null if none"
                 },
                 {
                     "name": "self_destruct_type",
@@ -8019,13 +8215,19 @@
         },
         {
             "name": "messageSourceMessageThreadHistory",
-            "description": "The message is from a message thread history",
+            "description": "The message is from history of a message thread",
             "class": "MessageSource",
             "properties": []
         },
         {
             "name": "messageSourceForumTopicHistory",
-            "description": "The message is from a forum topic history",
+            "description": "The message is from history of a forum topic",
+            "class": "MessageSource",
+            "properties": []
+        },
+        {
+            "name": "messageSourceDirectMessagesChatTopicHistory",
+            "description": "The message is from history of a topic in a channel direct messages chat administered by the current user",
             "class": "MessageSource",
             "properties": []
         },
@@ -8072,14 +8274,14 @@
             "properties": []
         },
         {
-            "name": "messageSponsor",
-            "description": "Information about the sponsor of a message",
-            "class": "MessageSponsor",
+            "name": "advertisementSponsor",
+            "description": "Information about the sponsor of an advertisement",
+            "class": "AdvertisementSponsor",
             "properties": [
                 {
                     "name": "url",
                     "type": "string",
-                    "description": "URL of the sponsor to be opened when the message is clicked"
+                    "description": "URL of the sponsor to be opened when the advertisement is clicked"
                 },
                 {
                     "name": "photo",
@@ -8089,7 +8291,7 @@
                 {
                     "name": "info",
                     "type": "string",
-                    "description": "Additional optional information about the sponsor to be shown along with the message"
+                    "description": "Additional optional information about the sponsor to be shown along with the advertisement"
                 }
             ]
         },
@@ -8120,7 +8322,7 @@
                 },
                 {
                     "name": "sponsor",
-                    "type": "messageSponsor",
+                    "type": "advertisementSponsor",
                     "description": "Information about the sponsor of the message"
                 },
                 {
@@ -8203,6 +8405,75 @@
                     "name": "chats",
                     "type": "vector\u003csponsoredChat\u003e",
                     "description": "List of sponsored chats"
+                }
+            ]
+        },
+        {
+            "name": "videoMessageAdvertisement",
+            "description": "Describes an advertisent to be shown while a video from a message is watched",
+            "class": "VideoMessageAdvertisement",
+            "properties": [
+                {
+                    "name": "unique_id",
+                    "type": "int53",
+                    "description": "Unique identifier of this result"
+                },
+                {
+                    "name": "text",
+                    "type": "string",
+                    "description": "Text of the advertisement"
+                },
+                {
+                    "name": "min_display_duration",
+                    "type": "int32",
+                    "description": "The minimum amount of time the advertisement must be displayed before it can be hidden by the user, in seconds"
+                },
+                {
+                    "name": "max_display_duration",
+                    "type": "int32",
+                    "description": "The maximum amount of time the advertisement must be displayed before it must be automatically hidden, in seconds"
+                },
+                {
+                    "name": "can_be_reported",
+                    "type": "Bool",
+                    "description": "True, if the advertisement can be reported to Telegram moderators through reportVideoMessageAdvertisement"
+                },
+                {
+                    "name": "sponsor",
+                    "type": "advertisementSponsor",
+                    "description": "Information about the sponsor of the advertisement"
+                },
+                {
+                    "name": "title",
+                    "type": "string",
+                    "description": "Title of the sponsored message"
+                },
+                {
+                    "name": "additional_info",
+                    "type": "string",
+                    "description": "If non-empty, additional information about the sponsored message to be shown along with the message"
+                }
+            ]
+        },
+        {
+            "name": "videoMessageAdvertisements",
+            "description": "Contains a list of advertisements to be shown while a video from a message is watched",
+            "class": "VideoMessageAdvertisements",
+            "properties": [
+                {
+                    "name": "advertisements",
+                    "type": "vector\u003cvideoMessageAdvertisement\u003e",
+                    "description": "List of advertisements"
+                },
+                {
+                    "name": "start_delay",
+                    "type": "int32",
+                    "description": "Delay before the first advertisement is shown, in seconds"
+                },
+                {
+                    "name": "between_delay",
+                    "type": "int32",
+                    "description": "Delay between consecutive advertisements, in seconds"
                 }
             ]
         },
@@ -10200,6 +10471,73 @@
             ]
         },
         {
+            "name": "directMessagesChatTopic",
+            "description": "Contains information about a topic in a channel direct messages chat administered by the current user",
+            "class": "DirectMessagesChatTopic",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat to which the topic belongs"
+                },
+                {
+                    "name": "id",
+                    "type": "int53",
+                    "description": "Unique topic identifier"
+                },
+                {
+                    "name": "sender_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or chat that sends the messages to the topic"
+                },
+                {
+                    "name": "order",
+                    "type": "int64",
+                    "description": "A parameter used to determine order of the topic in the topic list. Topics must be sorted by the order in descending order"
+                },
+                {
+                    "name": "can_send_unpaid_messages",
+                    "type": "Bool",
+                    "description": "True, if the other party can send unpaid messages even if the chat has paid messages enabled"
+                },
+                {
+                    "name": "is_marked_as_unread",
+                    "type": "Bool",
+                    "description": "True, if the forum topic is marked as unread"
+                },
+                {
+                    "name": "unread_count",
+                    "type": "int53",
+                    "description": "Number of unread messages in the chat"
+                },
+                {
+                    "name": "last_read_inbox_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the last read incoming message"
+                },
+                {
+                    "name": "last_read_outbox_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the last read outgoing message"
+                },
+                {
+                    "name": "unread_reaction_count",
+                    "type": "int53",
+                    "description": "Number of messages with unread reactions in the chat"
+                },
+                {
+                    "name": "last_message",
+                    "type": "message",
+                    "description": "Last message in the topic; may be null if none or unknown"
+                },
+                {
+                    "name": "draft_message",
+                    "type": "draftMessage",
+                    "description": "A draft of a message in the topic; may be null if none"
+                }
+            ]
+        },
+        {
             "name": "forumTopicIcon",
             "description": "Describes a forum topic icon",
             "class": "ForumTopicIcon",
@@ -10225,6 +10563,11 @@
                     "name": "chat_id",
                     "type": "int53",
                     "description": "Identifier of the forum chat to which the topic belongs"
+                },
+                {
+                    "name": "forum_topic_id",
+                    "type": "int53",
+                    "description": "Forum topic identifier of the topic"
                 },
                 {
                     "name": "message_thread_id",
@@ -14114,6 +14457,11 @@
                     "description": "Alternative qualities of the video"
                 },
                 {
+                    "name": "storyboards",
+                    "type": "vector\u003cvideoStoryboard\u003e",
+                    "description": "Available storyboards for the video"
+                },
+                {
                     "name": "cover",
                     "type": "photo",
                     "description": "Cover of the video; may be null if none"
@@ -14365,6 +14713,18 @@
             ]
         },
         {
+            "name": "messageChecklist",
+            "description": "A message with a checklist",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "list",
+                    "type": "checklist",
+                    "description": "The checklist description"
+                }
+            ]
+        },
+        {
             "name": "messageInvoice",
             "description": "A message with an invoice from a bot. Use getInternalLink with internalLinkTypeBotStart to share the invoice",
             "class": "MessageContent",
@@ -14440,7 +14800,7 @@
         },
         {
             "name": "messageGroupCall",
-            "description": "A message with information about a group call not bound to a chat. If the message is incoming, the call isn't active, isn't missed, and has no duration, and getOption(\"can_accept_calls\") is true, then incoming call screen must be shown to the user. Use joinGroupCall to accept the call or declineGroupCallInvitation to decline it. If the call become active or missed, then the call screen must be hidden",
+            "description": "A message with information about a group call not bound to a chat. If the message is incoming, the call isn't active, isn't missed, and has no duration, and getOption(\"can_accept_calls\") is true, then incoming call screen must be shown to the user. Use getGroupCallParticipants to show current group call participants on the screen. Use joinGroupCall to accept the call or declineGroupCallInvitation to decline it. If the call become active or missed, then the call screen must be hidden",
             "class": "MessageContent",
             "properties": [
                 {
@@ -15330,6 +15690,11 @@
                     "description": "Sender of the gift"
                 },
                 {
+                    "name": "receiver_id",
+                    "type": "MessageSender",
+                    "description": "Receiver of the gift"
+                },
+                {
                     "name": "received_gift_id",
                     "type": "string",
                     "description": "Unique identifier of the received gift for the current user; only for the receiver of the gift"
@@ -15402,6 +15767,11 @@
                     "description": "Sender of the gift; may be null for anonymous gifts"
                 },
                 {
+                    "name": "receiver_id",
+                    "type": "MessageSender",
+                    "description": "Receiver of the gift"
+                },
+                {
                     "name": "received_gift_id",
                     "type": "string",
                     "description": "Unique identifier of the received gift for the current user; only for the receiver of the gift"
@@ -15469,6 +15839,11 @@
                     "description": "Sender of the gift"
                 },
                 {
+                    "name": "receiver_id",
+                    "type": "MessageSender",
+                    "description": "Receiver of the gift"
+                },
+                {
                     "name": "is_upgrade",
                     "type": "Bool",
                     "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred or resold gift"
@@ -15501,6 +15876,62 @@
                     "name": "paid_message_star_count",
                     "type": "int53",
                     "description": "The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message"
+                }
+            ]
+        },
+        {
+            "name": "messageDirectMessagePriceChanged",
+            "description": "A price for direct messages was changed in the channel chat",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "is_enabled",
+                    "type": "Bool",
+                    "description": "True, if direct messages group was enabled for the channel; false otherwise"
+                },
+                {
+                    "name": "paid_message_star_count",
+                    "type": "int53",
+                    "description": "The new number of Telegram Stars that must be paid by non-administrator users of the channel chat for each message sent to the direct messages group; 0 if the direct messages group was disabled or the messages are free"
+                }
+            ]
+        },
+        {
+            "name": "messageChecklistTasksDone",
+            "description": "Some tasks from a checklist were marked as done or not done",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "checklist_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the checklist; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "marked_as_done_task_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of tasks that were marked as done"
+                },
+                {
+                    "name": "marked_as_not_done_task_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of tasks that were marked as not done"
+                }
+            ]
+        },
+        {
+            "name": "messageChecklistTasksAdded",
+            "description": "Some tasks were added to a checklist",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "checklist_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the checklist; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "tasks",
+                    "type": "vector\u003cchecklistTask\u003e",
+                    "description": "List of tasks added to the checklist"
                 }
             ]
         },
@@ -15950,6 +16381,11 @@
             "class": "MessageSendOptions",
             "properties": [
                 {
+                    "name": "direct_messages_chat_topic_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the topic in a channel direct messages chat administered by the current user; pass 0 if the chat isn't a channel direct messages chat administered by the current user"
+                },
+                {
                     "name": "disable_notification",
                     "type": "Bool",
                     "description": "Pass true to disable notification for the message"
@@ -15982,7 +16418,7 @@
                 {
                     "name": "scheduling_state",
                     "type": "MessageSchedulingState",
-                    "description": "Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, to a chat with paid messages, live location messages and self-destructing messages can't be scheduled"
+                    "description": "Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, to a chat with paid messages, to a channel direct messages chat, live location messages and self-destructing messages can't be scheduled"
                 },
                 {
                     "name": "effect_id",
@@ -16009,7 +16445,7 @@
                 {
                     "name": "send_copy",
                     "type": "Bool",
-                    "description": "True, if content of the message needs to be copied without reference to the original sender. Always true if the message is forwarded to a secret chat or is local. Use messageProperties.can_be_saved and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable"
+                    "description": "True, if content of the message needs to be copied without reference to the original sender. Always true if the message is forwarded to a secret chat or is local. Use messageProperties.can_be_copied and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable"
                 },
                 {
                     "name": "replace_caption",
@@ -16577,7 +17013,7 @@
         },
         {
             "name": "inputMessagePoll",
-            "description": "A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot",
+            "description": "A message with a poll. Polls can't be sent to secret chats and channel direct messages chats. Polls can be sent to a private chat only if the chat is a chat with a bot or the Saved Messages chat",
             "class": "InputMessageContent",
             "properties": [
                 {
@@ -16588,7 +17024,7 @@
                 {
                     "name": "options",
                     "type": "vector\u003cformattedText\u003e",
-                    "description": "List of poll answer options, 2-10 strings 1-100 characters each. Only custom emoji entities are allowed to be added and only by Premium users"
+                    "description": "List of poll answer options, 2-getOption(\"poll_answer_count_max\") strings 1-100 characters each. Only custom emoji entities are allowed to be added and only by Premium users"
                 },
                 {
                     "name": "is_anonymous",
@@ -16635,6 +17071,18 @@
             ]
         },
         {
+            "name": "inputMessageChecklist",
+            "description": "A message with a checklist. Checklists can't be sent to secret chats, channel chats and channel direct messages chats; for Telegram Premium users only",
+            "class": "InputMessageContent",
+            "properties": [
+                {
+                    "name": "checklist",
+                    "type": "inputChecklist",
+                    "description": "The checklist to send"
+                }
+            ]
+        },
+        {
             "name": "inputMessageForwarded",
             "description": "A forwarded message",
             "class": "InputMessageContent",
@@ -16677,6 +17125,16 @@
             "class": "MessageProperties",
             "properties": [
                 {
+                    "name": "can_add_tasks",
+                    "type": "Bool",
+                    "description": "True, if tasks can be added to the message's checklist using addChecklistTasks if the current user has Telegram Premium subscription"
+                },
+                {
+                    "name": "can_be_copied",
+                    "type": "Bool",
+                    "description": "True, if content of the message can be copied using inputMessageForwarded or forwardMessages with copy options"
+                },
+                {
                     "name": "can_be_copied_to_secret_chat",
                     "type": "Bool",
                     "description": "True, if content of the message can be copied to a secret chat using inputMessageForwarded or forwardMessages with copy options"
@@ -16694,12 +17152,12 @@
                 {
                     "name": "can_be_edited",
                     "type": "Bool",
-                    "description": "True, if the message can be edited using the methods editMessageText, editMessageCaption, or editMessageReplyMarkup. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message"
+                    "description": "True, if the message can be edited using the methods editMessageText, editMessageCaption, or editMessageReplyMarkup. For live location, poll, and checklist messages this fields shows whether editMessageLiveLocation, stopPoll, or editMessageChecklist respectively can be used with this message"
                 },
                 {
                     "name": "can_be_forwarded",
                     "type": "Bool",
-                    "description": "True, if the message can be forwarded using inputMessageForwarded or forwardMessages"
+                    "description": "True, if the message can be forwarded using inputMessageForwarded or forwardMessages without copy options"
                 },
                 {
                     "name": "can_be_paid",
@@ -16724,7 +17182,7 @@
                 {
                     "name": "can_be_saved",
                     "type": "Bool",
-                    "description": "True, if content of the message can be saved locally or copied using inputMessageForwarded or forwardMessages with copy options"
+                    "description": "True, if content of the message can be saved locally"
                 },
                 {
                     "name": "can_be_shared_in_story",
@@ -16740,6 +17198,11 @@
                     "name": "can_edit_scheduling_state",
                     "type": "Bool",
                     "description": "True, if scheduling state of the message can be edited"
+                },
+                {
+                    "name": "can_get_author",
+                    "type": "Bool",
+                    "description": "True, if author of the message sent on behalf of a chat can be received through getMessageAuthor"
                 },
                 {
                     "name": "can_get_embedding_code",
@@ -16772,9 +17235,19 @@
                     "description": "True, if message statistics are available through getMessageStatistics and message forwards can be received using getMessagePublicForwards"
                 },
                 {
+                    "name": "can_get_video_advertisements",
+                    "type": "Bool",
+                    "description": "True, if advertisements for video of the message can be received though getVideoMessageAdvertisements"
+                },
+                {
                     "name": "can_get_viewers",
                     "type": "Bool",
                     "description": "True, if chat members already viewed the message can be received through getMessageViewers"
+                },
+                {
+                    "name": "can_mark_tasks_as_done",
+                    "type": "Bool",
+                    "description": "True, if tasks can be marked as done or not done in the message's checklist using markChecklistTasksAsDone if the current user has Telegram Premium subscription"
                 },
                 {
                     "name": "can_recognize_speech",
@@ -18954,7 +19427,7 @@
                 {
                     "name": "error_message",
                     "type": "string",
-                    "description": "Cause of the verification failure, for example, PLAY_SERVICES_NOT_AVAILABLE, APNS_RECEIVE_TIMEOUT, or APNS_INIT_FAILED"
+                    "description": "Cause of the verification failure, for example, \"PLAY_SERVICES_NOT_AVAILABLE\", \"APNS_RECEIVE_TIMEOUT\", or \"APNS_INIT_FAILED\""
                 }
             ]
         },
@@ -22874,6 +23347,12 @@
             "properties": []
         },
         {
+            "name": "premiumFeatureChecklists",
+            "description": "The ability to create and use checklist messages",
+            "class": "PremiumFeature",
+            "properties": []
+        },
+        {
             "name": "businessFeatureLocation",
             "description": "The ability to set location",
             "class": "BusinessFeature",
@@ -24535,6 +25014,23 @@
             ]
         },
         {
+            "name": "pushMessageContentChecklist",
+            "description": "A message with a checklist",
+            "class": "PushMessageContent",
+            "properties": [
+                {
+                    "name": "title",
+                    "type": "string",
+                    "description": "Checklist title"
+                },
+                {
+                    "name": "is_pinned",
+                    "type": "Bool",
+                    "description": "True, if the message is a pinned message with the specified content"
+                }
+            ]
+        },
+        {
             "name": "pushMessageContentVideo",
             "description": "A video message",
             "class": "PushMessageContent",
@@ -24750,6 +25246,30 @@
                     "name": "distance",
                     "type": "int32",
                     "description": "The distance to the user"
+                }
+            ]
+        },
+        {
+            "name": "pushMessageContentChecklistTasksAdded",
+            "description": "Some tasks were added to a checklist",
+            "class": "PushMessageContent",
+            "properties": [
+                {
+                    "name": "task_count",
+                    "type": "int32",
+                    "description": "Number of added tasks"
+                }
+            ]
+        },
+        {
+            "name": "pushMessageContentChecklistTasksDone",
+            "description": "Some tasks from a checklist were marked as done or not done",
+            "class": "PushMessageContent",
+            "properties": [
+                {
+                    "name": "task_count",
+                    "type": "int32",
+                    "description": "Number of changed tasks"
                 }
             ]
         },
@@ -26117,7 +26637,7 @@
         },
         {
             "name": "internalLinkTypeGroupCall",
-            "description": "The link is a link to a group call that isn't bound to a chat. Call joinGroupCall with the given invite_link",
+            "description": "The link is a link to a group call that isn't bound to a chat. Use getGroupCallParticipants to get the list of group call participants and show them on the join group call screen. Call joinGroupCall with the given invite_link to join the call",
             "class": "InternalLinkType",
             "properties": [
                 {
@@ -29482,6 +30002,40 @@
             ]
         },
         {
+            "name": "updateDirectMessagesChatTopic",
+            "description": "Basic information about a topic in a channel direct messages chat administered by the current user has changed. This update is guaranteed to come before the topic identifier is returned to the application",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "topic",
+                    "type": "directMessagesChatTopic",
+                    "description": "New data about the topic"
+                }
+            ]
+        },
+        {
+            "name": "updateTopicMessageCount",
+            "description": "Number of messages in a topic has changed; for Saved Messages and channel direct messages chat topics only",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat in topic of which the number of messages has changed"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "MessageTopic",
+                    "description": "Identifier of the topic"
+                },
+                {
+                    "name": "message_count",
+                    "type": "int32",
+                    "description": "Approximate number of messages in the topics"
+                }
+            ]
+        },
+        {
             "name": "updateQuickReplyShortcut",
             "description": "Basic information about a quick reply shortcut has changed. This update is guaranteed to come before the quick shortcut name is returned to the application",
             "class": "Update",
@@ -29575,6 +30129,16 @@
                     "name": "last_read_outbox_message_id",
                     "type": "int53",
                     "description": "Identifier of the last read outgoing message"
+                },
+                {
+                    "name": "unread_mention_count",
+                    "type": "int32",
+                    "description": "Number of unread messages with a mention/reply in the topic"
+                },
+                {
+                    "name": "unread_reaction_count",
+                    "type": "int32",
+                    "description": "Number of messages with unread reactions in the topic"
                 },
                 {
                     "name": "notification_settings",
@@ -31797,6 +32361,10 @@
             "description": "Describes type of paid message reaction"
         },
         {
+            "name": "MessageTopic",
+            "description": "Describes a topic of messages in a chat"
+        },
+        {
             "name": "MessageEffectType",
             "description": "Describes type of emoji effect"
         },
@@ -33138,7 +33706,7 @@
         },
         {
             "name": "getRepliedMessage",
-            "description": "Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, the giveaway message, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground, messageGiveawayCompleted and topic messages without non-bundled replied message respectively. Returns a 404 error if the message doesn't exist",
+            "description": "Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, the giveaway message, the checklist message, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground, messageGiveawayCompleted, messageChecklistTasksDone and messageChecklistTasksAdded, and topic messages without non-bundled replied message respectively. Returns a 404 error if the message doesn't exist",
             "class": "Message",
             "properties": [
                 {
@@ -33273,6 +33841,25 @@
             "name": "getMessageViewers",
             "description": "Returns viewers of a recent outgoing message in a basic group or a supergroup chat. For video notes and voice notes only users, opened content of the message, are returned. The method can be called if messageProperties.can_get_viewers == true",
             "class": "MessageViewers",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getMessageAuthor",
+            "description": "Returns information about actual author of a message sent on behalf of a channel. The method can be called if messageProperties.can_get_author == true",
+            "class": "User",
             "properties": [
                 {
                     "name": "chat_id",
@@ -33701,7 +34288,7 @@
         },
         {
             "name": "getInactiveSupergroupChats",
-            "description": "Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives CHANNELS_TOO_MUCH error. Also, the limit can be increased with Telegram Premium",
+            "description": "Returns a list of recently inactive supergroups and channels. Can be used when user reaches limit on the number of joined supergroups and channels and receives the error \"CHANNELS_TOO_MUCH\". Also, the limit can be increased with Telegram Premium",
             "class": "Chats",
             "properties": [],
             "is_synchronous": false,
@@ -33712,6 +34299,284 @@
             "description": "Returns a list of channel chats, which can be used as a personal chat",
             "class": "Chats",
             "properties": [],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "loadDirectMessagesChatTopics",
+            "description": "Loads more topics in a channel direct messages chat administered by the current user. The loaded topics will be sent through updateDirectMessagesChatTopic. Topics are sorted by their topic.order in descending order. Returns a 404 error if all topics have been loaded",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of topics to be loaded. For optimal performance, the number of loaded topics is chosen by TDLib and can be smaller than the specified limit, even if the end of the list is not reached"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getDirectMessagesChatTopic",
+            "description": "Returns information about the topic in a channel direct messages chat administered by the current user",
+            "class": "DirectMessagesChatTopic",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic to get"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getDirectMessagesChatTopicHistory",
+            "description": "Returns messages in the topic in a channel direct messages chat administered by the current user. The messages are returned in reverse chronological order (i.e., in order of decreasing message_id)",
+            "class": "Messages",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic which messages will be fetched"
+                },
+                {
+                    "name": "from_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message"
+                },
+                {
+                    "name": "offset",
+                    "type": "int32",
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getDirectMessagesChatTopicMessageByDate",
+            "description": "Returns the last message sent in the topic in a channel direct messages chat administered by the current user no later than the specified date",
+            "class": "Message",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic which messages will be fetched"
+                },
+                {
+                    "name": "date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) relative to which to search for messages"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "deleteDirectMessagesChatTopicHistory",
+            "description": "Deletes all messages in the topic in a channel direct messages chat administered by the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic which messages will be deleted"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "deleteDirectMessagesChatTopicMessagesByDate",
+            "description": "Deletes all messages between the specified dates in the topic in a channel direct messages chat administered by the current user. Messages sent in the last 30 seconds will not be deleted",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic which messages will be deleted"
+                },
+                {
+                    "name": "min_date",
+                    "type": "int32",
+                    "description": "The minimum date of the messages to delete"
+                },
+                {
+                    "name": "max_date",
+                    "type": "int32",
+                    "description": "The maximum date of the messages to delete"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setDirectMessagesChatTopicIsMarkedAsUnread",
+            "description": "Changes the marked as unread state of the topic in a channel direct messages chat administered by the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Topic identifier"
+                },
+                {
+                    "name": "is_marked_as_unread",
+                    "type": "Bool",
+                    "description": "New value of is_marked_as_unread"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setDirectMessagesChatTopicDraftMessage",
+            "description": "Changes the draft message in the topic in a channel direct messages chat administered by the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Topic identifier"
+                },
+                {
+                    "name": "draft_message",
+                    "type": "draftMessage",
+                    "description": "New draft message; pass null to remove the draft. All files in draft message content must be of the type inputFileLocal. Media thumbnails and captions are ignored"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "unpinAllDirectMessagesChatTopicMessages",
+            "description": "Removes all pinned messages from the topic in a channel direct messages chat administered by the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Topic identifier"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "readAllDirectMessagesChatTopicReactions",
+            "description": "Removes all unread reactions in the topic in a channel direct messages chat administered by the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Topic identifier"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getDirectMessagesChatTopicRevenue",
+            "description": "Returns the total number of Telegram Stars received by the channel chat for direct messages from the given topic",
+            "class": "StarCount",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat administered by the current user"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "toggleDirectMessagesChatTopicCanSendUnpaidMessages",
+            "description": "Allows to send unpaid messages to the given topic of the channel direct messages chat administered by the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "int53",
+                    "description": "Identifier of the topic"
+                },
+                {
+                    "name": "can_send_unpaid_messages",
+                    "type": "Bool",
+                    "description": "Pass true to allow unpaid messages; pass false to disallow unpaid messages"
+                },
+                {
+                    "name": "refund_payments",
+                    "type": "Bool",
+                    "description": "Pass true to refund the user previously paid messages"
+                }
+            ],
             "is_synchronous": false,
             "type": 1
         },
@@ -33980,13 +34845,18 @@
         },
         {
             "name": "searchChatMessages",
-            "description": "Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit. A combination of query, sender_id, filter and message_thread_id search criteria is expected to be supported, only if it is required for Telegram official application implementation",
+            "description": "Searches for messages with given words in the chat. Returns the results in reverse chronological order, i.e. in order of decreasing message_id. Cannot be used in secret chats with a non-empty query (searchSecretMessages must be used instead), or without an enabled message database. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit. A combination of query, sender_id, filter and topic_id search criteria is expected to be supported, only if it is required for Telegram official application implementation",
             "class": "FoundChatMessages",
             "properties": [
                 {
                     "name": "chat_id",
                     "type": "int53",
                     "description": "Identifier of the chat in which to search messages"
+                },
+                {
+                    "name": "topic_id",
+                    "type": "MessageTopic",
+                    "description": "Pass topic identifier to search messages only in specific topic; pass null to search for messages in all topics"
                 },
                 {
                     "name": "query",
@@ -34017,16 +34887,6 @@
                     "name": "filter",
                     "type": "SearchMessagesFilter",
                     "description": "Additional filter for messages to search; pass null to search for all messages"
-                },
-                {
-                    "name": "message_thread_id",
-                    "type": "int53",
-                    "description": "If not 0, only messages in the specified thread will be returned; supergroups only"
-                },
-                {
-                    "name": "saved_messages_topic_id",
-                    "type": "int53",
-                    "description": "If not 0, only messages in the specified Saved Messages topic will be returned; pass 0 to return all messages, or for chats other than Saved Messages"
                 }
             ],
             "is_synchronous": false,
@@ -34447,6 +35307,11 @@
                     "description": "Identifier of the chat in which to return information about messages"
                 },
                 {
+                    "name": "topic_id",
+                    "type": "MessageTopic",
+                    "description": "Pass topic identifier to get the result only in specific topic; pass null to get the result in all topics; forum topics aren't supported"
+                },
+                {
                     "name": "filter",
                     "type": "SearchMessagesFilter",
                     "description": "Filter for message content. Filters searchMessagesFilterEmpty, searchMessagesFilterMention, searchMessagesFilterUnreadMention, and searchMessagesFilterUnreadReaction are unsupported in this function"
@@ -34455,11 +35320,6 @@
                     "name": "from_message_id",
                     "type": "int53",
                     "description": "The message identifier from which to return information about messages; use 0 to get results from the last message"
-                },
-                {
-                    "name": "saved_messages_topic_id",
-                    "type": "int53",
-                    "description": "If not0, only messages in the specified Saved Messages topic will be considered; pass 0 to consider all messages, or for chats other than Saved Messages"
                 }
             ],
             "is_synchronous": false,
@@ -34467,7 +35327,7 @@
         },
         {
             "name": "getChatMessageCount",
-            "description": "Returns approximate number of messages of the specified type in the chat",
+            "description": "Returns approximate number of messages of the specified type in the chat or its topic",
             "class": "Count",
             "properties": [
                 {
@@ -34476,14 +35336,14 @@
                     "description": "Identifier of the chat in which to count messages"
                 },
                 {
+                    "name": "topic_id",
+                    "type": "MessageTopic",
+                    "description": "Pass topic identifier to get number of messages only in specific topic; pass null to get number of messages in all topics"
+                },
+                {
                     "name": "filter",
                     "type": "SearchMessagesFilter",
                     "description": "Filter for message content; searchMessagesFilterEmpty is unsupported in this function"
-                },
-                {
-                    "name": "saved_messages_topic_id",
-                    "type": "int53",
-                    "description": "If not 0, only messages in the specified Saved Messages topic will be counted; pass 0 to count all messages, or for chats other than Saved Messages"
                 },
                 {
                     "name": "return_local",
@@ -34496,7 +35356,7 @@
         },
         {
             "name": "getChatMessagePosition",
-            "description": "Returns approximate 1-based position of a message among messages, which can be found by the specified filter in the chat. Cannot be used in secret chats",
+            "description": "Returns approximate 1-based position of a message among messages, which can be found by the specified filter in the chat and topic. Cannot be used in secret chats",
             "class": "Count",
             "properties": [
                 {
@@ -34505,9 +35365,9 @@
                     "description": "Identifier of the chat in which to find message position"
                 },
                 {
-                    "name": "message_id",
-                    "type": "int53",
-                    "description": "Message identifier"
+                    "name": "topic_id",
+                    "type": "MessageTopic",
+                    "description": "Pass topic identifier to get position among messages only in specific topic; pass null to get position among all chat messages"
                 },
                 {
                     "name": "filter",
@@ -34515,14 +35375,9 @@
                     "description": "Filter for message content; searchMessagesFilterEmpty, searchMessagesFilterUnreadMention, searchMessagesFilterUnreadReaction, and searchMessagesFilterFailedToSend are unsupported in this function"
                 },
                 {
-                    "name": "message_thread_id",
+                    "name": "message_id",
                     "type": "int53",
-                    "description": "If not 0, only messages in the specified thread will be considered; supergroups only"
-                },
-                {
-                    "name": "saved_messages_topic_id",
-                    "type": "int53",
-                    "description": "If not 0, only messages in the specified Saved Messages topic will be considered; pass 0 to consider all relevant messages, or for chats other than Saved Messages"
+                    "description": "Message identifier"
                 }
             ],
             "is_synchronous": false,
@@ -34660,6 +35515,72 @@
                     "name": "sponsored_chat_unique_id",
                     "type": "int53",
                     "description": "Unique identifier of the sponsored chat"
+                },
+                {
+                    "name": "option_id",
+                    "type": "bytes",
+                    "description": "Option identifier chosen by the user; leave empty for the initial request"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getVideoMessageAdvertisements",
+            "description": "Returns advertisements to be shown while a video from a message is watched. Available only if messageProperties.can_get_video_advertisements",
+            "class": "VideoMessageAdvertisements",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat with the message"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "viewVideoMessageAdvertisement",
+            "description": "Informs TDLib that the user viewed a video message advertisement",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "advertisement_unique_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the advertisement"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "clickVideoMessageAdvertisement",
+            "description": "Informs TDLib that the user clicked a video message advertisement",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "advertisement_unique_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the advertisement"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "reportVideoMessageAdvertisement",
+            "description": "Reports a video message advertisement to Telegram moderators",
+            "class": "ReportSponsoredResult",
+            "properties": [
+                {
+                    "name": "advertisement_unique_id",
+                    "type": "int53",
+                    "description": "Unique identifier of the advertisement"
                 },
                 {
                     "name": "option_id",
@@ -35073,7 +35994,7 @@
                 {
                     "name": "send_copy",
                     "type": "Bool",
-                    "description": "Pass true to copy content of the messages without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local. Use messageProperties.can_be_saved and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable"
+                    "description": "Pass true to copy content of the messages without reference to the original sender. Always true if the messages are forwarded to a secret chat or are local. Use messageProperties.can_be_copied and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable"
                 },
                 {
                     "name": "remove_caption",
@@ -35145,7 +36066,7 @@
                 {
                     "name": "chat_id",
                     "type": "int53",
-                    "description": "Target chat"
+                    "description": "Target chat; channel direct messages chats aren't supported"
                 },
                 {
                     "name": "sender_id",
@@ -35311,6 +36232,35 @@
                     "name": "proximity_alert_radius",
                     "type": "int32",
                     "description": "The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "editMessageChecklist",
+            "description": "Edits the message content of a checklist. Returns the edited message after the edit is completed on the server side",
+            "class": "Message",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "The chat the message belongs to"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message. Use messageProperties.can_be_edited to check whether the message can be edited"
+                },
+                {
+                    "name": "reply_markup",
+                    "type": "ReplyMarkup",
+                    "description": "The new message reply markup; pass null if none; for bots only"
+                },
+                {
+                    "name": "checklist",
+                    "type": "inputChecklist",
+                    "description": "The new checklist. If some tasks were completed, this information will be kept"
                 }
             ],
             "is_synchronous": false,
@@ -35757,6 +36707,40 @@
                     "name": "proximity_alert_radius",
                     "type": "int32",
                     "description": "The new maximum distance for proximity alerts, in meters (0-100000). Pass 0 if the notification is disabled"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "editBusinessMessageChecklist",
+            "description": "Edits the content of a checklist in a message sent on behalf of a business account; for bots only",
+            "class": "BusinessMessage",
+            "properties": [
+                {
+                    "name": "business_connection_id",
+                    "type": "string",
+                    "description": "Unique identifier of business connection on behalf of which the message was sent"
+                },
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "The chat the message belongs to"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message"
+                },
+                {
+                    "name": "reply_markup",
+                    "type": "ReplyMarkup",
+                    "description": "The new message reply markup; pass null if none"
+                },
+                {
+                    "name": "checklist",
+                    "type": "inputChecklist",
+                    "description": "The new checklist. If some tasks were completed, this information will be kept"
                 }
             ],
             "is_synchronous": false,
@@ -36281,7 +37265,7 @@
                 {
                     "name": "input_message_content",
                     "type": "InputMessageContent",
-                    "description": "The content of the message to be added; inputMessagePoll, inputMessageForwarded and inputMessageLocation with live_period aren't supported"
+                    "description": "The content of the message to be added; inputMessagePaidMedia, inputMessageForwarded and inputMessageLocation with live_period aren't supported"
                 }
             ],
             "is_synchronous": false,
@@ -36366,7 +37350,7 @@
         },
         {
             "name": "editQuickReplyMessage",
-            "description": "Asynchronously edits the text, media or caption of a quick reply message. Use quickReplyMessage.can_be_edited to check whether a message can be edited. Media message can be edited only to a media message. The type of message content in an album can't be changed with exception of replacing a photo with a video or vice versa",
+            "description": "Asynchronously edits the text, media or caption of a quick reply message. Use quickReplyMessage.can_be_edited to check whether a message can be edited. Media message can be edited only to a media message. Checklist messages can be edited only to a checklist message. The type of message content in an album can't be changed with exception of replacing a photo with a video or vice versa",
             "class": "Ok",
             "properties": [
                 {
@@ -36382,7 +37366,7 @@
                 {
                     "name": "input_message_content",
                     "type": "InputMessageContent",
-                    "description": "New content of the message. Must be one of the following types: inputMessageText, inputMessageAnimation, inputMessageAudio, inputMessageDocument, inputMessagePhoto or inputMessageVideo"
+                    "description": "New content of the message. Must be one of the following types: inputMessageAnimation, inputMessageAudio, inputMessageChecklist, inputMessageDocument, inputMessagePhoto, inputMessageText, or inputMessageVideo"
                 }
             ],
             "is_synchronous": false,
@@ -37296,6 +38280,59 @@
             "type": 1
         },
         {
+            "name": "addChecklistTasks",
+            "description": "Adds tasks to a checklist in a message",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat with the message"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message containing the checklist. Use messageProperties.can_add_tasks to check whether the tasks can be added"
+                },
+                {
+                    "name": "tasks",
+                    "type": "vector\u003cinputChecklistTask\u003e",
+                    "description": "List of added tasks"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "markChecklistTasksAsDone",
+            "description": "Adds tasks of a checklist in a message as done or not done",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat with the message"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message containing the checklist. Use messageProperties.can_mark_tasks_as_done to check whether the tasks can be marked as done or not done"
+                },
+                {
+                    "name": "marked_as_done_task_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of tasks that were marked as done"
+                },
+                {
+                    "name": "marked_as_not_done_task_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of tasks that were marked as not done"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "hideSuggestedAction",
             "description": "Hides a suggested action",
             "class": "Ok",
@@ -37759,7 +38796,12 @@
                 {
                     "name": "message_thread_id",
                     "type": "int53",
-                    "description": "If not 0, the message thread identifier in which the message will be sent"
+                    "description": "If not 0, the message thread identifier to which the message will be sent"
+                },
+                {
+                    "name": "direct_messages_chat_topic_id",
+                    "type": "int53",
+                    "description": "If not 0, unique identifier of the topic of channel direct messages chat to which the message will be sent"
                 },
                 {
                     "name": "reply_to",
@@ -38148,7 +39190,7 @@
                 {
                     "name": "force_read",
                     "type": "Bool",
-                    "description": "Pass true to mark as read the specified messages even the chat is closed"
+                    "description": "Pass true to mark as read the specified messages even if the chat is closed"
                 }
             ],
             "is_synchronous": false,
@@ -39285,6 +40327,30 @@
                     "name": "discussion_chat_id",
                     "type": "int53",
                     "description": "Identifier of a new channel's discussion group. Use 0 to remove the discussion group. Use the method getSuitableDiscussionChats to find all suitable groups. Basic group chats must be first upgraded to supergroup chats. If new chat members don't have access to old messages in the supergroup, then toggleSupergroupIsAllHistoryAvailable must be used first to change that"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setChatDirectMessagesGroup",
+            "description": "Changes direct messages group settings for a channel chat; requires owner privileges in the chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the channel chat"
+                },
+                {
+                    "name": "is_enabled",
+                    "type": "Bool",
+                    "description": "Pass true if the direct messages group is enabled for the channel chat; pass false otherwise"
+                },
+                {
+                    "name": "paid_message_star_count",
+                    "type": "int53",
+                    "description": "The new number of Telegram Stars that must be paid for each message that is sent to the direct messages chat unless the sender is an administrator of the channel chat; 0-getOption(\"paid_message_star_count_max\"). The channel will receive getOption(\"paid_message_earnings_per_mille\") Telegram Stars for each 1000 Telegram Stars paid for message sending. Requires supergroupFullInfo.can_enable_paid_messages for positive amounts"
                 }
             ],
             "is_synchronous": false,
@@ -41046,7 +42112,7 @@
                 {
                     "name": "token",
                     "type": "string",
-                    "description": "Play Integrity API token for the Android application, or secret from push notification for the iOS application for application verification, or reCAPTCHA token for reCAPTCHA verifications; pass an empty string to abort verification and receive error VERIFICATION_FAILED for the request"
+                    "description": "Play Integrity API token for the Android application, or secret from push notification for the iOS application for application verification, or reCAPTCHA token for reCAPTCHA verifications; pass an empty string to abort verification and receive the error \"VERIFICATION_FAILED\" for the request"
                 }
             ],
             "is_synchronous": false,
@@ -42171,8 +43237,8 @@
         },
         {
             "name": "setGroupCallParticipantIsSpeaking",
-            "description": "Informs TDLib that speaking state of a participant of an active group call has changed",
-            "class": "Ok",
+            "description": "Informs TDLib that speaking state of a participant of an active group call has changed. Returns identifier of the participant if it is found",
+            "class": "MessageSender",
             "properties": [
                 {
                     "name": "group_call_id",
@@ -44981,6 +46047,11 @@
                     "name": "is_forum",
                     "type": "Bool",
                     "description": "New value of is_forum"
+                },
+                {
+                    "name": "has_forum_tabs",
+                    "type": "Bool",
+                    "description": "New value of has_forum_tabs; ignored if is_forum is false"
                 }
             ],
             "is_synchronous": false,

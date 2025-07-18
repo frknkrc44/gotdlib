@@ -45,6 +45,7 @@ const (
 	ClassMessageOrigin                          = "MessageOrigin"
 	ClassReactionType                           = "ReactionType"
 	ClassPaidReactionType                       = "PaidReactionType"
+	ClassMessageTopic                           = "MessageTopic"
 	ClassMessageEffectType                      = "MessageEffectType"
 	ClassMessageSendingState                    = "MessageSendingState"
 	ClassMessageReplyTo                         = "MessageReplyTo"
@@ -199,6 +200,10 @@ const (
 	ClassClosedVectorPath                       = "ClosedVectorPath"
 	ClassOutline                                = "Outline"
 	ClassPollOption                             = "PollOption"
+	ClassChecklistTask                          = "ChecklistTask"
+	ClassInputChecklistTask                     = "InputChecklistTask"
+	ClassChecklist                              = "Checklist"
+	ClassInputChecklist                         = "InputChecklist"
 	ClassAnimation                              = "Animation"
 	ClassAudio                                  = "Audio"
 	ClassDocument                               = "Document"
@@ -215,6 +220,7 @@ const (
 	ClassWebApp                                 = "WebApp"
 	ClassPoll                                   = "Poll"
 	ClassAlternativeVideo                       = "AlternativeVideo"
+	ClassVideoStoryboard                        = "VideoStoryboard"
 	ClassBackground                             = "Background"
 	ClassBackgrounds                            = "Backgrounds"
 	ClassChatBackground                         = "ChatBackground"
@@ -356,11 +362,13 @@ const (
 	ClassMessageCalendar                        = "MessageCalendar"
 	ClassBusinessMessage                        = "BusinessMessage"
 	ClassBusinessMessages                       = "BusinessMessages"
-	ClassMessageSponsor                         = "MessageSponsor"
+	ClassAdvertisementSponsor                   = "AdvertisementSponsor"
 	ClassSponsoredMessage                       = "SponsoredMessage"
 	ClassSponsoredMessages                      = "SponsoredMessages"
 	ClassSponsoredChat                          = "SponsoredChat"
 	ClassSponsoredChats                         = "SponsoredChats"
+	ClassVideoMessageAdvertisement              = "VideoMessageAdvertisement"
+	ClassVideoMessageAdvertisements             = "VideoMessageAdvertisements"
 	ClassReportOption                           = "ReportOption"
 	ClassFileDownload                           = "FileDownload"
 	ClassDownloadedFileCounts                   = "DownloadedFileCounts"
@@ -400,6 +408,7 @@ const (
 	ClassWebAppOpenParameters                   = "WebAppOpenParameters"
 	ClassMessageThreadInfo                      = "MessageThreadInfo"
 	ClassSavedMessagesTopic                     = "SavedMessagesTopic"
+	ClassDirectMessagesChatTopic                = "DirectMessagesChatTopic"
 	ClassForumTopicIcon                         = "ForumTopicIcon"
 	ClassForumTopicInfo                         = "ForumTopicInfo"
 	ClassForumTopic                             = "ForumTopic"
@@ -702,6 +711,10 @@ const (
 	TypePollOption                                              = "pollOption"
 	TypePollTypeRegular                                         = "pollTypeRegular"
 	TypePollTypeQuiz                                            = "pollTypeQuiz"
+	TypeChecklistTask                                           = "checklistTask"
+	TypeInputChecklistTask                                      = "inputChecklistTask"
+	TypeChecklist                                               = "checklist"
+	TypeInputChecklist                                          = "inputChecklist"
 	TypeAnimation                                               = "animation"
 	TypeAudio                                                   = "audio"
 	TypeDocument                                                = "document"
@@ -718,6 +731,7 @@ const (
 	TypeWebApp                                                  = "webApp"
 	TypePoll                                                    = "poll"
 	TypeAlternativeVideo                                        = "alternativeVideo"
+	TypeVideoStoryboard                                         = "videoStoryboard"
 	TypeBackground                                              = "background"
 	TypeBackgrounds                                             = "backgrounds"
 	TypeChatBackground                                          = "chatBackground"
@@ -965,6 +979,9 @@ const (
 	TypeMessageReactions                                        = "messageReactions"
 	TypeMessageInteractionInfo                                  = "messageInteractionInfo"
 	TypeUnreadReaction                                          = "unreadReaction"
+	TypeMessageTopicForum                                       = "messageTopicForum"
+	TypeMessageTopicDirectMessages                              = "messageTopicDirectMessages"
+	TypeMessageTopicSavedMessages                               = "messageTopicSavedMessages"
 	TypeMessageEffectTypeEmojiReaction                          = "messageEffectTypeEmojiReaction"
 	TypeMessageEffectTypePremiumSticker                         = "messageEffectTypePremiumSticker"
 	TypeMessageEffect                                           = "messageEffect"
@@ -991,6 +1008,7 @@ const (
 	TypeMessageSourceChatHistory                                = "messageSourceChatHistory"
 	TypeMessageSourceMessageThreadHistory                       = "messageSourceMessageThreadHistory"
 	TypeMessageSourceForumTopicHistory                          = "messageSourceForumTopicHistory"
+	TypeMessageSourceDirectMessagesChatTopicHistory             = "messageSourceDirectMessagesChatTopicHistory"
 	TypeMessageSourceHistoryPreview                             = "messageSourceHistoryPreview"
 	TypeMessageSourceChatList                                   = "messageSourceChatList"
 	TypeMessageSourceSearch                                     = "messageSourceSearch"
@@ -998,11 +1016,13 @@ const (
 	TypeMessageSourceNotification                               = "messageSourceNotification"
 	TypeMessageSourceScreenshot                                 = "messageSourceScreenshot"
 	TypeMessageSourceOther                                      = "messageSourceOther"
-	TypeMessageSponsor                                          = "messageSponsor"
+	TypeAdvertisementSponsor                                    = "advertisementSponsor"
 	TypeSponsoredMessage                                        = "sponsoredMessage"
 	TypeSponsoredMessages                                       = "sponsoredMessages"
 	TypeSponsoredChat                                           = "sponsoredChat"
 	TypeSponsoredChats                                          = "sponsoredChats"
+	TypeVideoMessageAdvertisement                               = "videoMessageAdvertisement"
+	TypeVideoMessageAdvertisements                              = "videoMessageAdvertisements"
 	TypeReportOption                                            = "reportOption"
 	TypeReportSponsoredResultOk                                 = "reportSponsoredResultOk"
 	TypeReportSponsoredResultFailed                             = "reportSponsoredResultFailed"
@@ -1101,6 +1121,7 @@ const (
 	TypeSavedMessagesTopicTypeAuthorHidden                      = "savedMessagesTopicTypeAuthorHidden"
 	TypeSavedMessagesTopicTypeSavedFromChat                     = "savedMessagesTopicTypeSavedFromChat"
 	TypeSavedMessagesTopic                                      = "savedMessagesTopic"
+	TypeDirectMessagesChatTopic                                 = "directMessagesChatTopic"
 	TypeForumTopicIcon                                          = "forumTopicIcon"
 	TypeForumTopicInfo                                          = "forumTopicInfo"
 	TypeForumTopic                                              = "forumTopic"
@@ -1337,6 +1358,7 @@ const (
 	TypeMessageGame                                             = "messageGame"
 	TypeMessagePoll                                             = "messagePoll"
 	TypeMessageStory                                            = "messageStory"
+	TypeMessageChecklist                                        = "messageChecklist"
 	TypeMessageInvoice                                          = "messageInvoice"
 	TypeMessageCall                                             = "messageCall"
 	TypeMessageGroupCall                                        = "messageGroupCall"
@@ -1384,6 +1406,9 @@ const (
 	TypeMessageRefundedUpgradedGift                             = "messageRefundedUpgradedGift"
 	TypeMessagePaidMessagesRefunded                             = "messagePaidMessagesRefunded"
 	TypeMessagePaidMessagePriceChanged                          = "messagePaidMessagePriceChanged"
+	TypeMessageDirectMessagePriceChanged                        = "messageDirectMessagePriceChanged"
+	TypeMessageChecklistTasksDone                               = "messageChecklistTasksDone"
+	TypeMessageChecklistTasksAdded                              = "messageChecklistTasksAdded"
 	TypeMessageContactRegistered                                = "messageContactRegistered"
 	TypeMessageUsersShared                                      = "messageUsersShared"
 	TypeMessageChatShared                                       = "messageChatShared"
@@ -1445,6 +1470,7 @@ const (
 	TypeInputMessageInvoice                                     = "inputMessageInvoice"
 	TypeInputMessagePoll                                        = "inputMessagePoll"
 	TypeInputMessageStory                                       = "inputMessageStory"
+	TypeInputMessageChecklist                                   = "inputMessageChecklist"
 	TypeInputMessageForwarded                                   = "inputMessageForwarded"
 	TypeMessageProperties                                       = "messageProperties"
 	TypeSearchMessagesFilterEmpty                               = "searchMessagesFilterEmpty"
@@ -1792,6 +1818,7 @@ const (
 	TypePremiumFeatureLastSeenTimes                             = "premiumFeatureLastSeenTimes"
 	TypePremiumFeatureBusiness                                  = "premiumFeatureBusiness"
 	TypePremiumFeatureMessageEffects                            = "premiumFeatureMessageEffects"
+	TypePremiumFeatureChecklists                                = "premiumFeatureChecklists"
 	TypeBusinessFeatureLocation                                 = "businessFeatureLocation"
 	TypeBusinessFeatureOpeningHours                             = "businessFeatureOpeningHours"
 	TypeBusinessFeatureQuickReplies                             = "businessFeatureQuickReplies"
@@ -1911,6 +1938,7 @@ const (
 	TypePushMessageContentSticker                               = "pushMessageContentSticker"
 	TypePushMessageContentStory                                 = "pushMessageContentStory"
 	TypePushMessageContentText                                  = "pushMessageContentText"
+	TypePushMessageContentChecklist                             = "pushMessageContentChecklist"
 	TypePushMessageContentVideo                                 = "pushMessageContentVideo"
 	TypePushMessageContentVideoNote                             = "pushMessageContentVideoNote"
 	TypePushMessageContentVoiceNote                             = "pushMessageContentVoiceNote"
@@ -1929,6 +1957,8 @@ const (
 	TypePushMessageContentRecurringPayment                      = "pushMessageContentRecurringPayment"
 	TypePushMessageContentSuggestProfilePhoto                   = "pushMessageContentSuggestProfilePhoto"
 	TypePushMessageContentProximityAlertTriggered               = "pushMessageContentProximityAlertTriggered"
+	TypePushMessageContentChecklistTasksAdded                   = "pushMessageContentChecklistTasksAdded"
+	TypePushMessageContentChecklistTasksDone                    = "pushMessageContentChecklistTasksDone"
 	TypePushMessageContentMessageForwards                       = "pushMessageContentMessageForwards"
 	TypePushMessageContentMediaAlbum                            = "pushMessageContentMediaAlbum"
 	TypeNotificationTypeNewMessage                              = "notificationTypeNewMessage"
@@ -2273,6 +2303,8 @@ const (
 	TypeUpdateChatOnlineMemberCount                             = "updateChatOnlineMemberCount"
 	TypeUpdateSavedMessagesTopic                                = "updateSavedMessagesTopic"
 	TypeUpdateSavedMessagesTopicCount                           = "updateSavedMessagesTopicCount"
+	TypeUpdateDirectMessagesChatTopic                           = "updateDirectMessagesChatTopic"
+	TypeUpdateTopicMessageCount                                 = "updateTopicMessageCount"
 	TypeUpdateQuickReplyShortcut                                = "updateQuickReplyShortcut"
 	TypeUpdateQuickReplyShortcutDeleted                         = "updateQuickReplyShortcutDeleted"
 	TypeUpdateQuickReplyShortcuts                               = "updateQuickReplyShortcuts"
@@ -2582,6 +2614,11 @@ type ReactionType interface {
 // Describes type of paid message reaction
 type PaidReactionType interface {
 	PaidReactionTypeType() string
+}
+
+// Describes a topic of messages in a chat
+type MessageTopic interface {
+	MessageTopicType() string
 }
 
 // Describes type of emoji effect
@@ -5476,6 +5513,122 @@ func (*PollTypeQuiz) PollTypeType() string {
 	return TypePollTypeQuiz
 }
 
+// Describes a task in a checklist
+type ChecklistTask struct {
+	meta
+	// Unique identifier of the task
+	Id int32 `json:"id"`
+	// Text of the task; may contain only Bold, Italic, Underline, Strikethrough, Spoiler, CustomEmoji, Url, EmailAddress, Mention, Hashtag, Cashtag and PhoneNumber entities
+	Text *FormattedText `json:"text"`
+	// Identifier of the user that completed the task; 0 if the task isn't completed
+	CompletedByUserId int64 `json:"completed_by_user_id"`
+	// Point in time (Unix timestamp) when the task was completed; 0 if the task isn't completed
+	CompletionDate int32 `json:"completion_date"`
+}
+
+func (entity *ChecklistTask) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub ChecklistTask
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*ChecklistTask) GetClass() string {
+	return ClassChecklistTask
+}
+
+func (*ChecklistTask) GetType() string {
+	return TypeChecklistTask
+}
+
+// Describes a task in a checklist to be sent
+type InputChecklistTask struct {
+	meta
+	// Unique identifier of the task; must be positive
+	Id int32 `json:"id"`
+	// Text of the task; 1-getOption("checklist_task_text_length_max") characters without line feeds. May contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities
+	Text *FormattedText `json:"text"`
+}
+
+func (entity *InputChecklistTask) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub InputChecklistTask
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*InputChecklistTask) GetClass() string {
+	return ClassInputChecklistTask
+}
+
+func (*InputChecklistTask) GetType() string {
+	return TypeInputChecklistTask
+}
+
+// Describes a checklist
+type Checklist struct {
+	meta
+	// Title of the checklist; may contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities
+	Title *FormattedText `json:"title"`
+	// List of tasks in the checklist
+	Tasks []*ChecklistTask `json:"tasks"`
+	// True, if users other than creator of the list can add tasks to the list
+	OthersCanAddTasks bool `json:"others_can_add_tasks"`
+	// True, if the current user can add tasks to the list if they have Telegram Premium subscription
+	CanAddTasks bool `json:"can_add_tasks"`
+	// True, if users other than creator of the list can mark tasks as done or not done. If true, then the checklist is called "group checklist"
+	OthersCanMarkTasksAsDone bool `json:"others_can_mark_tasks_as_done"`
+	// True, if the current user can mark tasks as done or not done if they have Telegram Premium subscription
+	CanMarkTasksAsDone bool `json:"can_mark_tasks_as_done"`
+}
+
+func (entity *Checklist) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub Checklist
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*Checklist) GetClass() string {
+	return ClassChecklist
+}
+
+func (*Checklist) GetType() string {
+	return TypeChecklist
+}
+
+// Describes a checklist to be sent
+type InputChecklist struct {
+	meta
+	// Title of the checklist; 1-getOption("checklist_title_length_max") characters. May contain only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities
+	Title *FormattedText `json:"title"`
+	// List of tasks in the checklist; 1-getOption("checklist_task_count_max") tasks
+	Tasks []*InputChecklistTask `json:"tasks"`
+	// True, if other users can add tasks to the list
+	OthersCanAddTasks bool `json:"others_can_add_tasks"`
+	// True, if other users can mark tasks as done or not done
+	OthersCanMarkTasksAsDone bool `json:"others_can_mark_tasks_as_done"`
+}
+
+func (entity *InputChecklist) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub InputChecklist
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*InputChecklist) GetClass() string {
+	return ClassInputChecklist
+}
+
+func (*InputChecklist) GetType() string {
+	return TypeInputChecklist
+}
+
 // Describes an animation file. The animation must be encoded in GIF or MPEG4 format
 type Animation struct {
 	meta
@@ -6144,6 +6297,35 @@ func (*AlternativeVideo) GetClass() string {
 
 func (*AlternativeVideo) GetType() string {
 	return TypeAlternativeVideo
+}
+
+// Describes a storyboard for a video
+type VideoStoryboard struct {
+	meta
+	// A JPEG file that contains tiled previews of video
+	StoryboardFile *File `json:"storyboard_file"`
+	// Width of a tile
+	Width int32 `json:"width"`
+	// Height of a tile
+	Height int32 `json:"height"`
+	// File that describes mapping of position in the video to a tile in the JPEG file
+	MapFile *File `json:"map_file"`
+}
+
+func (entity *VideoStoryboard) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub VideoStoryboard
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*VideoStoryboard) GetClass() string {
+	return ClassVideoStoryboard
+}
+
+func (*VideoStoryboard) GetType() string {
+	return TypeVideoStoryboard
 }
 
 // Describes a chat background
@@ -7583,7 +7765,7 @@ type ChatPermissions struct {
 	CanSendVideoNotes bool `json:"can_send_video_notes"`
 	// True, if the user can send voice notes
 	CanSendVoiceNotes bool `json:"can_send_voice_notes"`
-	// True, if the user can send polls
+	// True, if the user can send polls and checklists
 	CanSendPolls bool `json:"can_send_polls"`
 	// True, if the user can send animations, games, stickers, and dice and use inline bots
 	CanSendOtherMessages bool `json:"can_send_other_messages"`
@@ -7618,11 +7800,11 @@ func (*ChatPermissions) GetType() string {
 // Describes rights of the administrator
 type ChatAdministratorRights struct {
 	meta
-	// True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report supergroup spam messages and ignore slow mode. Implied by any other privilege; applicable to supergroups and channels only
+	// True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report supergroup spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other privilege; applicable to supergroups and channels only
 	CanManageChat bool `json:"can_manage_chat"`
 	// True, if the administrator can change the chat title, photo, and other settings
 	CanChangeInfo bool `json:"can_change_info"`
-	// True, if the administrator can create channel posts or view channel statistics; applicable to channels only
+	// True, if the administrator can create channel posts, answer to channel direct messages, or view channel statistics; applicable to channels only
 	CanPostMessages bool `json:"can_post_messages"`
 	// True, if the administrator can edit messages of other users and pin messages; applicable to channels only
 	CanEditMessages bool `json:"can_edit_messages"`
@@ -10631,7 +10813,7 @@ func (*StarTransactionTypePaidMessageSend) StarTransactionTypeType() string {
 	return TypeStarTransactionTypePaidMessageSend
 }
 
-// The transaction is a receiving of a paid message; for regular users and supergroup chats only
+// The transaction is a receiving of a paid message; for regular users, supergroup and channel chats only
 type StarTransactionTypePaidMessageReceive struct {
 	meta
 	// Identifier of the sender of the message
@@ -13151,8 +13333,16 @@ type Supergroup struct {
 	IsBroadcastGroup bool `json:"is_broadcast_group"`
 	// True, if the supergroup is a forum with topics
 	IsForum bool `json:"is_forum"`
+	// True, if the supergroup is a direct message group for a channel chat
+	IsDirectMessagesGroup bool `json:"is_direct_messages_group"`
+	// True, if the supergroup is a direct messages group for a channel chat that is administered by the current user
+	IsAdministeredDirectMessagesGroup bool `json:"is_administered_direct_messages_group"`
 	// Information about verification status of the supergroup or channel; may be null if none
 	VerificationStatus *VerificationStatus `json:"verification_status"`
+	// True, if the channel has direct messages group
+	HasDirectMessagesGroup bool `json:"has_direct_messages_group"`
+	// True, if the supergroup is a forum, which topics are shown in the same way as in channel direct messages groups
+	HasForumTabs bool `json:"has_forum_tabs"`
 	// True, if content of media messages in the supergroup or channel chat must be hidden with 18+ spoiler
 	HasSensitiveContent bool `json:"has_sensitive_content"`
 	// If non-empty, contains a human-readable description of the reason why access to this supergroup or channel must be restricted
@@ -13183,29 +13373,33 @@ func (*Supergroup) GetType() string {
 
 func (supergroup *Supergroup) UnmarshalJSON(data []byte) error {
 	var tmp struct {
-		Id                      int64               `json:"id"`
-		Usernames               *Usernames          `json:"usernames"`
-		Date                    int32               `json:"date"`
-		Status                  json.RawMessage     `json:"status"`
-		MemberCount             int32               `json:"member_count"`
-		BoostLevel              int32               `json:"boost_level"`
-		HasAutomaticTranslation bool                `json:"has_automatic_translation"`
-		HasLinkedChat           bool                `json:"has_linked_chat"`
-		HasLocation             bool                `json:"has_location"`
-		SignMessages            bool                `json:"sign_messages"`
-		ShowMessageSender       bool                `json:"show_message_sender"`
-		JoinToSendMessages      bool                `json:"join_to_send_messages"`
-		JoinByRequest           bool                `json:"join_by_request"`
-		IsSlowModeEnabled       bool                `json:"is_slow_mode_enabled"`
-		IsChannel               bool                `json:"is_channel"`
-		IsBroadcastGroup        bool                `json:"is_broadcast_group"`
-		IsForum                 bool                `json:"is_forum"`
-		VerificationStatus      *VerificationStatus `json:"verification_status"`
-		HasSensitiveContent     bool                `json:"has_sensitive_content"`
-		RestrictionReason       string              `json:"restriction_reason"`
-		PaidMessageStarCount    int64               `json:"paid_message_star_count"`
-		HasActiveStories        bool                `json:"has_active_stories"`
-		HasUnreadActiveStories  bool                `json:"has_unread_active_stories"`
+		Id                                int64               `json:"id"`
+		Usernames                         *Usernames          `json:"usernames"`
+		Date                              int32               `json:"date"`
+		Status                            json.RawMessage     `json:"status"`
+		MemberCount                       int32               `json:"member_count"`
+		BoostLevel                        int32               `json:"boost_level"`
+		HasAutomaticTranslation           bool                `json:"has_automatic_translation"`
+		HasLinkedChat                     bool                `json:"has_linked_chat"`
+		HasLocation                       bool                `json:"has_location"`
+		SignMessages                      bool                `json:"sign_messages"`
+		ShowMessageSender                 bool                `json:"show_message_sender"`
+		JoinToSendMessages                bool                `json:"join_to_send_messages"`
+		JoinByRequest                     bool                `json:"join_by_request"`
+		IsSlowModeEnabled                 bool                `json:"is_slow_mode_enabled"`
+		IsChannel                         bool                `json:"is_channel"`
+		IsBroadcastGroup                  bool                `json:"is_broadcast_group"`
+		IsForum                           bool                `json:"is_forum"`
+		IsDirectMessagesGroup             bool                `json:"is_direct_messages_group"`
+		IsAdministeredDirectMessagesGroup bool                `json:"is_administered_direct_messages_group"`
+		VerificationStatus                *VerificationStatus `json:"verification_status"`
+		HasDirectMessagesGroup            bool                `json:"has_direct_messages_group"`
+		HasForumTabs                      bool                `json:"has_forum_tabs"`
+		HasSensitiveContent               bool                `json:"has_sensitive_content"`
+		RestrictionReason                 string              `json:"restriction_reason"`
+		PaidMessageStarCount              int64               `json:"paid_message_star_count"`
+		HasActiveStories                  bool                `json:"has_active_stories"`
+		HasUnreadActiveStories            bool                `json:"has_unread_active_stories"`
 	}
 
 	err := json.Unmarshal(data, &tmp)
@@ -13229,7 +13423,11 @@ func (supergroup *Supergroup) UnmarshalJSON(data []byte) error {
 	supergroup.IsChannel = tmp.IsChannel
 	supergroup.IsBroadcastGroup = tmp.IsBroadcastGroup
 	supergroup.IsForum = tmp.IsForum
+	supergroup.IsDirectMessagesGroup = tmp.IsDirectMessagesGroup
+	supergroup.IsAdministeredDirectMessagesGroup = tmp.IsAdministeredDirectMessagesGroup
 	supergroup.VerificationStatus = tmp.VerificationStatus
+	supergroup.HasDirectMessagesGroup = tmp.HasDirectMessagesGroup
+	supergroup.HasForumTabs = tmp.HasForumTabs
 	supergroup.HasSensitiveContent = tmp.HasSensitiveContent
 	supergroup.RestrictionReason = tmp.RestrictionReason
 	supergroup.PaidMessageStarCount = tmp.PaidMessageStarCount
@@ -13259,6 +13457,8 @@ type SupergroupFullInfo struct {
 	BannedCount int32 `json:"banned_count"`
 	// Chat identifier of a discussion group for the channel, or a channel, for which the supergroup is the designated discussion group; 0 if none or unknown
 	LinkedChatId int64 `json:"linked_chat_id"`
+	// Chat identifier of a direct messages group for the channel, or a channel, for which the supergroup is the designated direct messages group; 0 if none
+	DirectMessagesChatId int64 `json:"direct_messages_chat_id"`
 	// Delay between consecutive sent messages for non-administrator supergroup members, in seconds
 	SlowModeDelay int32 `json:"slow_mode_delay"`
 	// Time left before next message can be sent in the supergroup, in seconds. An updateSupergroupFullInfo update is not triggered when value of this field changes, but both new and old values are non-zero
@@ -13303,6 +13503,8 @@ type SupergroupFullInfo struct {
 	MyBoostCount int32 `json:"my_boost_count"`
 	// Number of times the supergroup must be boosted by a user to ignore slow mode and chat permission restrictions; 0 if unspecified
 	UnrestrictBoostCount int32 `json:"unrestrict_boost_count"`
+	// Number of Telegram Stars that must be paid by the current user for each sent message to the supergroup
+	OutgoingPaidMessageStarCount int64 `json:"outgoing_paid_message_star_count"`
 	// Identifier of the supergroup sticker set that must be shown before user sticker sets; 0 if none
 	StickerSetId JsonInt64 `json:"sticker_set_id"`
 	// Identifier of the custom emoji sticker set that can be used in the supergroup without Telegram Premium subscription; 0 if none
@@ -14499,6 +14701,87 @@ func (unreadReaction *UnreadReaction) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// A topic in a forum supergroup chat
+type MessageTopicForum struct {
+	meta
+	// Unique identifier of the forum topic; all messages in a non-forum supergroup chats belongs to the General topic
+	ForumTopicId int64 `json:"forum_topic_id"`
+}
+
+func (entity *MessageTopicForum) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageTopicForum
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageTopicForum) GetClass() string {
+	return ClassMessageTopic
+}
+
+func (*MessageTopicForum) GetType() string {
+	return TypeMessageTopicForum
+}
+
+func (*MessageTopicForum) MessageTopicType() string {
+	return TypeMessageTopicForum
+}
+
+// A topic in a channel direct messages chat administered by the current user
+type MessageTopicDirectMessages struct {
+	meta
+	// Unique identifier of the topic
+	DirectMessagesChatTopicId int64 `json:"direct_messages_chat_topic_id"`
+}
+
+func (entity *MessageTopicDirectMessages) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageTopicDirectMessages
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageTopicDirectMessages) GetClass() string {
+	return ClassMessageTopic
+}
+
+func (*MessageTopicDirectMessages) GetType() string {
+	return TypeMessageTopicDirectMessages
+}
+
+func (*MessageTopicDirectMessages) MessageTopicType() string {
+	return TypeMessageTopicDirectMessages
+}
+
+// A topic in Saved Messages chat
+type MessageTopicSavedMessages struct {
+	meta
+	// Unique identifier of the Saved Messages topic
+	SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
+}
+
+func (entity *MessageTopicSavedMessages) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageTopicSavedMessages
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageTopicSavedMessages) GetClass() string {
+	return ClassMessageTopic
+}
+
+func (*MessageTopicSavedMessages) GetType() string {
+	return TypeMessageTopicSavedMessages
+}
+
+func (*MessageTopicSavedMessages) MessageTopicType() string {
+	return TypeMessageTopicSavedMessages
+}
+
 // An effect from an emoji reaction
 type MessageEffectTypeEmojiReaction struct {
 	meta
@@ -14742,7 +15025,7 @@ type MessageReplyToMessage struct {
 	Origin MessageOrigin `json:"origin"`
 	// Point in time (Unix timestamp) when the message was sent if the message was from another chat or topic; 0 for messages from the same chat
 	OriginSendDate int32 `json:"origin_send_date"`
-	// Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote
+	// Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageChecklist, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote
 	Content MessageContent `json:"content"`
 }
 
@@ -14957,14 +15240,12 @@ type Message struct {
 	IsPinned bool `json:"is_pinned"`
 	// True, if the message was sent because of a scheduled action by the message sender, for example, as away, or greeting service message
 	IsFromOffline bool `json:"is_from_offline"`
-	// True, if content of the message can be saved locally or copied using inputMessageForwarded or forwardMessages with copy options
+	// True, if content of the message can be saved locally
 	CanBeSaved bool `json:"can_be_saved"`
 	// True, if media timestamp entities refers to a media in this message as opposed to a media in the replied message
 	HasTimestampedMedia bool `json:"has_timestamped_media"`
 	// True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts
 	IsChannelPost bool `json:"is_channel_post"`
-	// True, if the message is a forum topic message
-	IsTopicMessage bool `json:"is_topic_message"`
 	// True, if the message contains an unread mention for the current user
 	ContainsUnreadMention bool `json:"contains_unread_mention"`
 	// Point in time (Unix timestamp) when the message was sent; 0 for scheduled messages
@@ -14985,8 +15266,8 @@ type Message struct {
 	ReplyTo MessageReplyTo `json:"reply_to"`
 	// If non-zero, the identifier of the message thread the message belongs to; unique within the chat to which the message belongs
 	MessageThreadId int64 `json:"message_thread_id"`
-	// Identifier of the Saved Messages topic for the message; 0 for messages not from Saved Messages
-	SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
+	// Identifier of the topic within the chat to which the message belongs; may be null if none
+	TopicId MessageTopic `json:"topic_id"`
 	// The message's self-destruct type; may be null if none
 	SelfDestructType MessageSelfDestructType `json:"self_destruct_type"`
 	// Time left before the message self-destruct timer expires, in seconds; 0 if self-destruction isn't scheduled yet
@@ -15046,7 +15327,6 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 		CanBeSaved              bool                    `json:"can_be_saved"`
 		HasTimestampedMedia     bool                    `json:"has_timestamped_media"`
 		IsChannelPost           bool                    `json:"is_channel_post"`
-		IsTopicMessage          bool                    `json:"is_topic_message"`
 		ContainsUnreadMention   bool                    `json:"contains_unread_mention"`
 		Date                    int32                   `json:"date"`
 		EditDate                int32                   `json:"edit_date"`
@@ -15057,7 +15337,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 		FactCheck               *FactCheck              `json:"fact_check"`
 		ReplyTo                 json.RawMessage         `json:"reply_to"`
 		MessageThreadId         int64                   `json:"message_thread_id"`
-		SavedMessagesTopicId    int64                   `json:"saved_messages_topic_id"`
+		TopicId                 json.RawMessage         `json:"topic_id"`
 		SelfDestructType        json.RawMessage         `json:"self_destruct_type"`
 		SelfDestructIn          float64                 `json:"self_destruct_in"`
 		AutoDeleteIn            float64                 `json:"auto_delete_in"`
@@ -15087,7 +15367,6 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 	message.CanBeSaved = tmp.CanBeSaved
 	message.HasTimestampedMedia = tmp.HasTimestampedMedia
 	message.IsChannelPost = tmp.IsChannelPost
-	message.IsTopicMessage = tmp.IsTopicMessage
 	message.ContainsUnreadMention = tmp.ContainsUnreadMention
 	message.Date = tmp.Date
 	message.EditDate = tmp.EditDate
@@ -15097,7 +15376,6 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 	message.UnreadReactions = tmp.UnreadReactions
 	message.FactCheck = tmp.FactCheck
 	message.MessageThreadId = tmp.MessageThreadId
-	message.SavedMessagesTopicId = tmp.SavedMessagesTopicId
 	message.SelfDestructIn = tmp.SelfDestructIn
 	message.AutoDeleteIn = tmp.AutoDeleteIn
 	message.ViaBotUserId = tmp.ViaBotUserId
@@ -15121,6 +15399,9 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 
 	fieldReplyTo, _ := UnmarshalMessageReplyTo(tmp.ReplyTo)
 	message.ReplyTo = fieldReplyTo
+
+	fieldTopicId, _ := UnmarshalMessageTopic(tmp.TopicId)
+	message.TopicId = fieldTopicId
 
 	fieldSelfDestructType, _ := UnmarshalMessageSelfDestructType(tmp.SelfDestructType)
 	message.SelfDestructType = fieldSelfDestructType
@@ -15388,7 +15669,7 @@ func (*MessageSourceChatHistory) MessageSourceType() string {
 	return TypeMessageSourceChatHistory
 }
 
-// The message is from a message thread history
+// The message is from history of a message thread
 type MessageSourceMessageThreadHistory struct {
 	meta
 }
@@ -15413,7 +15694,7 @@ func (*MessageSourceMessageThreadHistory) MessageSourceType() string {
 	return TypeMessageSourceMessageThreadHistory
 }
 
-// The message is from a forum topic history
+// The message is from history of a forum topic
 type MessageSourceForumTopicHistory struct {
 	meta
 }
@@ -15436,6 +15717,31 @@ func (*MessageSourceForumTopicHistory) GetType() string {
 
 func (*MessageSourceForumTopicHistory) MessageSourceType() string {
 	return TypeMessageSourceForumTopicHistory
+}
+
+// The message is from history of a topic in a channel direct messages chat administered by the current user
+type MessageSourceDirectMessagesChatTopicHistory struct {
+	meta
+}
+
+func (entity *MessageSourceDirectMessagesChatTopicHistory) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageSourceDirectMessagesChatTopicHistory
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageSourceDirectMessagesChatTopicHistory) GetClass() string {
+	return ClassMessageSource
+}
+
+func (*MessageSourceDirectMessagesChatTopicHistory) GetType() string {
+	return TypeMessageSourceDirectMessagesChatTopicHistory
+}
+
+func (*MessageSourceDirectMessagesChatTopicHistory) MessageSourceType() string {
+	return TypeMessageSourceDirectMessagesChatTopicHistory
 }
 
 // The message is from chat, message thread or forum topic history preview
@@ -15613,31 +15919,31 @@ func (*MessageSourceOther) MessageSourceType() string {
 	return TypeMessageSourceOther
 }
 
-// Information about the sponsor of a message
-type MessageSponsor struct {
+// Information about the sponsor of an advertisement
+type AdvertisementSponsor struct {
 	meta
-	// URL of the sponsor to be opened when the message is clicked
+	// URL of the sponsor to be opened when the advertisement is clicked
 	Url string `json:"url"`
 	// Photo of the sponsor; may be null if must not be shown
 	Photo *Photo `json:"photo"`
-	// Additional optional information about the sponsor to be shown along with the message
+	// Additional optional information about the sponsor to be shown along with the advertisement
 	Info string `json:"info"`
 }
 
-func (entity *MessageSponsor) MarshalJSON() ([]byte, error) {
+func (entity *AdvertisementSponsor) MarshalJSON() ([]byte, error) {
 	entity.meta.Type = entity.GetType()
 
-	type stub MessageSponsor
+	type stub AdvertisementSponsor
 
 	return json.Marshal((*stub)(entity))
 }
 
-func (*MessageSponsor) GetClass() string {
-	return ClassMessageSponsor
+func (*AdvertisementSponsor) GetClass() string {
+	return ClassAdvertisementSponsor
 }
 
-func (*MessageSponsor) GetType() string {
-	return TypeMessageSponsor
+func (*AdvertisementSponsor) GetType() string {
+	return TypeAdvertisementSponsor
 }
 
 // Describes a sponsored message
@@ -15652,7 +15958,7 @@ type SponsoredMessage struct {
 	// Content of the message. Currently, can be only of the types messageText, messageAnimation, messagePhoto, or messageVideo. Video messages can be viewed fullscreen
 	Content MessageContent `json:"content"`
 	// Information about the sponsor of the message
-	Sponsor *MessageSponsor `json:"sponsor"`
+	Sponsor *AdvertisementSponsor `json:"sponsor"`
 	// Title of the sponsored message
 	Title string `json:"title"`
 	// Text for the message action button
@@ -15683,16 +15989,16 @@ func (*SponsoredMessage) GetType() string {
 
 func (sponsoredMessage *SponsoredMessage) UnmarshalJSON(data []byte) error {
 	var tmp struct {
-		MessageId               int64           `json:"message_id"`
-		IsRecommended           bool            `json:"is_recommended"`
-		CanBeReported           bool            `json:"can_be_reported"`
-		Content                 json.RawMessage `json:"content"`
-		Sponsor                 *MessageSponsor `json:"sponsor"`
-		Title                   string          `json:"title"`
-		ButtonText              string          `json:"button_text"`
-		AccentColorId           int32           `json:"accent_color_id"`
-		BackgroundCustomEmojiId JsonInt64       `json:"background_custom_emoji_id"`
-		AdditionalInfo          string          `json:"additional_info"`
+		MessageId               int64                 `json:"message_id"`
+		IsRecommended           bool                  `json:"is_recommended"`
+		CanBeReported           bool                  `json:"can_be_reported"`
+		Content                 json.RawMessage       `json:"content"`
+		Sponsor                 *AdvertisementSponsor `json:"sponsor"`
+		Title                   string                `json:"title"`
+		ButtonText              string                `json:"button_text"`
+		AccentColorId           int32                 `json:"accent_color_id"`
+		BackgroundCustomEmojiId JsonInt64             `json:"background_custom_emoji_id"`
+		AdditionalInfo          string                `json:"additional_info"`
 	}
 
 	err := json.Unmarshal(data, &tmp)
@@ -15791,6 +16097,70 @@ func (*SponsoredChats) GetClass() string {
 
 func (*SponsoredChats) GetType() string {
 	return TypeSponsoredChats
+}
+
+// Describes an advertisent to be shown while a video from a message is watched
+type VideoMessageAdvertisement struct {
+	meta
+	// Unique identifier of this result
+	UniqueId int64 `json:"unique_id"`
+	// Text of the advertisement
+	Text string `json:"text"`
+	// The minimum amount of time the advertisement must be displayed before it can be hidden by the user, in seconds
+	MinDisplayDuration int32 `json:"min_display_duration"`
+	// The maximum amount of time the advertisement must be displayed before it must be automatically hidden, in seconds
+	MaxDisplayDuration int32 `json:"max_display_duration"`
+	// True, if the advertisement can be reported to Telegram moderators through reportVideoMessageAdvertisement
+	CanBeReported bool `json:"can_be_reported"`
+	// Information about the sponsor of the advertisement
+	Sponsor *AdvertisementSponsor `json:"sponsor"`
+	// Title of the sponsored message
+	Title string `json:"title"`
+	// If non-empty, additional information about the sponsored message to be shown along with the message
+	AdditionalInfo string `json:"additional_info"`
+}
+
+func (entity *VideoMessageAdvertisement) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub VideoMessageAdvertisement
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*VideoMessageAdvertisement) GetClass() string {
+	return ClassVideoMessageAdvertisement
+}
+
+func (*VideoMessageAdvertisement) GetType() string {
+	return TypeVideoMessageAdvertisement
+}
+
+// Contains a list of advertisements to be shown while a video from a message is watched
+type VideoMessageAdvertisements struct {
+	meta
+	// List of advertisements
+	Advertisements []*VideoMessageAdvertisement `json:"advertisements"`
+	// Delay before the first advertisement is shown, in seconds
+	StartDelay int32 `json:"start_delay"`
+	// Delay between consecutive advertisements, in seconds
+	BetweenDelay int32 `json:"between_delay"`
+}
+
+func (entity *VideoMessageAdvertisements) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub VideoMessageAdvertisements
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*VideoMessageAdvertisements) GetClass() string {
+	return ClassVideoMessageAdvertisements
+}
+
+func (*VideoMessageAdvertisements) GetType() string {
+	return TypeVideoMessageAdvertisements
 }
 
 // Describes an option to report an entity to Telegram
@@ -19004,6 +19374,90 @@ func (savedMessagesTopic *SavedMessagesTopic) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Contains information about a topic in a channel direct messages chat administered by the current user
+type DirectMessagesChatTopic struct {
+	meta
+	// Identifier of the chat to which the topic belongs
+	ChatId int64 `json:"chat_id"`
+	// Unique topic identifier
+	Id int64 `json:"id"`
+	// Identifier of the user or chat that sends the messages to the topic
+	SenderId MessageSender `json:"sender_id"`
+	// A parameter used to determine order of the topic in the topic list. Topics must be sorted by the order in descending order
+	Order JsonInt64 `json:"order"`
+	// True, if the other party can send unpaid messages even if the chat has paid messages enabled
+	CanSendUnpaidMessages bool `json:"can_send_unpaid_messages"`
+	// True, if the forum topic is marked as unread
+	IsMarkedAsUnread bool `json:"is_marked_as_unread"`
+	// Number of unread messages in the chat
+	UnreadCount int64 `json:"unread_count"`
+	// Identifier of the last read incoming message
+	LastReadInboxMessageId int64 `json:"last_read_inbox_message_id"`
+	// Identifier of the last read outgoing message
+	LastReadOutboxMessageId int64 `json:"last_read_outbox_message_id"`
+	// Number of messages with unread reactions in the chat
+	UnreadReactionCount int64 `json:"unread_reaction_count"`
+	// Last message in the topic; may be null if none or unknown
+	LastMessage *Message `json:"last_message"`
+	// A draft of a message in the topic; may be null if none
+	DraftMessage *DraftMessage `json:"draft_message"`
+}
+
+func (entity *DirectMessagesChatTopic) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub DirectMessagesChatTopic
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*DirectMessagesChatTopic) GetClass() string {
+	return ClassDirectMessagesChatTopic
+}
+
+func (*DirectMessagesChatTopic) GetType() string {
+	return TypeDirectMessagesChatTopic
+}
+
+func (directMessagesChatTopic *DirectMessagesChatTopic) UnmarshalJSON(data []byte) error {
+	var tmp struct {
+		ChatId                  int64           `json:"chat_id"`
+		Id                      int64           `json:"id"`
+		SenderId                json.RawMessage `json:"sender_id"`
+		Order                   JsonInt64       `json:"order"`
+		CanSendUnpaidMessages   bool            `json:"can_send_unpaid_messages"`
+		IsMarkedAsUnread        bool            `json:"is_marked_as_unread"`
+		UnreadCount             int64           `json:"unread_count"`
+		LastReadInboxMessageId  int64           `json:"last_read_inbox_message_id"`
+		LastReadOutboxMessageId int64           `json:"last_read_outbox_message_id"`
+		UnreadReactionCount     int64           `json:"unread_reaction_count"`
+		LastMessage             *Message        `json:"last_message"`
+		DraftMessage            *DraftMessage   `json:"draft_message"`
+	}
+
+	err := json.Unmarshal(data, &tmp)
+	if err != nil {
+		return err
+	}
+
+	directMessagesChatTopic.ChatId = tmp.ChatId
+	directMessagesChatTopic.Id = tmp.Id
+	directMessagesChatTopic.Order = tmp.Order
+	directMessagesChatTopic.CanSendUnpaidMessages = tmp.CanSendUnpaidMessages
+	directMessagesChatTopic.IsMarkedAsUnread = tmp.IsMarkedAsUnread
+	directMessagesChatTopic.UnreadCount = tmp.UnreadCount
+	directMessagesChatTopic.LastReadInboxMessageId = tmp.LastReadInboxMessageId
+	directMessagesChatTopic.LastReadOutboxMessageId = tmp.LastReadOutboxMessageId
+	directMessagesChatTopic.UnreadReactionCount = tmp.UnreadReactionCount
+	directMessagesChatTopic.LastMessage = tmp.LastMessage
+	directMessagesChatTopic.DraftMessage = tmp.DraftMessage
+
+	fieldSenderId, _ := UnmarshalMessageSender(tmp.SenderId)
+	directMessagesChatTopic.SenderId = fieldSenderId
+
+	return nil
+}
+
 // Describes a forum topic icon
 type ForumTopicIcon struct {
 	meta
@@ -19034,6 +19488,8 @@ type ForumTopicInfo struct {
 	meta
 	// Identifier of the forum chat to which the topic belongs
 	ChatId int64 `json:"chat_id"`
+	// Forum topic identifier of the topic
+	ForumTopicId int64 `json:"forum_topic_id"`
 	// Message thread identifier of the topic
 	MessageThreadId int64 `json:"message_thread_id"`
 	// Name of the topic
@@ -19073,6 +19529,7 @@ func (*ForumTopicInfo) GetType() string {
 func (forumTopicInfo *ForumTopicInfo) UnmarshalJSON(data []byte) error {
 	var tmp struct {
 		ChatId          int64           `json:"chat_id"`
+		ForumTopicId    int64           `json:"forum_topic_id"`
 		MessageThreadId int64           `json:"message_thread_id"`
 		Name            string          `json:"name"`
 		Icon            *ForumTopicIcon `json:"icon"`
@@ -19090,6 +19547,7 @@ func (forumTopicInfo *ForumTopicInfo) UnmarshalJSON(data []byte) error {
 	}
 
 	forumTopicInfo.ChatId = tmp.ChatId
+	forumTopicInfo.ForumTopicId = tmp.ForumTopicId
 	forumTopicInfo.MessageThreadId = tmp.MessageThreadId
 	forumTopicInfo.Name = tmp.Name
 	forumTopicInfo.Icon = tmp.Icon
@@ -26440,6 +26898,8 @@ type MessageVideo struct {
 	Video *Video `json:"video"`
 	// Alternative qualities of the video
 	AlternativeVideos []*AlternativeVideo `json:"alternative_videos"`
+	// Available storyboards for the video
+	Storyboards []*VideoStoryboard `json:"storyboards"`
 	// Cover of the video; may be null if none
 	Cover *Photo `json:"cover"`
 	// Timestamp from which the video playing must start, in seconds
@@ -26901,6 +27361,33 @@ func (*MessageStory) MessageContentType() string {
 	return TypeMessageStory
 }
 
+// A message with a checklist
+type MessageChecklist struct {
+	meta
+	// The checklist description
+	List *Checklist `json:"list"`
+}
+
+func (entity *MessageChecklist) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageChecklist
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageChecklist) GetClass() string {
+	return ClassMessageContent
+}
+
+func (*MessageChecklist) GetType() string {
+	return TypeMessageChecklist
+}
+
+func (*MessageChecklist) MessageContentType() string {
+	return TypeMessageChecklist
+}
+
 // A message with an invoice from a bot. Use getInternalLink with internalLinkTypeBotStart to share the invoice
 type MessageInvoice struct {
 	meta
@@ -27029,7 +27516,7 @@ func (messageCall *MessageCall) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// A message with information about a group call not bound to a chat. If the message is incoming, the call isn't active, isn't missed, and has no duration, and getOption("can_accept_calls") is true, then incoming call screen must be shown to the user. Use joinGroupCall to accept the call or declineGroupCallInvitation to decline it. If the call become active or missed, then the call screen must be hidden
+// A message with information about a group call not bound to a chat. If the message is incoming, the call isn't active, isn't missed, and has no duration, and getOption("can_accept_calls") is true, then incoming call screen must be shown to the user. Use getGroupCallParticipants to show current group call participants on the screen. Use joinGroupCall to accept the call or declineGroupCallInvitation to decline it. If the call become active or missed, then the call screen must be hidden
 type MessageGroupCall struct {
 	meta
 	// True, if the call is active, i.e. the called user joined the call
@@ -28425,6 +28912,8 @@ type MessageGift struct {
 	Gift *Gift `json:"gift"`
 	// Sender of the gift
 	SenderId MessageSender `json:"sender_id"`
+	// Receiver of the gift
+	ReceiverId MessageSender `json:"receiver_id"`
 	// Unique identifier of the received gift for the current user; only for the receiver of the gift
 	ReceivedGiftId string `json:"received_gift_id"`
 	// Message added to the gift
@@ -28473,6 +28962,7 @@ func (messageGift *MessageGift) UnmarshalJSON(data []byte) error {
 	var tmp struct {
 		Gift                    *Gift           `json:"gift"`
 		SenderId                json.RawMessage `json:"sender_id"`
+		ReceiverId              json.RawMessage `json:"receiver_id"`
 		ReceivedGiftId          string          `json:"received_gift_id"`
 		Text                    *FormattedText  `json:"text"`
 		SellStarCount           int64           `json:"sell_star_count"`
@@ -28507,6 +28997,9 @@ func (messageGift *MessageGift) UnmarshalJSON(data []byte) error {
 	fieldSenderId, _ := UnmarshalMessageSender(tmp.SenderId)
 	messageGift.SenderId = fieldSenderId
 
+	fieldReceiverId, _ := UnmarshalMessageSender(tmp.ReceiverId)
+	messageGift.ReceiverId = fieldReceiverId
+
 	return nil
 }
 
@@ -28517,6 +29010,8 @@ type MessageUpgradedGift struct {
 	Gift *UpgradedGift `json:"gift"`
 	// Sender of the gift; may be null for anonymous gifts
 	SenderId MessageSender `json:"sender_id"`
+	// Receiver of the gift
+	ReceiverId MessageSender `json:"receiver_id"`
 	// Unique identifier of the received gift for the current user; only for the receiver of the gift
 	ReceivedGiftId string `json:"received_gift_id"`
 	// True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred or resold gift
@@ -28563,6 +29058,7 @@ func (messageUpgradedGift *MessageUpgradedGift) UnmarshalJSON(data []byte) error
 	var tmp struct {
 		Gift                *UpgradedGift   `json:"gift"`
 		SenderId            json.RawMessage `json:"sender_id"`
+		ReceiverId          json.RawMessage `json:"receiver_id"`
 		ReceivedGiftId      string          `json:"received_gift_id"`
 		IsUpgrade           bool            `json:"is_upgrade"`
 		IsSaved             bool            `json:"is_saved"`
@@ -28595,6 +29091,9 @@ func (messageUpgradedGift *MessageUpgradedGift) UnmarshalJSON(data []byte) error
 	fieldSenderId, _ := UnmarshalMessageSender(tmp.SenderId)
 	messageUpgradedGift.SenderId = fieldSenderId
 
+	fieldReceiverId, _ := UnmarshalMessageSender(tmp.ReceiverId)
+	messageUpgradedGift.ReceiverId = fieldReceiverId
+
 	return nil
 }
 
@@ -28605,6 +29104,8 @@ type MessageRefundedUpgradedGift struct {
 	Gift *Gift `json:"gift"`
 	// Sender of the gift
 	SenderId MessageSender `json:"sender_id"`
+	// Receiver of the gift
+	ReceiverId MessageSender `json:"receiver_id"`
 	// True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred or resold gift
 	IsUpgrade bool `json:"is_upgrade"`
 }
@@ -28631,9 +29132,10 @@ func (*MessageRefundedUpgradedGift) MessageContentType() string {
 
 func (messageRefundedUpgradedGift *MessageRefundedUpgradedGift) UnmarshalJSON(data []byte) error {
 	var tmp struct {
-		Gift      *Gift           `json:"gift"`
-		SenderId  json.RawMessage `json:"sender_id"`
-		IsUpgrade bool            `json:"is_upgrade"`
+		Gift       *Gift           `json:"gift"`
+		SenderId   json.RawMessage `json:"sender_id"`
+		ReceiverId json.RawMessage `json:"receiver_id"`
+		IsUpgrade  bool            `json:"is_upgrade"`
 	}
 
 	err := json.Unmarshal(data, &tmp)
@@ -28646,6 +29148,9 @@ func (messageRefundedUpgradedGift *MessageRefundedUpgradedGift) UnmarshalJSON(da
 
 	fieldSenderId, _ := UnmarshalMessageSender(tmp.SenderId)
 	messageRefundedUpgradedGift.SenderId = fieldSenderId
+
+	fieldReceiverId, _ := UnmarshalMessageSender(tmp.ReceiverId)
+	messageRefundedUpgradedGift.ReceiverId = fieldReceiverId
 
 	return nil
 }
@@ -28704,6 +29209,95 @@ func (*MessagePaidMessagePriceChanged) GetType() string {
 
 func (*MessagePaidMessagePriceChanged) MessageContentType() string {
 	return TypeMessagePaidMessagePriceChanged
+}
+
+// A price for direct messages was changed in the channel chat
+type MessageDirectMessagePriceChanged struct {
+	meta
+	// True, if direct messages group was enabled for the channel; false otherwise
+	IsEnabled bool `json:"is_enabled"`
+	// The new number of Telegram Stars that must be paid by non-administrator users of the channel chat for each message sent to the direct messages group; 0 if the direct messages group was disabled or the messages are free
+	PaidMessageStarCount int64 `json:"paid_message_star_count"`
+}
+
+func (entity *MessageDirectMessagePriceChanged) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageDirectMessagePriceChanged
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageDirectMessagePriceChanged) GetClass() string {
+	return ClassMessageContent
+}
+
+func (*MessageDirectMessagePriceChanged) GetType() string {
+	return TypeMessageDirectMessagePriceChanged
+}
+
+func (*MessageDirectMessagePriceChanged) MessageContentType() string {
+	return TypeMessageDirectMessagePriceChanged
+}
+
+// Some tasks from a checklist were marked as done or not done
+type MessageChecklistTasksDone struct {
+	meta
+	// Identifier of the message with the checklist; can be 0 if the message was deleted
+	ChecklistMessageId int64 `json:"checklist_message_id"`
+	// Identifiers of tasks that were marked as done
+	MarkedAsDoneTaskIds []int32 `json:"marked_as_done_task_ids"`
+	// Identifiers of tasks that were marked as not done
+	MarkedAsNotDoneTaskIds []int32 `json:"marked_as_not_done_task_ids"`
+}
+
+func (entity *MessageChecklistTasksDone) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageChecklistTasksDone
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageChecklistTasksDone) GetClass() string {
+	return ClassMessageContent
+}
+
+func (*MessageChecklistTasksDone) GetType() string {
+	return TypeMessageChecklistTasksDone
+}
+
+func (*MessageChecklistTasksDone) MessageContentType() string {
+	return TypeMessageChecklistTasksDone
+}
+
+// Some tasks were added to a checklist
+type MessageChecklistTasksAdded struct {
+	meta
+	// Identifier of the message with the checklist; can be 0 if the message was deleted
+	ChecklistMessageId int64 `json:"checklist_message_id"`
+	// List of tasks added to the checklist
+	Tasks []*ChecklistTask `json:"tasks"`
+}
+
+func (entity *MessageChecklistTasksAdded) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageChecklistTasksAdded
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageChecklistTasksAdded) GetClass() string {
+	return ClassMessageContent
+}
+
+func (*MessageChecklistTasksAdded) GetType() string {
+	return TypeMessageChecklistTasksAdded
+}
+
+func (*MessageChecklistTasksAdded) MessageContentType() string {
+	return TypeMessageChecklistTasksAdded
 }
 
 // A contact has registered with Telegram
@@ -29924,6 +30518,8 @@ func (*MessageSelfDestructTypeImmediately) MessageSelfDestructTypeType() string 
 // Options to be used when a message is sent
 type MessageSendOptions struct {
 	meta
+	// Unique identifier of the topic in a channel direct messages chat administered by the current user; pass 0 if the chat isn't a channel direct messages chat administered by the current user
+	DirectMessagesChatTopicId int64 `json:"direct_messages_chat_topic_id"`
 	// Pass true to disable notification for the message
 	DisableNotification bool `json:"disable_notification"`
 	// Pass true if the message is sent from the background
@@ -29936,7 +30532,7 @@ type MessageSendOptions struct {
 	PaidMessageStarCount int64 `json:"paid_message_star_count"`
 	// Pass true if the user explicitly chosen a sticker or a custom emoji from an installed sticker set; applicable only to sendMessage and sendMessageAlbum
 	UpdateOrderOfInstalledStickerSets bool `json:"update_order_of_installed_sticker_sets"`
-	// Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, to a chat with paid messages, live location messages and self-destructing messages can't be scheduled
+	// Message scheduling state; pass null to send message immediately. Messages sent to a secret chat, to a chat with paid messages, to a channel direct messages chat, live location messages and self-destructing messages can't be scheduled
 	SchedulingState MessageSchedulingState `json:"scheduling_state"`
 	// Identifier of the effect to apply to the message; pass 0 if none; applicable only to sendMessage and sendMessageAlbum in private chats
 	EffectId JsonInt64 `json:"effect_id"`
@@ -29964,6 +30560,7 @@ func (*MessageSendOptions) GetType() string {
 
 func (messageSendOptions *MessageSendOptions) UnmarshalJSON(data []byte) error {
 	var tmp struct {
+		DirectMessagesChatTopicId         int64           `json:"direct_messages_chat_topic_id"`
 		DisableNotification               bool            `json:"disable_notification"`
 		FromBackground                    bool            `json:"from_background"`
 		ProtectContent                    bool            `json:"protect_content"`
@@ -29981,6 +30578,7 @@ func (messageSendOptions *MessageSendOptions) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	messageSendOptions.DirectMessagesChatTopicId = tmp.DirectMessagesChatTopicId
 	messageSendOptions.DisableNotification = tmp.DisableNotification
 	messageSendOptions.FromBackground = tmp.FromBackground
 	messageSendOptions.ProtectContent = tmp.ProtectContent
@@ -30000,7 +30598,7 @@ func (messageSendOptions *MessageSendOptions) UnmarshalJSON(data []byte) error {
 // Options to be used when a message content is copied without reference to the original sender. Service messages, messages with messageInvoice, messagePaidMedia, messageGiveaway, or messageGiveawayWinners content can't be copied
 type MessageCopyOptions struct {
 	meta
-	// True, if content of the message needs to be copied without reference to the original sender. Always true if the message is forwarded to a secret chat or is local. Use messageProperties.can_be_saved and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable
+	// True, if content of the message needs to be copied without reference to the original sender. Always true if the message is forwarded to a secret chat or is local. Use messageProperties.can_be_copied and messageProperties.can_be_copied_to_secret_chat to check whether the message is suitable
 	SendCopy bool `json:"send_copy"`
 	// True, if media caption of the message copy needs to be replaced. Ignored if send_copy is false
 	ReplaceCaption bool `json:"replace_caption"`
@@ -30842,12 +31440,12 @@ func (*InputMessageInvoice) InputMessageContentType() string {
 	return TypeInputMessageInvoice
 }
 
-// A message with a poll. Polls can't be sent to secret chats. Polls can be sent only to a private chat with a bot
+// A message with a poll. Polls can't be sent to secret chats and channel direct messages chats. Polls can be sent to a private chat only if the chat is a chat with a bot or the Saved Messages chat
 type InputMessagePoll struct {
 	meta
 	// Poll question; 1-255 characters (up to 300 characters for bots). Only custom emoji entities are allowed to be added and only by Premium users
 	Question *FormattedText `json:"question"`
-	// List of poll answer options, 2-10 strings 1-100 characters each. Only custom emoji entities are allowed to be added and only by Premium users
+	// List of poll answer options, 2-getOption("poll_answer_count_max") strings 1-100 characters each. Only custom emoji entities are allowed to be added and only by Premium users
 	Options []*FormattedText `json:"options"`
 	// True, if the poll voters are anonymous. Non-anonymous polls can't be sent or forwarded to channels
 	IsAnonymous bool `json:"is_anonymous"`
@@ -30939,6 +31537,33 @@ func (*InputMessageStory) InputMessageContentType() string {
 	return TypeInputMessageStory
 }
 
+// A message with a checklist. Checklists can't be sent to secret chats, channel chats and channel direct messages chats; for Telegram Premium users only
+type InputMessageChecklist struct {
+	meta
+	// The checklist to send
+	Checklist *InputChecklist `json:"checklist"`
+}
+
+func (entity *InputMessageChecklist) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub InputMessageChecklist
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*InputMessageChecklist) GetClass() string {
+	return ClassInputMessageContent
+}
+
+func (*InputMessageChecklist) GetType() string {
+	return TypeInputMessageChecklist
+}
+
+func (*InputMessageChecklist) InputMessageContentType() string {
+	return TypeInputMessageChecklist
+}
+
 // A forwarded message
 type InputMessageForwarded struct {
 	meta
@@ -30979,15 +31604,19 @@ func (*InputMessageForwarded) InputMessageContentType() string {
 // Contains properties of a message and describes actions that can be done with the message right now
 type MessageProperties struct {
 	meta
+	// True, if tasks can be added to the message's checklist using addChecklistTasks if the current user has Telegram Premium subscription
+	CanAddTasks bool `json:"can_add_tasks"`
+	// True, if content of the message can be copied using inputMessageForwarded or forwardMessages with copy options
+	CanBeCopied bool `json:"can_be_copied"`
 	// True, if content of the message can be copied to a secret chat using inputMessageForwarded or forwardMessages with copy options
 	CanBeCopiedToSecretChat bool `json:"can_be_copied_to_secret_chat"`
 	// True, if the message can be deleted only for the current user while other users will continue to see it using the method deleteMessages with revoke == false
 	CanBeDeletedOnlyForSelf bool `json:"can_be_deleted_only_for_self"`
 	// True, if the message can be deleted for all users using the method deleteMessages with revoke == true
 	CanBeDeletedForAllUsers bool `json:"can_be_deleted_for_all_users"`
-	// True, if the message can be edited using the methods editMessageText, editMessageCaption, or editMessageReplyMarkup. For live location and poll messages this fields shows whether editMessageLiveLocation or stopPoll can be used with this message
+	// True, if the message can be edited using the methods editMessageText, editMessageCaption, or editMessageReplyMarkup. For live location, poll, and checklist messages this fields shows whether editMessageLiveLocation, stopPoll, or editMessageChecklist respectively can be used with this message
 	CanBeEdited bool `json:"can_be_edited"`
-	// True, if the message can be forwarded using inputMessageForwarded or forwardMessages
+	// True, if the message can be forwarded using inputMessageForwarded or forwardMessages without copy options
 	CanBeForwarded bool `json:"can_be_forwarded"`
 	// True, if the message can be paid using inputInvoiceMessage
 	CanBePaid bool `json:"can_be_paid"`
@@ -30997,7 +31626,7 @@ type MessageProperties struct {
 	CanBeReplied bool `json:"can_be_replied"`
 	// True, if the message can be replied in another chat or forum topic using inputMessageReplyToExternalMessage
 	CanBeRepliedInAnotherChat bool `json:"can_be_replied_in_another_chat"`
-	// True, if content of the message can be saved locally or copied using inputMessageForwarded or forwardMessages with copy options
+	// True, if content of the message can be saved locally
 	CanBeSaved bool `json:"can_be_saved"`
 	// True, if the message can be shared in a story using inputStoryAreaTypeMessage
 	CanBeSharedInStory bool `json:"can_be_shared_in_story"`
@@ -31005,6 +31634,8 @@ type MessageProperties struct {
 	CanEditMedia bool `json:"can_edit_media"`
 	// True, if scheduling state of the message can be edited
 	CanEditSchedulingState bool `json:"can_edit_scheduling_state"`
+	// True, if author of the message sent on behalf of a chat can be received through getMessageAuthor
+	CanGetAuthor bool `json:"can_get_author"`
 	// True, if code for message embedding can be received using getMessageEmbeddingCode
 	CanGetEmbeddingCode bool `json:"can_get_embedding_code"`
 	// True, if a link can be generated for the message using getMessageLink
@@ -31017,8 +31648,12 @@ type MessageProperties struct {
 	CanGetReadDate bool `json:"can_get_read_date"`
 	// True, if message statistics are available through getMessageStatistics and message forwards can be received using getMessagePublicForwards
 	CanGetStatistics bool `json:"can_get_statistics"`
+	// True, if advertisements for video of the message can be received though getVideoMessageAdvertisements
+	CanGetVideoAdvertisements bool `json:"can_get_video_advertisements"`
 	// True, if chat members already viewed the message can be received through getMessageViewers
 	CanGetViewers bool `json:"can_get_viewers"`
+	// True, if tasks can be marked as done or not done in the message's checklist using markChecklistTasksAsDone if the current user has Telegram Premium subscription
+	CanMarkTasksAsDone bool `json:"can_mark_tasks_as_done"`
 	// True, if speech can be recognized for the message through recognizeSpeech
 	CanRecognizeSpeech bool `json:"can_recognize_speech"`
 	// True, if the message can be reported using reportChat
@@ -34965,7 +35600,7 @@ func (*ResendCodeReasonUserRequest) ResendCodeReasonType() string {
 // The code is re-sent, because device verification has failed
 type ResendCodeReasonVerificationFailed struct {
 	meta
-	// Cause of the verification failure, for example, PLAY_SERVICES_NOT_AVAILABLE, APNS_RECEIVE_TIMEOUT, or APNS_INIT_FAILED
+	// Cause of the verification failure, for example, "PLAY_SERVICES_NOT_AVAILABLE", "APNS_RECEIVE_TIMEOUT", or "APNS_INIT_FAILED"
 	ErrorMessage string `json:"error_message"`
 }
 
@@ -42278,6 +42913,31 @@ func (*PremiumFeatureMessageEffects) PremiumFeatureType() string {
 	return TypePremiumFeatureMessageEffects
 }
 
+// The ability to create and use checklist messages
+type PremiumFeatureChecklists struct {
+	meta
+}
+
+func (entity *PremiumFeatureChecklists) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub PremiumFeatureChecklists
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*PremiumFeatureChecklists) GetClass() string {
+	return ClassPremiumFeature
+}
+
+func (*PremiumFeatureChecklists) GetType() string {
+	return TypePremiumFeatureChecklists
+}
+
+func (*PremiumFeatureChecklists) PremiumFeatureType() string {
+	return TypePremiumFeatureChecklists
+}
+
 // The ability to set location
 type BusinessFeatureLocation struct {
 	meta
@@ -45793,6 +46453,35 @@ func (*PushMessageContentText) PushMessageContentType() string {
 	return TypePushMessageContentText
 }
 
+// A message with a checklist
+type PushMessageContentChecklist struct {
+	meta
+	// Checklist title
+	Title string `json:"title"`
+	// True, if the message is a pinned message with the specified content
+	IsPinned bool `json:"is_pinned"`
+}
+
+func (entity *PushMessageContentChecklist) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub PushMessageContentChecklist
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*PushMessageContentChecklist) GetClass() string {
+	return ClassPushMessageContent
+}
+
+func (*PushMessageContentChecklist) GetType() string {
+	return TypePushMessageContentChecklist
+}
+
+func (*PushMessageContentChecklist) PushMessageContentType() string {
+	return TypePushMessageContentChecklist
+}
+
 // A video message
 type PushMessageContentVideo struct {
 	meta
@@ -46281,6 +46970,60 @@ func (*PushMessageContentProximityAlertTriggered) GetType() string {
 
 func (*PushMessageContentProximityAlertTriggered) PushMessageContentType() string {
 	return TypePushMessageContentProximityAlertTriggered
+}
+
+// Some tasks were added to a checklist
+type PushMessageContentChecklistTasksAdded struct {
+	meta
+	// Number of added tasks
+	TaskCount int32 `json:"task_count"`
+}
+
+func (entity *PushMessageContentChecklistTasksAdded) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub PushMessageContentChecklistTasksAdded
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*PushMessageContentChecklistTasksAdded) GetClass() string {
+	return ClassPushMessageContent
+}
+
+func (*PushMessageContentChecklistTasksAdded) GetType() string {
+	return TypePushMessageContentChecklistTasksAdded
+}
+
+func (*PushMessageContentChecklistTasksAdded) PushMessageContentType() string {
+	return TypePushMessageContentChecklistTasksAdded
+}
+
+// Some tasks from a checklist were marked as done or not done
+type PushMessageContentChecklistTasksDone struct {
+	meta
+	// Number of changed tasks
+	TaskCount int32 `json:"task_count"`
+}
+
+func (entity *PushMessageContentChecklistTasksDone) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub PushMessageContentChecklistTasksDone
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*PushMessageContentChecklistTasksDone) GetClass() string {
+	return ClassPushMessageContent
+}
+
+func (*PushMessageContentChecklistTasksDone) GetType() string {
+	return TypePushMessageContentChecklistTasksDone
+}
+
+func (*PushMessageContentChecklistTasksDone) PushMessageContentType() string {
+	return TypePushMessageContentChecklistTasksDone
 }
 
 // A forwarded messages
@@ -49634,7 +50377,7 @@ func (*InternalLinkTypeGame) InternalLinkTypeType() string {
 	return TypeInternalLinkTypeGame
 }
 
-// The link is a link to a group call that isn't bound to a chat. Call joinGroupCall with the given invite_link
+// The link is a link to a group call that isn't bound to a chat. Use getGroupCallParticipants to get the list of group call participants and show them on the join group call screen. Call joinGroupCall with the given invite_link to join the call
 type InternalLinkTypeGroupCall struct {
 	meta
 	// Internal representation of the invite link
@@ -56522,6 +57265,85 @@ func (*UpdateSavedMessagesTopicCount) UpdateType() string {
 	return TypeUpdateSavedMessagesTopicCount
 }
 
+// Basic information about a topic in a channel direct messages chat administered by the current user has changed. This update is guaranteed to come before the topic identifier is returned to the application
+type UpdateDirectMessagesChatTopic struct {
+	meta
+	// New data about the topic
+	Topic *DirectMessagesChatTopic `json:"topic"`
+}
+
+func (entity *UpdateDirectMessagesChatTopic) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub UpdateDirectMessagesChatTopic
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateDirectMessagesChatTopic) GetClass() string {
+	return ClassUpdate
+}
+
+func (*UpdateDirectMessagesChatTopic) GetType() string {
+	return TypeUpdateDirectMessagesChatTopic
+}
+
+func (*UpdateDirectMessagesChatTopic) UpdateType() string {
+	return TypeUpdateDirectMessagesChatTopic
+}
+
+// Number of messages in a topic has changed; for Saved Messages and channel direct messages chat topics only
+type UpdateTopicMessageCount struct {
+	meta
+	// Identifier of the chat in topic of which the number of messages has changed
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the topic
+	TopicId MessageTopic `json:"topic_id"`
+	// Approximate number of messages in the topics
+	MessageCount int32 `json:"message_count"`
+}
+
+func (entity *UpdateTopicMessageCount) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub UpdateTopicMessageCount
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateTopicMessageCount) GetClass() string {
+	return ClassUpdate
+}
+
+func (*UpdateTopicMessageCount) GetType() string {
+	return TypeUpdateTopicMessageCount
+}
+
+func (*UpdateTopicMessageCount) UpdateType() string {
+	return TypeUpdateTopicMessageCount
+}
+
+func (updateTopicMessageCount *UpdateTopicMessageCount) UnmarshalJSON(data []byte) error {
+	var tmp struct {
+		ChatId       int64           `json:"chat_id"`
+		TopicId      json.RawMessage `json:"topic_id"`
+		MessageCount int32           `json:"message_count"`
+	}
+
+	err := json.Unmarshal(data, &tmp)
+	if err != nil {
+		return err
+	}
+
+	updateTopicMessageCount.ChatId = tmp.ChatId
+	updateTopicMessageCount.MessageCount = tmp.MessageCount
+
+	fieldTopicId, _ := UnmarshalMessageTopic(tmp.TopicId)
+	updateTopicMessageCount.TopicId = fieldTopicId
+
+	return nil
+}
+
 // Basic information about a quick reply shortcut has changed. This update is guaranteed to come before the quick shortcut name is returned to the application
 type UpdateQuickReplyShortcut struct {
 	meta
@@ -56672,6 +57494,10 @@ type UpdateForumTopic struct {
 	LastReadInboxMessageId int64 `json:"last_read_inbox_message_id"`
 	// Identifier of the last read outgoing message
 	LastReadOutboxMessageId int64 `json:"last_read_outbox_message_id"`
+	// Number of unread messages with a mention/reply in the topic
+	UnreadMentionCount int32 `json:"unread_mention_count"`
+	// Number of messages with unread reactions in the topic
+	UnreadReactionCount int32 `json:"unread_reaction_count"`
 	// Notification settings for the topic
 	NotificationSettings *ChatNotificationSettings `json:"notification_settings"`
 }
