@@ -1429,7 +1429,7 @@ type GetRepliedMessageRequest struct {
 	MessageId int64 `json:"message_id"`
 }
 
-// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, the giveaway message, the checklist message, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground, messageGiveawayCompleted, messageChecklistTasksDone and messageChecklistTasksAdded, and topic messages without non-bundled replied message respectively. Returns a 404 error if the message doesn't exist
+// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message for messagePinMessage, the game message for messageGameScore, the invoice message for messagePaymentSuccessful, the message with a previously set same background for messageChatSetBackground, the giveaway message for messageGiveawayCompleted, the checklist message for messageChecklistTasksDone, messageChecklistTasksAdded, the message with suggested post information for messageSuggestedPostApprovalFailed, messageSuggestedPostApproved, messageSuggestedPostDeclined, messageSuggestedPostPaid, messageSuggestedPostRefunded, the message with the regular gift that was upgraded for messageUpgradedGift with origin of the type upgradedGiftOriginUpgrade, and the topic creation message for topic messages without non-bundled replied message. Returns a 404 error if the message doesn't exist
 func (client *Client) GetRepliedMessage(req *GetRepliedMessageRequest) (*Message, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -2519,9 +2519,9 @@ type GetDirectMessagesChatTopicHistoryRequest struct {
 	TopicId int64 `json:"topic_id"`
 	// Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message
 	FromMessageId int64 `json:"from_message_id"`
-	// Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
+	// Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages
 	Offset int32 `json:"offset"`
-	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
 }
 
@@ -2863,9 +2863,9 @@ type GetSavedMessagesTopicHistoryRequest struct {
 	SavedMessagesTopicId int64 `json:"saved_messages_topic_id"`
 	// Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message
 	FromMessageId int64 `json:"from_message_id"`
-	// Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
+	// Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages
 	Offset int32 `json:"offset"`
-	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
 }
 
@@ -3072,9 +3072,9 @@ type GetChatHistoryRequest struct {
 	ChatId int64 `json:"chat_id"`
 	// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
 	FromMessageId int64 `json:"from_message_id"`
-	// Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
+	// Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages
 	Offset int32 `json:"offset"`
-	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
 	// Pass true to get only messages that are available without sending network requests
 	OnlyLocal bool `json:"only_local"`
@@ -3112,9 +3112,9 @@ type GetMessageThreadHistoryRequest struct {
 	MessageId int64 `json:"message_id"`
 	// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
 	FromMessageId int64 `json:"from_message_id"`
-	// Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages
+	// Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages
 	Offset int32 `json:"offset"`
-	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
 }
 
@@ -3212,9 +3212,9 @@ type SearchChatMessagesRequest struct {
 	SenderId MessageSender `json:"sender_id"`
 	// Identifier of the message starting from which history must be fetched; use 0 to get results from the last message
 	FromMessageId int64 `json:"from_message_id"`
-	// Specify 0 to get results from exactly the message from_message_id or a negative offset to get the specified message and some newer messages
+	// Specify 0 to get results from exactly the message from_message_id or a negative number to get the specified message and some newer messages
 	Offset int32 `json:"offset"`
-	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
 	// Additional filter for messages to search; pass null to search for all messages
 	Filter SearchMessagesFilter `json:"filter"`
@@ -3342,9 +3342,9 @@ type SearchSavedMessagesRequest struct {
 	Query string `json:"query"`
 	// Identifier of the message starting from which messages must be fetched; use 0 to get results from the last message
 	FromMessageId int64 `json:"from_message_id"`
-	// Specify 0 to get results from exactly the message from_message_id or a negative offset to get the specified message and some newer messages
+	// Specify 0 to get results from exactly the message from_message_id or a negative number to get the specified message and some newer messages
 	Offset int32 `json:"offset"`
-	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	// The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
 }
 
@@ -3433,6 +3433,67 @@ func (client *Client) SearchOutgoingDocumentMessages(req *SearchOutgoingDocument
 	}
 
 	return UnmarshalFoundMessages(result.Data)
+}
+
+type GetPublicPostSearchLimitsRequest struct {
+	// Query that will be searched for
+	Query string `json:"query"`
+}
+
+// Checks public post search limits without actually performing the search
+func (client *Client) GetPublicPostSearchLimits(req *GetPublicPostSearchLimitsRequest) (*PublicPostSearchLimits, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getPublicPostSearchLimits",
+		},
+		Data: map[string]interface{}{
+			"query": req.Query,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalPublicPostSearchLimits(result.Data)
+}
+
+type SearchPublicPostsRequest struct {
+	// Query to search for
+	Query string `json:"query"`
+	// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+	Offset string `json:"offset"`
+	// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+	Limit int32 `json:"limit"`
+	// The amount of Telegram Stars the user agreed to pay for the search; pass 0 for free searches
+	StarCount int64 `json:"star_count"`
+}
+
+// Searches for public channel posts using the given query. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
+func (client *Client) SearchPublicPosts(req *SearchPublicPostsRequest) (*FoundPublicPosts, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "searchPublicPosts",
+		},
+		Data: map[string]interface{}{
+			"query":      req.Query,
+			"offset":     req.Offset,
+			"limit":      req.Limit,
+			"star_count": req.StarCount,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalFoundPublicPosts(result.Data)
 }
 
 type SearchPublicMessagesByTagRequest struct {
@@ -6045,7 +6106,7 @@ type SetBusinessAccountProfilePhotoRequest struct {
 	BusinessConnectionId string `json:"business_connection_id"`
 	// Profile photo to set; pass null to remove the photo
 	Photo InputChatPhoto `json:"photo"`
-	// Pass true to set the public photo, which will be visible even the main photo is hidden by privacy settings
+	// Pass true to set the public photo, which will be visible even if the main photo is hidden by privacy settings
 	IsPublic bool `json:"is_public"`
 }
 
@@ -6599,7 +6660,7 @@ type EditForumTopicRequest struct {
 	IconCustomEmojiId JsonInt64 `json:"icon_custom_emoji_id"`
 }
 
-// Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics right in the supergroup unless the user is creator of the topic
+// Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic
 func (client *Client) EditForumTopic(req *EditForumTopicRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -6764,7 +6825,7 @@ type ToggleForumTopicIsClosedRequest struct {
 	IsClosed bool `json:"is_closed"`
 }
 
-// Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics right in the supergroup unless the user is creator of the topic
+// Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic
 func (client *Client) ToggleForumTopicIsClosed(req *ToggleForumTopicIsClosedRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -6794,7 +6855,7 @@ type ToggleGeneralForumTopicIsHiddenRequest struct {
 	IsHidden bool `json:"is_hidden"`
 }
 
-// Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics right in the supergroup
+// Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup
 func (client *Client) ToggleGeneralForumTopicIsHidden(req *ToggleGeneralForumTopicIsHiddenRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -6825,7 +6886,7 @@ type ToggleForumTopicIsPinnedRequest struct {
 	IsPinned bool `json:"is_pinned"`
 }
 
-// Changes the pinned state of a forum topic; requires can_manage_topics right in the supergroup. There can be up to getOption("pinned_forum_topic_count_max") pinned forum topics
+// Changes the pinned state of a forum topic; requires can_manage_topics administrator right in the supergroup. There can be up to getOption("pinned_forum_topic_count_max") pinned forum topics
 func (client *Client) ToggleForumTopicIsPinned(req *ToggleForumTopicIsPinnedRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -6855,7 +6916,7 @@ type SetPinnedForumTopicsRequest struct {
 	MessageThreadIds []int64 `json:"message_thread_ids"`
 }
 
-// Changes the order of pinned forum topics; requires can_manage_topics right in the supergroup
+// Changes the order of pinned forum topics; requires can_manage_topics administrator right in the supergroup
 func (client *Client) SetPinnedForumTopics(req *SetPinnedForumTopicsRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -9338,11 +9399,17 @@ func (client *Client) GetInternalLinkType(req *GetInternalLinkTypeRequest) (Inte
 	case TypeInternalLinkTypeDefaultMessageAutoDeleteTimerSettings:
 		return UnmarshalInternalLinkTypeDefaultMessageAutoDeleteTimerSettings(result.Data)
 
+	case TypeInternalLinkTypeDirectMessagesChat:
+		return UnmarshalInternalLinkTypeDirectMessagesChat(result.Data)
+
 	case TypeInternalLinkTypeEditProfileSettings:
 		return UnmarshalInternalLinkTypeEditProfileSettings(result.Data)
 
 	case TypeInternalLinkTypeGame:
 		return UnmarshalInternalLinkTypeGame(result.Data)
+
+	case TypeInternalLinkTypeGiftCollection:
+		return UnmarshalInternalLinkTypeGiftCollection(result.Data)
 
 	case TypeInternalLinkTypeGroupCall:
 		return UnmarshalInternalLinkTypeGroupCall(result.Data)
@@ -9370,6 +9437,9 @@ func (client *Client) GetInternalLinkType(req *GetInternalLinkTypeRequest) (Inte
 
 	case TypeInternalLinkTypeMyStars:
 		return UnmarshalInternalLinkTypeMyStars(result.Data)
+
+	case TypeInternalLinkTypeMyToncoins:
+		return UnmarshalInternalLinkTypeMyToncoins(result.Data)
 
 	case TypeInternalLinkTypePassportDataRequest:
 		return UnmarshalInternalLinkTypePassportDataRequest(result.Data)
@@ -9409,6 +9479,9 @@ func (client *Client) GetInternalLinkType(req *GetInternalLinkTypeRequest) (Inte
 
 	case TypeInternalLinkTypeStory:
 		return UnmarshalInternalLinkTypeStory(result.Data)
+
+	case TypeInternalLinkTypeStoryAlbum:
+		return UnmarshalInternalLinkTypeStoryAlbum(result.Data)
 
 	case TypeInternalLinkTypeTheme:
 		return UnmarshalInternalLinkTypeTheme(result.Data)
@@ -11178,7 +11251,7 @@ type SetChatSlowModeDelayRequest struct {
 	SlowModeDelay int32 `json:"slow_mode_delay"`
 }
 
-// Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members right
+// Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members administrator right
 func (client *Client) SetChatSlowModeDelay(req *SetChatSlowModeDelayRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -12076,7 +12149,7 @@ type CanPostStoryRequest struct {
 	ChatId int64 `json:"chat_id"`
 }
 
-// Checks whether the current user can post a story on behalf of a chat; requires can_post_stories right for supergroup and channel chats
+// Checks whether the current user can post a story on behalf of a chat; requires can_post_stories administrator right for supergroup and channel chats
 func (client *Client) CanPostStory(req *CanPostStoryRequest) (CanPostStoryResult, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -12129,6 +12202,8 @@ type PostStoryRequest struct {
 	Caption *FormattedText `json:"caption"`
 	// The privacy settings for the story; ignored for stories posted on behalf of supergroup and channel chats
 	PrivacySettings StoryPrivacySettings `json:"privacy_settings"`
+	// Identifiers of story albums to which the story will be added upon posting. An album can have up to getOption("story_album_story_count_max")
+	AlbumIds []int32 `json:"album_ids"`
 	// Period after which the story is moved to archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400 for Telegram Premium users, and 86400 otherwise
 	ActivePeriod int32 `json:"active_period"`
 	// Full identifier of the original story, which content was used to create the story; pass null if the story isn't repost of another story
@@ -12139,7 +12214,7 @@ type PostStoryRequest struct {
 	ProtectContent bool `json:"protect_content"`
 }
 
-// Posts a new story on behalf of a chat; requires can_post_stories right for supergroup and channel chats. Returns a temporary story
+// Posts a new story on behalf of a chat; requires can_post_stories administrator right for supergroup and channel chats. Returns a temporary story
 func (client *Client) PostStory(req *PostStoryRequest) (*Story, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -12151,6 +12226,7 @@ func (client *Client) PostStory(req *PostStoryRequest) (*Story, error) {
 			"areas":                  req.Areas,
 			"caption":                req.Caption,
 			"privacy_settings":       req.PrivacySettings,
+			"album_ids":              req.AlbumIds,
 			"active_period":          req.ActivePeriod,
 			"from_story_full_id":     req.FromStoryFullId,
 			"is_posted_to_chat_page": req.IsPostedToChatPage,
@@ -12469,7 +12545,7 @@ type GetChatArchivedStoriesRequest struct {
 	Limit int32 `json:"limit"`
 }
 
-// Returns the list of all stories posted by the given chat; requires can_edit_stories right in the chat. The stories are returned in reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
+// Returns the list of all stories posted by the given chat; requires can_edit_stories administrator right in the chat. The stories are returned in reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib
 func (client *Client) GetChatArchivedStories(req *GetChatArchivedStoriesRequest) (*Stories, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -12499,7 +12575,7 @@ type SetChatPinnedStoriesRequest struct {
 	StoryIds []int32 `json:"story_ids"`
 }
 
-// Changes the list of pinned stories on a chat page; requires can_edit_stories right in the chat
+// Changes the list of pinned stories on a chat page; requires can_edit_stories administrator right in the chat
 func (client *Client) SetChatPinnedStories(req *SetChatPinnedStoriesRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -12824,6 +12900,285 @@ func (client *Client) GetStoryPublicForwards(req *GetStoryPublicForwardsRequest)
 	}
 
 	return UnmarshalPublicForwards(result.Data)
+}
+
+type GetChatStoryAlbumsRequest struct {
+	// Chat identifier
+	ChatId int64 `json:"chat_id"`
+}
+
+// Returns the list of story albums owned by the given chat
+func (client *Client) GetChatStoryAlbums(req *GetChatStoryAlbumsRequest) (*StoryAlbums, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getChatStoryAlbums",
+		},
+		Data: map[string]interface{}{
+			"chat_id": req.ChatId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStoryAlbums(result.Data)
+}
+
+type GetStoryAlbumStoriesRequest struct {
+	// Chat identifier
+	ChatId int64 `json:"chat_id"`
+	// Story album identifier
+	StoryAlbumId int32 `json:"story_album_id"`
+	// Offset of the first entry to return; use 0 to get results from the first album story
+	Offset int32 `json:"offset"`
+	// The maximum number of stories to be returned. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit
+	Limit int32 `json:"limit"`
+}
+
+// Returns the list of stories added to the given story album. For optimal performance, the number of returned stories is chosen by TDLib
+func (client *Client) GetStoryAlbumStories(req *GetStoryAlbumStoriesRequest) (*Stories, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getStoryAlbumStories",
+		},
+		Data: map[string]interface{}{
+			"chat_id":        req.ChatId,
+			"story_album_id": req.StoryAlbumId,
+			"offset":         req.Offset,
+			"limit":          req.Limit,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStories(result.Data)
+}
+
+type CreateStoryAlbumRequest struct {
+	// Identifier of the chat that posted the stories
+	StoryPosterChatId int64 `json:"story_poster_chat_id"`
+	// Name of the album; 1-12 characters
+	Name string `json:"name"`
+	// Identifiers of stories to add to the album; 0-getOption("story_album_story_count_max") identifiers
+	StoryIds []int32 `json:"story_ids"`
+}
+
+// Creates an album of stories; requires can_edit_stories administrator right for supergroup and channel chats
+func (client *Client) CreateStoryAlbum(req *CreateStoryAlbumRequest) (*StoryAlbum, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "createStoryAlbum",
+		},
+		Data: map[string]interface{}{
+			"story_poster_chat_id": req.StoryPosterChatId,
+			"name":                 req.Name,
+			"story_ids":            req.StoryIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStoryAlbum(result.Data)
+}
+
+type ReorderStoryAlbumsRequest struct {
+	// Identifier of the chat that owns the stories
+	ChatId int64 `json:"chat_id"`
+	// New order of story albums
+	StoryAlbumIds []int32 `json:"story_album_ids"`
+}
+
+// Changes order of story albums. If the albums are owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat
+func (client *Client) ReorderStoryAlbums(req *ReorderStoryAlbumsRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "reorderStoryAlbums",
+		},
+		Data: map[string]interface{}{
+			"chat_id":         req.ChatId,
+			"story_album_ids": req.StoryAlbumIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type DeleteStoryAlbumRequest struct {
+	// Identifier of the chat that owns the stories
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the story album
+	StoryAlbumId int32 `json:"story_album_id"`
+}
+
+// Deletes a story album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat
+func (client *Client) DeleteStoryAlbum(req *DeleteStoryAlbumRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "deleteStoryAlbum",
+		},
+		Data: map[string]interface{}{
+			"chat_id":        req.ChatId,
+			"story_album_id": req.StoryAlbumId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type SetStoryAlbumNameRequest struct {
+	// Identifier of the chat that owns the stories
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the story album
+	StoryAlbumId int32 `json:"story_album_id"`
+	// New name of the album; 1-12 characters
+	Name string `json:"name"`
+}
+
+// Changes name of an album of stories. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album
+func (client *Client) SetStoryAlbumName(req *SetStoryAlbumNameRequest) (*StoryAlbum, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "setStoryAlbumName",
+		},
+		Data: map[string]interface{}{
+			"chat_id":        req.ChatId,
+			"story_album_id": req.StoryAlbumId,
+			"name":           req.Name,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStoryAlbum(result.Data)
+}
+
+type AddStoryAlbumStoriesRequest struct {
+	// Identifier of the chat that owns the stories
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the story album
+	StoryAlbumId int32 `json:"story_album_id"`
+	// Identifier of the stories to add to the album; 1-getOption("story_album_story_count_max") identifiers. If after addition the album has more than getOption("story_album_story_count_max") stories, then the last one are removed from the album
+	StoryIds []int32 `json:"story_ids"`
+}
+
+// Adds stories to the beginning of a previously created story album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album
+func (client *Client) AddStoryAlbumStories(req *AddStoryAlbumStoriesRequest) (*StoryAlbum, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "addStoryAlbumStories",
+		},
+		Data: map[string]interface{}{
+			"chat_id":        req.ChatId,
+			"story_album_id": req.StoryAlbumId,
+			"story_ids":      req.StoryIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStoryAlbum(result.Data)
+}
+
+type RemoveStoryAlbumStoriesRequest struct {
+	// Identifier of the chat that owns the stories
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the story album
+	StoryAlbumId int32 `json:"story_album_id"`
+	// Identifier of the stories to remove from the album
+	StoryIds []int32 `json:"story_ids"`
+}
+
+// Removes stories from an album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album
+func (client *Client) RemoveStoryAlbumStories(req *RemoveStoryAlbumStoriesRequest) (*StoryAlbum, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "removeStoryAlbumStories",
+		},
+		Data: map[string]interface{}{
+			"chat_id":        req.ChatId,
+			"story_album_id": req.StoryAlbumId,
+			"story_ids":      req.StoryIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStoryAlbum(result.Data)
+}
+
+type ReorderStoryAlbumStoriesRequest struct {
+	// Identifier of the chat that owns the stories
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the story album
+	StoryAlbumId int32 `json:"story_album_id"`
+	// Identifier of the stories to move to the beginning of the album. All other stories are placed in the current order after the specified stories
+	StoryIds []int32 `json:"story_ids"`
+}
+
+// Changes order of stories in an album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album
+func (client *Client) ReorderStoryAlbumStories(req *ReorderStoryAlbumStoriesRequest) (*StoryAlbum, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "reorderStoryAlbumStories",
+		},
+		Data: map[string]interface{}{
+			"chat_id":        req.ChatId,
+			"story_album_id": req.StoryAlbumId,
+			"story_ids":      req.StoryIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStoryAlbum(result.Data)
 }
 
 type GetChatBoostLevelFeaturesRequest struct {
@@ -13262,7 +13617,7 @@ func (client *Client) GetDefaultChatEmojiStatuses() (*EmojiStatusCustomEmojis, e
 	return UnmarshalEmojiStatusCustomEmojis(result.Data)
 }
 
-// Returns the list of emoji statuses, which can't be used as chat emoji status, even they are from a sticker set with is_allowed_as_chat_emoji_status == true
+// Returns the list of emoji statuses, which can't be used as chat emoji status, even if they are from a sticker set with is_allowed_as_chat_emoji_status == true
 func (client *Client) GetDisallowedChatEmojiStatuses() (*EmojiStatusCustomEmojis, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -14471,6 +14826,102 @@ func (client *Client) ProcessChatJoinRequests(req *ProcessChatJoinRequestsReques
 	}
 
 	return UnmarshalOk(result.Data)
+}
+
+type ApproveSuggestedPostRequest struct {
+	// Chat identifier of the channel direct messages chat
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the message with the suggested post. Use messageProperties.can_be_approved to check whether the suggested post can be approved
+	MessageId int64 `json:"message_id"`
+	// Point in time (Unix timestamp) when the post is expected to be published; pass 0 if the date has already been chosen. If specified, then the date must be in the future, but at most getOption("suggested_post_send_delay_max") seconds in the future
+	SendDate int32 `json:"send_date"`
+}
+
+// Approves a suggested post in a channel direct messages chat
+func (client *Client) ApproveSuggestedPost(req *ApproveSuggestedPostRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "approveSuggestedPost",
+		},
+		Data: map[string]interface{}{
+			"chat_id":    req.ChatId,
+			"message_id": req.MessageId,
+			"send_date":  req.SendDate,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type DeclineSuggestedPostRequest struct {
+	// Chat identifier of the channel direct messages chat
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the message with the suggested post. Use messageProperties.can_be_declined to check whether the suggested post can be declined
+	MessageId int64 `json:"message_id"`
+	// Comment for the creator of the suggested post; 0-128 characters
+	Comment string `json:"comment"`
+}
+
+// Declines a suggested post in a channel direct messages chat
+func (client *Client) DeclineSuggestedPost(req *DeclineSuggestedPostRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "declineSuggestedPost",
+		},
+		Data: map[string]interface{}{
+			"chat_id":    req.ChatId,
+			"message_id": req.MessageId,
+			"comment":    req.Comment,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type AddOfferRequest struct {
+	// Identifier of the channel direct messages chat
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the message in the chat which will be sent as suggested post. Use messageProperties.can_add_offer to check whether an offer can be added or messageProperties.can_edit_suggested_post_info to check whether price or time of sending of the post can be changed
+	MessageId int64 `json:"message_id"`
+	// Options to be used to send the message. New information about the suggested post must always be specified
+	Options *MessageSendOptions `json:"options"`
+}
+
+// Sent a suggested post based on a previously sent message in a channel direct messages chat. Can be also used to suggest price or time change for an existing suggested post. Returns the sent message
+func (client *Client) AddOffer(req *AddOfferRequest) (*Message, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "addOffer",
+		},
+		Data: map[string]interface{}{
+			"chat_id":    req.ChatId,
+			"message_id": req.MessageId,
+			"options":    req.Options,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalMessage(result.Data)
 }
 
 type CreateCallRequest struct {
@@ -17565,7 +18016,7 @@ func (client *Client) GetWebPageInstantView(req *GetWebPageInstantViewRequest) (
 type SetProfilePhotoRequest struct {
 	// Profile photo to set
 	Photo InputChatPhoto `json:"photo"`
-	// Pass true to set the public photo, which will be visible even the main photo is hidden by privacy settings
+	// Pass true to set the public photo, which will be visible even if the main photo is hidden by privacy settings
 	IsPublic bool `json:"is_public"`
 }
 
@@ -20428,7 +20879,7 @@ func (client *Client) GetAvailableGifts() (*AvailableGifts, error) {
 type SendGiftRequest struct {
 	// Identifier of the gift to send
 	GiftId JsonInt64 `json:"gift_id"`
-	// Identifier of the user or the channel chat that will receive the gift
+	// Identifier of the user or the channel chat that will receive the gift; limited gifts can't be sent to channel chats
 	OwnerId MessageSender `json:"owner_id"`
 	// Text to show along with the gift; 0-getOption("gift_text_length_max") characters. Only Bold, Italic, Underline, Strikethrough, Spoiler, and CustomEmoji entities are allowed. Must be empty if the receiver enabled paid messages
 	Text *FormattedText `json:"text"`
@@ -20470,7 +20921,7 @@ type SellGiftRequest struct {
 	ReceivedGiftId string `json:"received_gift_id"`
 }
 
-// Sells a gift for Telegram Stars
+// Sells a gift for Telegram Stars; requires owner privileges for gifts owned by a chat
 func (client *Client) SellGift(req *SellGiftRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -20640,6 +21091,38 @@ func (client *Client) UpgradeGift(req *UpgradeGiftRequest) (*UpgradeGiftResult, 
 	return UnmarshalUpgradeGiftResult(result.Data)
 }
 
+type BuyGiftUpgradeRequest struct {
+	// Identifier of the user or the channel chat that owns the gift
+	OwnerId MessageSender `json:"owner_id"`
+	// Prepaid upgrade hash as received along with the gift
+	PrepaidUpgradeHash string `json:"prepaid_upgrade_hash"`
+	// The amount of Telegram Stars the user agreed to pay for the upgrade; must be equal to gift.upgrade_star_count
+	StarCount int64 `json:"star_count"`
+}
+
+// Pays for upgrade of a regular gift that is owned by another user or channel chat
+func (client *Client) BuyGiftUpgrade(req *BuyGiftUpgradeRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "buyGiftUpgrade",
+		},
+		Data: map[string]interface{}{
+			"owner_id":             req.OwnerId,
+			"prepaid_upgrade_hash": req.PrepaidUpgradeHash,
+			"star_count":           req.StarCount,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
 type TransferGiftRequest struct {
 	// Unique identifier of business connection on behalf of which to send the request; for bots only
 	BusinessConnectionId string `json:"business_connection_id"`
@@ -20651,7 +21134,7 @@ type TransferGiftRequest struct {
 	StarCount int64 `json:"star_count"`
 }
 
-// Sends an upgraded gift to another user or a channel chat
+// Sends an upgraded gift to another user or channel chat
 func (client *Client) TransferGift(req *TransferGiftRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -20680,20 +21163,20 @@ type SendResoldGiftRequest struct {
 	GiftName string `json:"gift_name"`
 	// Identifier of the user or the channel chat that will receive the gift
 	OwnerId MessageSender `json:"owner_id"`
-	// The amount of Telegram Stars required to pay for the gift
-	StarCount int64 `json:"star_count"`
+	// The price that the user agreed to pay for the gift
+	Price GiftResalePrice `json:"price"`
 }
 
 // Sends an upgraded gift that is available for resale to another user or channel chat; gifts already owned by the current user must be transferred using transferGift and can't be passed to the method
-func (client *Client) SendResoldGift(req *SendResoldGiftRequest) (*Ok, error) {
+func (client *Client) SendResoldGift(req *SendResoldGiftRequest) (GiftResaleResult, error) {
 	result, err := client.Send(Request{
 		meta: meta{
 			Type: "sendResoldGift",
 		},
 		Data: map[string]interface{}{
-			"gift_name":  req.GiftName,
-			"owner_id":   req.OwnerId,
-			"star_count": req.StarCount,
+			"gift_name": req.GiftName,
+			"owner_id":  req.OwnerId,
+			"price":     req.Price,
 		},
 	})
 	if err != nil {
@@ -20704,7 +21187,16 @@ func (client *Client) SendResoldGift(req *SendResoldGiftRequest) (*Ok, error) {
 		return nil, buildResponseError(result.Data)
 	}
 
-	return UnmarshalOk(result.Data)
+	switch result.Type {
+	case TypeGiftResaleResultOk:
+		return UnmarshalGiftResaleResultOk(result.Data)
+
+	case TypeGiftResaleResultPriceIncreased:
+		return UnmarshalGiftResaleResultPriceIncreased(result.Data)
+
+	default:
+		return nil, errors.New("invalid type")
+	}
 }
 
 type GetReceivedGiftsRequest struct {
@@ -20712,14 +21204,18 @@ type GetReceivedGiftsRequest struct {
 	BusinessConnectionId string `json:"business_connection_id"`
 	// Identifier of the gift receiver
 	OwnerId MessageSender `json:"owner_id"`
+	// Pass collection identifier to get gifts only from the specified collection; pass 0 to get gifts regardless of collections
+	CollectionId int32 `json:"collection_id"`
 	// Pass true to exclude gifts that aren't saved to the chat's profile page. Always true for gifts received by other users and channel chats without can_post_messages administrator right
 	ExcludeUnsaved bool `json:"exclude_unsaved"`
 	// Pass true to exclude gifts that are saved to the chat's profile page. Always false for gifts received by other users and channel chats without can_post_messages administrator right
 	ExcludeSaved bool `json:"exclude_saved"`
 	// Pass true to exclude gifts that can be purchased unlimited number of times
 	ExcludeUnlimited bool `json:"exclude_unlimited"`
-	// Pass true to exclude gifts that can be purchased limited number of times
-	ExcludeLimited bool `json:"exclude_limited"`
+	// Pass true to exclude gifts that can be purchased limited number of times and can be upgraded
+	ExcludeUpgradable bool `json:"exclude_upgradable"`
+	// Pass true to exclude gifts that can be purchased limited number of times and can't be upgraded
+	ExcludeNonUpgradable bool `json:"exclude_non_upgradable"`
 	// Pass true to exclude upgraded gifts
 	ExcludeUpgraded bool `json:"exclude_upgraded"`
 	// Pass true to sort results by gift price instead of send date
@@ -20739,10 +21235,12 @@ func (client *Client) GetReceivedGifts(req *GetReceivedGiftsRequest) (*ReceivedG
 		Data: map[string]interface{}{
 			"business_connection_id": req.BusinessConnectionId,
 			"owner_id":               req.OwnerId,
+			"collection_id":          req.CollectionId,
 			"exclude_unsaved":        req.ExcludeUnsaved,
 			"exclude_saved":          req.ExcludeSaved,
 			"exclude_unlimited":      req.ExcludeUnlimited,
-			"exclude_limited":        req.ExcludeLimited,
+			"exclude_upgradable":     req.ExcludeUpgradable,
+			"exclude_non_upgradable": req.ExcludeNonUpgradable,
 			"exclude_upgraded":       req.ExcludeUpgraded,
 			"sort_by_price":          req.SortByPrice,
 			"offset":                 req.Offset,
@@ -20812,6 +21310,32 @@ func (client *Client) GetUpgradedGift(req *GetUpgradedGiftRequest) (*UpgradedGif
 	return UnmarshalUpgradedGift(result.Data)
 }
 
+type GetUpgradedGiftValueInfoRequest struct {
+	// Unique name of the upgraded gift
+	Name string `json:"name"`
+}
+
+// Returns information about value of an upgraded gift by its name
+func (client *Client) GetUpgradedGiftValueInfo(req *GetUpgradedGiftValueInfoRequest) (*UpgradedGiftValueInfo, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getUpgradedGiftValueInfo",
+		},
+		Data: map[string]interface{}{
+			"name": req.Name,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalUpgradedGiftValueInfo(result.Data)
+}
+
 type GetUpgradedGiftWithdrawalUrlRequest struct {
 	// Identifier of the gift
 	ReceivedGiftId string `json:"received_gift_id"`
@@ -20844,8 +21368,8 @@ func (client *Client) GetUpgradedGiftWithdrawalUrl(req *GetUpgradedGiftWithdrawa
 type SetGiftResalePriceRequest struct {
 	// Identifier of the unique gift
 	ReceivedGiftId string `json:"received_gift_id"`
-	// The new price for the unique gift; 0 or getOption("gift_resale_star_count_min")-getOption("gift_resale_star_count_max"). Pass 0 to disallow gift resale. The current user will receive getOption("gift_resale_earnings_per_mille") Telegram Stars for each 1000 Telegram Stars paid for the gift
-	ResaleStarCount int64 `json:"resale_star_count"`
+	// The new price for the unique gift; pass null to disallow gift resale. The current user will receive getOption("gift_resale_star_earnings_per_mille") Telegram Stars for each 1000 Telegram Stars paid for the gift if the gift price is in Telegram Stars or getOption("gift_resale_ton_earnings_per_mille") Toncoins for each 1000 Toncoins paid for the gift if the gift price is in Toncoins
+	Price GiftResalePrice `json:"price"`
 }
 
 // Changes resale price of a unique gift owned by the current user
@@ -20855,8 +21379,8 @@ func (client *Client) SetGiftResalePrice(req *SetGiftResalePriceRequest) (*Ok, e
 			Type: "setGiftResalePrice",
 		},
 		Data: map[string]interface{}{
-			"received_gift_id":  req.ReceivedGiftId,
-			"resale_star_count": req.ResaleStarCount,
+			"received_gift_id": req.ReceivedGiftId,
+			"price":            req.Price,
 		},
 	})
 	if err != nil {
@@ -20883,7 +21407,7 @@ type SearchGiftsForResaleRequest struct {
 	Limit int32 `json:"limit"`
 }
 
-// Returns upgraded gifts that can be bought from other owners
+// Returns upgraded gifts that can be bought from other owners using sendResoldGift
 func (client *Client) SearchGiftsForResale(req *SearchGiftsForResaleRequest) (*GiftsForResale, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -20906,6 +21430,250 @@ func (client *Client) SearchGiftsForResale(req *SearchGiftsForResaleRequest) (*G
 	}
 
 	return UnmarshalGiftsForResale(result.Data)
+}
+
+type GetGiftCollectionsRequest struct {
+	// Identifier of the user or the channel chat that received the gifts
+	OwnerId MessageSender `json:"owner_id"`
+}
+
+// Returns collections of gifts owned by the given user or chat
+func (client *Client) GetGiftCollections(req *GetGiftCollectionsRequest) (*GiftCollections, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getGiftCollections",
+		},
+		Data: map[string]interface{}{
+			"owner_id": req.OwnerId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftCollections(result.Data)
+}
+
+type CreateGiftCollectionRequest struct {
+	// Identifier of the user or the channel chat that received the gifts
+	OwnerId MessageSender `json:"owner_id"`
+	// Name of the collection; 1-12 characters
+	Name string `json:"name"`
+	// Identifier of the gifts to add to the collection; 0-getOption("gift_collection_gift_count_max") identifiers
+	ReceivedGiftIds []string `json:"received_gift_ids"`
+}
+
+// Creates a collection from gifts on the current user's or a channel's profile page; requires can_post_messages administrator right in the channel chat. An owner can have up to getOption("gift_collection_count_max") gift collections. The new collection will be added to the end of the gift collection list of the owner. Returns the created collection
+func (client *Client) CreateGiftCollection(req *CreateGiftCollectionRequest) (*GiftCollection, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "createGiftCollection",
+		},
+		Data: map[string]interface{}{
+			"owner_id":          req.OwnerId,
+			"name":              req.Name,
+			"received_gift_ids": req.ReceivedGiftIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftCollection(result.Data)
+}
+
+type ReorderGiftCollectionsRequest struct {
+	// Identifier of the user or the channel chat that owns the collection
+	OwnerId MessageSender `json:"owner_id"`
+	// New order of gift collections
+	CollectionIds []int32 `json:"collection_ids"`
+}
+
+// Changes order of gift collections. If the collections are owned by a channel chat, then requires can_post_messages administrator right in the channel chat
+func (client *Client) ReorderGiftCollections(req *ReorderGiftCollectionsRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "reorderGiftCollections",
+		},
+		Data: map[string]interface{}{
+			"owner_id":       req.OwnerId,
+			"collection_ids": req.CollectionIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type DeleteGiftCollectionRequest struct {
+	// Identifier of the user or the channel chat that owns the collection
+	OwnerId MessageSender `json:"owner_id"`
+	// Identifier of the gift collection
+	CollectionId int32 `json:"collection_id"`
+}
+
+// Deletes a gift collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat
+func (client *Client) DeleteGiftCollection(req *DeleteGiftCollectionRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "deleteGiftCollection",
+		},
+		Data: map[string]interface{}{
+			"owner_id":      req.OwnerId,
+			"collection_id": req.CollectionId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type SetGiftCollectionNameRequest struct {
+	// Identifier of the user or the channel chat that owns the collection
+	OwnerId MessageSender `json:"owner_id"`
+	// Identifier of the gift collection
+	CollectionId int32 `json:"collection_id"`
+	// New name of the collection; 1-12 characters
+	Name string `json:"name"`
+}
+
+// Changes name of a gift collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection
+func (client *Client) SetGiftCollectionName(req *SetGiftCollectionNameRequest) (*GiftCollection, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "setGiftCollectionName",
+		},
+		Data: map[string]interface{}{
+			"owner_id":      req.OwnerId,
+			"collection_id": req.CollectionId,
+			"name":          req.Name,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftCollection(result.Data)
+}
+
+type AddGiftCollectionGiftsRequest struct {
+	// Identifier of the user or the channel chat that owns the collection
+	OwnerId MessageSender `json:"owner_id"`
+	// Identifier of the gift collection
+	CollectionId int32 `json:"collection_id"`
+	// Identifier of the gifts to add to the collection; 1-getOption("gift_collection_gift_count_max") identifiers. If after addition the collection has more than getOption("gift_collection_gift_count_max") gifts, then the last one are removed from the collection
+	ReceivedGiftIds []string `json:"received_gift_ids"`
+}
+
+// Adds gifts to the beginning of a previously created collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection
+func (client *Client) AddGiftCollectionGifts(req *AddGiftCollectionGiftsRequest) (*GiftCollection, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "addGiftCollectionGifts",
+		},
+		Data: map[string]interface{}{
+			"owner_id":          req.OwnerId,
+			"collection_id":     req.CollectionId,
+			"received_gift_ids": req.ReceivedGiftIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftCollection(result.Data)
+}
+
+type RemoveGiftCollectionGiftsRequest struct {
+	// Identifier of the user or the channel chat that owns the collection
+	OwnerId MessageSender `json:"owner_id"`
+	// Identifier of the gift collection
+	CollectionId int32 `json:"collection_id"`
+	// Identifier of the gifts to remove from the collection
+	ReceivedGiftIds []string `json:"received_gift_ids"`
+}
+
+// Removes gifts from a collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection
+func (client *Client) RemoveGiftCollectionGifts(req *RemoveGiftCollectionGiftsRequest) (*GiftCollection, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "removeGiftCollectionGifts",
+		},
+		Data: map[string]interface{}{
+			"owner_id":          req.OwnerId,
+			"collection_id":     req.CollectionId,
+			"received_gift_ids": req.ReceivedGiftIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftCollection(result.Data)
+}
+
+type ReorderGiftCollectionGiftsRequest struct {
+	// Identifier of the user or the channel chat that owns the collection
+	OwnerId MessageSender `json:"owner_id"`
+	// Identifier of the gift collection
+	CollectionId int32 `json:"collection_id"`
+	// Identifier of the gifts to move to the beginning of the collection. All other gifts are placed in the current order after the specified gifts
+	ReceivedGiftIds []string `json:"received_gift_ids"`
+}
+
+// Changes order of gifts in a collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection
+func (client *Client) ReorderGiftCollectionGifts(req *ReorderGiftCollectionGiftsRequest) (*GiftCollection, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "reorderGiftCollectionGifts",
+		},
+		Data: map[string]interface{}{
+			"owner_id":          req.OwnerId,
+			"collection_id":     req.CollectionId,
+			"received_gift_ids": req.ReceivedGiftIds,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftCollection(result.Data)
 }
 
 type CreateInvoiceLinkRequest struct {
@@ -22197,9 +22965,9 @@ func (client *Client) GetChatRevenueWithdrawalUrl(req *GetChatRevenueWithdrawalU
 type GetChatRevenueTransactionsRequest struct {
 	// Chat identifier
 	ChatId int64 `json:"chat_id"`
-	// Number of transactions to skip
-	Offset int32 `json:"offset"`
-	// The maximum number of transactions to be returned; up to 200
+	// Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results
+	Offset string `json:"offset"`
+	// The maximum number of transactions to be returned; up to 100
 	Limit int32 `json:"limit"`
 }
 
@@ -22224,6 +22992,38 @@ func (client *Client) GetChatRevenueTransactions(req *GetChatRevenueTransactions
 	}
 
 	return UnmarshalChatRevenueTransactions(result.Data)
+}
+
+type GetTonTransactionsRequest struct {
+	// Direction of the transactions to receive; pass null to get all transactions
+	Direction TransactionDirection `json:"direction"`
+	// Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results
+	Offset string `json:"offset"`
+	// The maximum number of transactions to return
+	Limit int32 `json:"limit"`
+}
+
+// Returns the list of Toncoin transactions of the current user
+func (client *Client) GetTonTransactions(req *GetTonTransactionsRequest) (*TonTransactions, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getTonTransactions",
+		},
+		Data: map[string]interface{}{
+			"direction": req.Direction,
+			"offset":    req.Offset,
+			"limit":     req.Limit,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalTonTransactions(result.Data)
 }
 
 type GetStarRevenueStatisticsRequest struct {
@@ -22258,7 +23058,7 @@ func (client *Client) GetStarRevenueStatistics(req *GetStarRevenueStatisticsRequ
 type GetStarWithdrawalUrlRequest struct {
 	// Identifier of the owner of the Telegram Stars; can be identifier of the current user, an owned bot, or an owned supergroup or channel chat
 	OwnerId MessageSender `json:"owner_id"`
-	// The number of Telegram Stars to withdraw. Must be at least getOption("star_withdrawal_count_min")
+	// The number of Telegram Stars to withdraw; must be between getOption("star_withdrawal_count_min") and getOption("star_withdrawal_count_max")
 	StarCount int64 `json:"star_count"`
 	// The 2-step verification password of the current user
 	Password string `json:"password"`
@@ -24262,7 +25062,7 @@ type GetStarTransactionsRequest struct {
 	// If non-empty, only transactions related to the Star Subscription will be returned
 	SubscriptionId string `json:"subscription_id"`
 	// Direction of the transactions to receive; pass null to get all transactions
-	Direction StarTransactionDirection `json:"direction"`
+	Direction TransactionDirection `json:"direction"`
 	// Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results
 	Offset string `json:"offset"`
 	// The maximum number of transactions to return
@@ -25971,6 +26771,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 	case TypeUpdateMessageFactCheck:
 		return UnmarshalUpdateMessageFactCheck(result.Data)
 
+	case TypeUpdateMessageSuggestedPostInfo:
+		return UnmarshalUpdateMessageSuggestedPostInfo(result.Data)
+
 	case TypeUpdateMessageLiveLocationViewed:
 		return UnmarshalUpdateMessageLiveLocationViewed(result.Data)
 
@@ -26283,6 +27086,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 	case TypeUpdateFreezeState:
 		return UnmarshalUpdateFreezeState(result.Data)
 
+	case TypeUpdateAgeVerificationParameters:
+		return UnmarshalUpdateAgeVerificationParameters(result.Data)
+
 	case TypeUpdateTermsOfService:
 		return UnmarshalUpdateTermsOfService(result.Data)
 
@@ -26315,6 +27121,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
 	case TypeUpdateOwnedStarCount:
 		return UnmarshalUpdateOwnedStarCount(result.Data)
+
+	case TypeUpdateOwnedTonCount:
+		return UnmarshalUpdateOwnedTonCount(result.Data)
 
 	case TypeUpdateChatRevenueAmount:
 		return UnmarshalUpdateChatRevenueAmount(result.Data)

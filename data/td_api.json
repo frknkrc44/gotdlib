@@ -2854,7 +2854,7 @@
                 {
                     "name": "small_animation",
                     "type": "animatedChatPhoto",
-                    "description": "A small (160x160) animated variant of the photo in MPEG4 format; may be null even the big animation is available"
+                    "description": "A small (160x160) animated variant of the photo in MPEG4 format; may be null even if the big animation is available"
                 },
                 {
                     "name": "sticker",
@@ -3028,7 +3028,7 @@
                 {
                     "name": "can_post_messages",
                     "type": "Bool",
-                    "description": "True, if the administrator can create channel posts, answer to channel direct messages, or view channel statistics; applicable to channels only"
+                    "description": "True, if the administrator can create channel posts, approve suggested channel posts, or view channel statistics; applicable to channels only"
                 },
                 {
                     "name": "can_edit_messages",
@@ -3086,11 +3086,143 @@
                     "description": "True, if the administrator can delete stories posted by other users; applicable to supergroups and channels only"
                 },
                 {
+                    "name": "can_manage_direct_messages",
+                    "type": "Bool",
+                    "description": "True, if the administrator can answer to channel direct messages; applicable to channels only"
+                },
+                {
                     "name": "is_anonymous",
                     "type": "Bool",
                     "description": "True, if the administrator isn't shown in the chat member list and sends messages anonymously; applicable to supergroups only"
                 }
             ]
+        },
+        {
+            "name": "giftResalePriceStar",
+            "description": "Describes price of a resold gift in Telegram Stars",
+            "class": "GiftResalePrice",
+            "properties": [
+                {
+                    "name": "star_count",
+                    "type": "int53",
+                    "description": "The amount of Telegram Stars expected to be paid for the gift. Must be in range getOption(\"gift_resale_star_count_min\")-getOption(\"gift_resale_star_count_max\") for gifts put for resale"
+                }
+            ]
+        },
+        {
+            "name": "giftResalePriceTon",
+            "description": "Describes price of a resold gift in Toncoins",
+            "class": "GiftResalePrice",
+            "properties": [
+                {
+                    "name": "toncoin_cent_count",
+                    "type": "int53",
+                    "description": "The amount of 1/100 of Toncoin expected to be paid for the gift. Must be in range getOption(\"gift_resale_toncoin_cent_count_min\")-getOption(\"gift_resale_toncoin_cent_count_max\")"
+                }
+            ]
+        },
+        {
+            "name": "suggestedPostPriceStar",
+            "description": "Describes price of a suggested post in Telegram Stars",
+            "class": "SuggestedPostPrice",
+            "properties": [
+                {
+                    "name": "star_count",
+                    "type": "int53",
+                    "description": "The amount of Telegram Stars expected to be paid for the post; getOption(\"suggested_post_star_count_min\")-getOption(\"suggested_post_star_count_max\")"
+                }
+            ]
+        },
+        {
+            "name": "suggestedPostPriceTon",
+            "description": "Describes price of a suggested post in Toncoins",
+            "class": "SuggestedPostPrice",
+            "properties": [
+                {
+                    "name": "toncoin_cent_count",
+                    "type": "int53",
+                    "description": "The amount of 1/100 of Toncoin expected to be paid for the post; getOption(\"suggested_post_toncoin_cent_count_min\")-getOption(\"suggested_post_toncoin_cent_count_max\")"
+                }
+            ]
+        },
+        {
+            "name": "suggestedPostStatePending",
+            "description": "The post must be approved or declined",
+            "class": "SuggestedPostState",
+            "properties": []
+        },
+        {
+            "name": "suggestedPostStateApproved",
+            "description": "The post was approved",
+            "class": "SuggestedPostState",
+            "properties": []
+        },
+        {
+            "name": "suggestedPostStateDeclined",
+            "description": "The post was declined",
+            "class": "SuggestedPostState",
+            "properties": []
+        },
+        {
+            "name": "suggestedPostInfo",
+            "description": "Contains information about a suggested post. If the post can be approved or declined, then changes to the post can be also suggested. Use sendMessage with reply to the message and suggested post information to suggest message changes. Use addOffer to suggest price or time changes",
+            "class": "SuggestedPostInfo",
+            "properties": [
+                {
+                    "name": "price",
+                    "type": "SuggestedPostPrice",
+                    "description": "Price of the suggested post; may be null if the post is non-paid"
+                },
+                {
+                    "name": "send_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the post is expected to be published; 0 if the specific date isn't set yet"
+                },
+                {
+                    "name": "state",
+                    "type": "SuggestedPostState",
+                    "description": "State of the post"
+                },
+                {
+                    "name": "can_be_approved",
+                    "type": "Bool",
+                    "description": "True, if the suggested post can be approved by the current user using approveSuggestedPost; updates aren't sent when value of this field changes"
+                },
+                {
+                    "name": "can_be_declined",
+                    "type": "Bool",
+                    "description": "True, if the suggested post can be declined by the current user using declineSuggestedPost; updates aren't sent when value of this field changes"
+                }
+            ]
+        },
+        {
+            "name": "inputSuggestedPostInfo",
+            "description": "Contains information about a post to suggest",
+            "class": "InputSuggestedPostInfo",
+            "properties": [
+                {
+                    "name": "price",
+                    "type": "SuggestedPostPrice",
+                    "description": "Price of the suggested post; pass null to suggest a post without payment. If the current user isn't an administrator of the channel direct messages chat and has no enough funds to pay for the post, then the error \"BALANCE_TOO_LOW\" will be returned immediately"
+                },
+                {
+                    "name": "send_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the post is expected to be published; pass 0 if the date isn't restricted. If specified, then the date must be getOption(\"suggested_post_send_delay_min\")-getOption(\"suggested_post_send_delay_max\") seconds in the future"
+                }
+            ]
+        },
+        {
+            "name": "suggestedPostRefundReasonPostDeleted",
+            "description": "The post was refunded, because it was deleted by channel administrators in less than getOption(\"suggested_post_lifetime_min\") seconds",
+            "class": "SuggestedPostRefundReason",
+            "properties": []
+        },
+        {
+            "name": "suggestedPostRefundReasonPaymentRefunded",
+            "description": "The post was refunded, because the payment for the post was refunded",
+            "class": "SuggestedPostRefundReason",
+            "properties": []
         },
         {
             "name": "starAmount",
@@ -3852,6 +3984,120 @@
             ]
         },
         {
+            "name": "giftPurchaseLimits",
+            "description": "Describes the maximum number of times that a specific gift can be purchased",
+            "class": "GiftPurchaseLimits",
+            "properties": [
+                {
+                    "name": "total_count",
+                    "type": "int32",
+                    "description": "The maximum number of times the gifts can be purchased"
+                },
+                {
+                    "name": "remaining_count",
+                    "type": "int32",
+                    "description": "Number of remaining times the gift can be purchased"
+                }
+            ]
+        },
+        {
+            "name": "giftResaleParameters",
+            "description": "Describes parameters of a unique gift available for resale",
+            "class": "GiftResaleParameters",
+            "properties": [
+                {
+                    "name": "star_count",
+                    "type": "int53",
+                    "description": "Resale price of the gift in Telegram Stars"
+                },
+                {
+                    "name": "toncoin_cent_count",
+                    "type": "int53",
+                    "description": "Resale price of the gift in 1/100 of Toncoin"
+                },
+                {
+                    "name": "toncoin_only",
+                    "type": "Bool",
+                    "description": "True, if the gift can be bought only using Toncoins"
+                }
+            ]
+        },
+        {
+            "name": "giftCollection",
+            "description": "Describes collection of gifts",
+            "class": "GiftCollection",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": "int32",
+                    "description": "Unique identifier of the collection"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the collection"
+                },
+                {
+                    "name": "icon",
+                    "type": "sticker",
+                    "description": "Icon of the collection; may be null if none"
+                },
+                {
+                    "name": "gift_count",
+                    "type": "int32",
+                    "description": "Total number of gifts in the collection"
+                }
+            ]
+        },
+        {
+            "name": "giftCollections",
+            "description": "Contains a list of gift collections",
+            "class": "GiftCollections",
+            "properties": [
+                {
+                    "name": "collections",
+                    "type": "vector\u003cgiftCollection\u003e",
+                    "description": "List of gift collections"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftOriginUpgrade",
+            "description": "The gift was obtained by upgrading of a previously received gift",
+            "class": "UpgradedGiftOrigin",
+            "properties": [
+                {
+                    "name": "gift_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the regular gift that was upgraded; can be 0 or an identifier of a deleted message"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftOriginTransfer",
+            "description": "The gift was transferred from another owner",
+            "class": "UpgradedGiftOrigin",
+            "properties": []
+        },
+        {
+            "name": "upgradedGiftOriginResale",
+            "description": "The gift was bought from another user",
+            "class": "UpgradedGiftOrigin",
+            "properties": [
+                {
+                    "name": "price",
+                    "type": "GiftResalePrice",
+                    "description": "Price paid by the sender for the gift"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftOriginPrepaidUpgrade",
+            "description": "The sender or receiver of the message has paid for upgraid of the gift, which has been completed",
+            "class": "UpgradedGiftOrigin",
+            "properties": []
+        },
+        {
             "name": "upgradedGiftModel",
             "description": "Describes a model of an upgraded gift",
             "class": "UpgradedGiftModel",
@@ -3987,6 +4233,11 @@
                     "description": "Unique identifier of the gift"
                 },
                 {
+                    "name": "publisher_chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that published the gift; 0 if none"
+                },
+                {
                     "name": "sticker",
                     "type": "sticker",
                     "description": "The sticker representing the gift"
@@ -4012,14 +4263,19 @@
                     "description": "True, if the gift is a birthday gift"
                 },
                 {
-                    "name": "remaining_count",
-                    "type": "int32",
-                    "description": "Number of remaining times the gift can be purchased; 0 if not limited or the gift was sold out"
+                    "name": "is_premium",
+                    "type": "Bool",
+                    "description": "True, if the gift can be bought only by Telegram Premium subscribers"
                 },
                 {
-                    "name": "total_count",
-                    "type": "int32",
-                    "description": "Number of total times the gift can be purchased; 0 if not limited"
+                    "name": "user_limits",
+                    "type": "giftPurchaseLimits",
+                    "description": "Number of times the gift can be purchased by the current user; may be null if not limited"
+                },
+                {
+                    "name": "overall_limits",
+                    "type": "giftPurchaseLimits",
+                    "description": "Number of times the gift can be purchased all users; may be null if not limited"
                 },
                 {
                     "name": "first_send_date",
@@ -4042,6 +4298,16 @@
                     "name": "id",
                     "type": "int64",
                     "description": "Unique identifier of the gift"
+                },
+                {
+                    "name": "regular_gift_id",
+                    "type": "int64",
+                    "description": "Unique identifier of the regular gift from which the gift was upgraded; may be 0 for short period of time for old gifts from database"
+                },
+                {
+                    "name": "publisher_chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that published the gift; 0 if none"
                 },
                 {
                     "name": "title",
@@ -4067,6 +4333,11 @@
                     "name": "max_upgraded_count",
                     "type": "int32",
                     "description": "The maximum number of gifts that can be upgraded from the same gift"
+                },
+                {
+                    "name": "is_premium",
+                    "type": "Bool",
+                    "description": "True, if the original gift could have been bought only by Telegram Premium subscribers"
                 },
                 {
                     "name": "owner_id",
@@ -4109,9 +4380,96 @@
                     "description": "Information about the originally sent gift; may be null if unknown"
                 },
                 {
-                    "name": "resale_star_count",
+                    "name": "resale_parameters",
+                    "type": "giftResaleParameters",
+                    "description": "Resale parameters of the gift; may be null if resale isn't possible"
+                },
+                {
+                    "name": "value_currency",
+                    "type": "string",
+                    "description": "ISO 4217 currency code of the currency in which value of the gift is represented; may be empty if unavailable"
+                },
+                {
+                    "name": "value_amount",
                     "type": "int53",
-                    "description": "Number of Telegram Stars that must be paid to buy the gift and send it to someone else; 0 if resale isn't possible"
+                    "description": "Estimated value of the gift; in the smallest units of the currency; 0 if unavailable"
+                }
+            ]
+        },
+        {
+            "name": "upgradedGiftValueInfo",
+            "description": "Contains information about value of an upgraded gift",
+            "class": "UpgradedGiftValueInfo",
+            "properties": [
+                {
+                    "name": "currency",
+                    "type": "string",
+                    "description": "ISO 4217 currency code of the currency in which the prices are represented"
+                },
+                {
+                    "name": "value",
+                    "type": "int53",
+                    "description": "Estimated value of the gift; in the smallest units of the currency"
+                },
+                {
+                    "name": "is_value_average",
+                    "type": "Bool",
+                    "description": "True, if the value is calculated as average value of similar sold gifts. Otherwise, it is based on the sale price of the gift"
+                },
+                {
+                    "name": "initial_sale_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the corresponding regular gift was originally purchased"
+                },
+                {
+                    "name": "initial_sale_star_count",
+                    "type": "int53",
+                    "description": "Amount of Telegram Stars that were paid for the gift"
+                },
+                {
+                    "name": "initial_sale_price",
+                    "type": "int53",
+                    "description": "Initial price of the gift; in the smallest units of the currency"
+                },
+                {
+                    "name": "last_sale_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the upgraded gift was purchased last time; 0 if never"
+                },
+                {
+                    "name": "last_sale_price",
+                    "type": "int53",
+                    "description": "Last purchase price of the gift; in the smallest units of the currency; 0 if the gift has never been resold"
+                },
+                {
+                    "name": "is_last_sale_on_fragment",
+                    "type": "Bool",
+                    "description": "True, if the last sale was completed on Fragment"
+                },
+                {
+                    "name": "minimum_price",
+                    "type": "int53",
+                    "description": "The current minimum price of gifts upgraded from the same gift; in the smallest units of the currency; 0 if there are no such gifts"
+                },
+                {
+                    "name": "average_sale_price",
+                    "type": "int53",
+                    "description": "The average sale price in the last month of gifts upgraded from the same gift; in the smallest units of the currency; 0 if there were no such sales"
+                },
+                {
+                    "name": "telegram_listed_gift_count",
+                    "type": "int32",
+                    "description": "Number of gifts upgraded from the same gift being resold on Telegram"
+                },
+                {
+                    "name": "fragment_listed_gift_count",
+                    "type": "int32",
+                    "description": "Number of gifts upgraded from the same gift being resold on Fragment"
+                },
+                {
+                    "name": "fragment_url",
+                    "type": "string",
+                    "description": "The HTTPS link to the Fragment for the gift; may be empty if there are no such gifts being sold on Fragment"
                 }
             ]
         },
@@ -4148,17 +4506,17 @@
                 {
                     "name": "next_transfer_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be transferred to another owner; 0 if the gift can be transferred immediately or transfer isn't possible"
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to another owner; can be in the past; 0 if the gift can be transferred immediately or transfer isn't possible"
                 },
                 {
                     "name": "next_resale_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be resold to another user; 0 if the gift can't be resold; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the gift can be resold to another user; can be in the past; 0 if the gift can't be resold; only for the receiver of the gift"
                 },
                 {
                     "name": "export_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be transferred to the TON blockchain as an NFT"
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to the TON blockchain as an NFT; can be in the past"
                 }
             ]
         },
@@ -4180,7 +4538,7 @@
                 {
                     "name": "min_resale_star_count",
                     "type": "int53",
-                    "description": "The minimum price for the gifts available for resale; 0 if there are no such gifts"
+                    "description": "The minimum price for the gifts available for resale in Telegram Star equivalent; 0 if there are no such gifts"
                 },
                 {
                     "name": "title",
@@ -4361,6 +4719,24 @@
             ]
         },
         {
+            "name": "giftResaleResultOk",
+            "description": "Operation was successfully completed",
+            "class": "GiftResaleResult",
+            "properties": []
+        },
+        {
+            "name": "giftResaleResultPriceIncreased",
+            "description": "Operation has failed, because price has increased. If the price has decreased, then the buying will succeed anyway",
+            "class": "GiftResaleResult",
+            "properties": [
+                {
+                    "name": "price",
+                    "type": "GiftResalePrice",
+                    "description": "New price for the gift"
+                }
+            ]
+        },
+        {
             "name": "sentGiftRegular",
             "description": "Regular gift",
             "class": "SentGift",
@@ -4445,6 +4821,11 @@
                     "description": "The gift"
                 },
                 {
+                    "name": "collection_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of collections to which the gift is added; only for the receiver of the gift"
+                },
+                {
                     "name": "sell_star_count",
                     "type": "int53",
                     "description": "Number of Telegram Stars that can be claimed by the receiver instead of the regular gift; 0 if the gift can't be sold by the current user"
@@ -4462,17 +4843,22 @@
                 {
                     "name": "next_transfer_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be transferred to another owner; 0 if the gift can be transferred immediately or transfer isn't possible; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to another owner; can be in the past; 0 if the gift can be transferred immediately or transfer isn't possible; only for the receiver of the gift"
                 },
                 {
                     "name": "next_resale_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be resold to another user; 0 if the gift can't be resold; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the gift can be resold to another user; can be in the past; 0 if the gift can't be resold; only for the receiver of the gift"
                 },
                 {
                     "name": "export_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the upgraded gift can be transferred to the TON blockchain as an NFT; 0 if NFT export isn't possible; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the upgraded gift can be transferred to the TON blockchain as an NFT; can be in the past; 0 if NFT export isn't possible; only for the receiver of the gift"
+                },
+                {
+                    "name": "prepaid_upgrade_hash",
+                    "type": "string",
+                    "description": "If non-empty, then the user can pay for an upgrade of the gift using buyGiftUpgrade"
                 }
             ]
         },
@@ -4526,15 +4912,15 @@
             ]
         },
         {
-            "name": "starTransactionDirectionIncoming",
-            "description": "The transaction is incoming and increases the number of owned Telegram Stars",
-            "class": "StarTransactionDirection",
+            "name": "transactionDirectionIncoming",
+            "description": "The transaction is incoming and increases the amount of owned currency",
+            "class": "TransactionDirection",
             "properties": []
         },
         {
-            "name": "starTransactionDirectionOutgoing",
-            "description": "The transaction is outgoing and decreases the number of owned Telegram Stars",
-            "class": "StarTransactionDirection",
+            "name": "transactionDirectionOutgoing",
+            "description": "The transaction is outgoing and decreases the amount of owned currency",
+            "class": "TransactionDirection",
             "properties": []
         },
         {
@@ -4914,6 +5300,23 @@
             ]
         },
         {
+            "name": "starTransactionTypeGiftUpgradePurchase",
+            "description": "The transaction is a purchase of an upgrade of a gift owned by another user or channel; for regular users only",
+            "class": "StarTransactionType",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Owner of the upgraded gift"
+                },
+                {
+                    "name": "gift",
+                    "type": "gift",
+                    "description": "The gift"
+                }
+            ]
+        },
+        {
             "name": "starTransactionTypeUpgradedGiftPurchase",
             "description": "The transaction is a purchase of an upgraded gift for some user or channel; for regular users only",
             "class": "StarTransactionType",
@@ -4946,9 +5349,14 @@
                     "description": "The gift"
                 },
                 {
-                    "name": "affiliate",
-                    "type": "affiliateInfo",
-                    "description": "Information about commission received by Telegram from the transaction"
+                    "name": "commission_per_mille",
+                    "type": "int32",
+                    "description": "The number of Telegram Stars received by the Telegram for each 1000 Telegram Stars received by the seller of the gift"
+                },
+                {
+                    "name": "commission_star_amount",
+                    "type": "starAmount",
+                    "description": "The amount of Telegram Stars that were received by Telegram; can be negative for refunds"
                 }
             ]
         },
@@ -5048,6 +5456,30 @@
             ]
         },
         {
+            "name": "starTransactionTypeSuggestedPostPaymentSend",
+            "description": "The transaction is a payment for a suggested post; for regular users only",
+            "class": "StarTransactionType",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the channel chat that posted the post"
+                }
+            ]
+        },
+        {
+            "name": "starTransactionTypeSuggestedPostPaymentReceive",
+            "description": "The transaction is a receiving of a payment for a suggested post by the channel chat; for channel chats only",
+            "class": "StarTransactionType",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that paid for the suggested post"
+                }
+            ]
+        },
+        {
             "name": "starTransactionTypePremiumPurchase",
             "description": "The transaction is a purchase of Telegram Premium subscription; for regular users and bots only",
             "class": "StarTransactionType",
@@ -5092,6 +5524,12 @@
                     "description": "Identifier of the user that sent Telegram Stars"
                 }
             ]
+        },
+        {
+            "name": "starTransactionTypePublicPostSearch",
+            "description": "The transaction is a payment for search of posts in public Telegram channels; for regular users only",
+            "class": "StarTransactionType",
+            "properties": []
         },
         {
             "name": "starTransactionTypeUnsupported",
@@ -5145,6 +5583,139 @@
                     "name": "transactions",
                     "type": "vector\u003cstarTransaction\u003e",
                     "description": "List of transactions with Telegram Stars"
+                },
+                {
+                    "name": "next_offset",
+                    "type": "string",
+                    "description": "The offset for the next request. If empty, then there are no more results"
+                }
+            ]
+        },
+        {
+            "name": "tonTransactionTypeFragmentDeposit",
+            "description": "The transaction is a deposit of Toncoins from Fragment",
+            "class": "TonTransactionType",
+            "properties": [
+                {
+                    "name": "is_gift",
+                    "type": "Bool",
+                    "description": "True, if the transaction is a gift from another user"
+                },
+                {
+                    "name": "sticker",
+                    "type": "sticker",
+                    "description": "The sticker to be shown in the transaction information; may be null if unknown"
+                }
+            ]
+        },
+        {
+            "name": "tonTransactionTypeSuggestedPostPayment",
+            "description": "The transaction is a payment for a suggested post",
+            "class": "TonTransactionType",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the channel chat that posted the post"
+                }
+            ]
+        },
+        {
+            "name": "tonTransactionTypeUpgradedGiftPurchase",
+            "description": "The transaction is a purchase of an upgraded gift for some user or channel; for regular users only",
+            "class": "TonTransactionType",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that sold the gift"
+                },
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The gift"
+                }
+            ]
+        },
+        {
+            "name": "tonTransactionTypeUpgradedGiftSale",
+            "description": "The transaction is a sale of an upgraded gift; for regular users only",
+            "class": "TonTransactionType",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that bought the gift"
+                },
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The gift"
+                },
+                {
+                    "name": "commission_per_mille",
+                    "type": "int32",
+                    "description": "The number of Toncoins received by the Telegram for each 1000 Toncoins received by the seller of the gift"
+                },
+                {
+                    "name": "commission_toncoin_amount",
+                    "type": "int53",
+                    "description": "The amount of Toncoins that were received by the Telegram; in the smallest units of the currency"
+                }
+            ]
+        },
+        {
+            "name": "tonTransactionTypeUnsupported",
+            "description": "The transaction is a transaction of an unsupported type",
+            "class": "TonTransactionType",
+            "properties": []
+        },
+        {
+            "name": "tonTransaction",
+            "description": "Represents a transaction changing the amount of owned Toncoins",
+            "class": "TonTransaction",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": "string",
+                    "description": "Unique identifier of the transaction"
+                },
+                {
+                    "name": "ton_amount",
+                    "type": "int53",
+                    "description": "The amount of added owned Toncoins; negative for outgoing transactions"
+                },
+                {
+                    "name": "is_refund",
+                    "type": "Bool",
+                    "description": "True, if the transaction is a refund of a previous transaction"
+                },
+                {
+                    "name": "date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the transaction was completed"
+                },
+                {
+                    "name": "type",
+                    "type": "TonTransactionType",
+                    "description": "Type of the transaction"
+                }
+            ]
+        },
+        {
+            "name": "tonTransactions",
+            "description": "Represents a list of Toncoin transactions",
+            "class": "TonTransactions",
+            "properties": [
+                {
+                    "name": "ton_amount",
+                    "type": "int53",
+                    "description": "The total amount of owned Toncoins"
+                },
+                {
+                    "name": "transactions",
+                    "type": "vector\u003ctonTransaction\u003e",
+                    "description": "List of Toncoin transactions"
                 },
                 {
                     "name": "next_offset",
@@ -5381,6 +5952,55 @@
             ]
         },
         {
+            "name": "userRating",
+            "description": "Contains description of user rating",
+            "class": "UserRating",
+            "properties": [
+                {
+                    "name": "level",
+                    "type": "int32",
+                    "description": "The level of the user; may be negative"
+                },
+                {
+                    "name": "is_maximum_level_reached",
+                    "type": "Bool",
+                    "description": "True, if the maximum level is reached"
+                },
+                {
+                    "name": "rating",
+                    "type": "int53",
+                    "description": "Numerical value of the rating"
+                },
+                {
+                    "name": "current_level_rating",
+                    "type": "int53",
+                    "description": "The rating required for the current level"
+                },
+                {
+                    "name": "next_level_rating",
+                    "type": "int53",
+                    "description": "The rating required for the next level; 0 if the maximum level is reached"
+                }
+            ]
+        },
+        {
+            "name": "restrictionInfo",
+            "description": "Contains information about restrictions that must be applied to a chat or a message",
+            "class": "RestrictionInfo",
+            "properties": [
+                {
+                    "name": "restriction_reason",
+                    "type": "string",
+                    "description": "A human-readable description of the reason why access to the content must be restricted. If empty, then the content can be accessed, but may be covered by hidden with 18+ spoiler anyway"
+                },
+                {
+                    "name": "has_sensitive_content",
+                    "type": "Bool",
+                    "description": "True, if media content of the messages must be hidden with 18+ spoiler. Use value of the option \"can_ignore_sensitive_content_restrictions\" to check whether the current user can ignore the restriction. If age verification parameters were received in updateAgeVerificationParameters, then the user must complete age verification to ignore the restriction. Set the option \"ignore_sensitive_content_restrictions\" to true if the user passes age verification"
+                }
+            ]
+        },
+        {
             "name": "emojiStatusTypeCustomEmoji",
             "description": "A custom emoji set as emoji status",
             "class": "EmojiStatusType",
@@ -5588,9 +6208,9 @@
                     "description": "True, if the user is Telegram support account"
                 },
                 {
-                    "name": "restriction_reason",
-                    "type": "string",
-                    "description": "If non-empty, it contains a human-readable description of the reason why access to this user must be restricted"
+                    "name": "restriction_info",
+                    "type": "restrictionInfo",
+                    "description": "Information about restrictions that must be applied to the corresponding private chat; may be null if none"
                 },
                 {
                     "name": "has_active_stories",
@@ -5865,6 +6485,21 @@
                     "name": "bot_verification",
                     "type": "botVerification",
                     "description": "Information about verification status of the user provided by a bot; may be null if none or unknown"
+                },
+                {
+                    "name": "rating",
+                    "type": "userRating",
+                    "description": "The current rating of the user; may be null if none"
+                },
+                {
+                    "name": "pending_rating",
+                    "type": "userRating",
+                    "description": "The rating of the user after the next change; may be null if the user isn't the current user or there are no pending rating changes"
+                },
+                {
+                    "name": "pending_rating_date",
+                    "type": "int32",
+                    "description": "Unix timestamp when rating of the user will change to pending_rating; 0 if the user isn't the current user or there are no pending rating changes"
                 },
                 {
                     "name": "business_info",
@@ -6699,7 +7334,7 @@
                 {
                     "name": "join_to_send_messages",
                     "type": "Bool",
-                    "description": "True, if users need to join the supergroup before they can send messages. Always true for channels and non-discussion supergroups"
+                    "description": "True, if users need to join the supergroup before they can send messages. May be false only for discussion supergroups and channel direct messages groups"
                 },
                 {
                     "name": "join_by_request",
@@ -6752,14 +7387,9 @@
                     "description": "True, if the supergroup is a forum, which topics are shown in the same way as in channel direct messages groups"
                 },
                 {
-                    "name": "has_sensitive_content",
-                    "type": "Bool",
-                    "description": "True, if content of media messages in the supergroup or channel chat must be hidden with 18+ spoiler"
-                },
-                {
-                    "name": "restriction_reason",
-                    "type": "string",
-                    "description": "If non-empty, contains a human-readable description of the reason why access to this supergroup or channel must be restricted"
+                    "name": "restriction_info",
+                    "type": "restrictionInfo",
+                    "description": "Information about the restrictions that must be applied to the corresponding supergroup or channel chat; may be null if none"
                 },
                 {
                     "name": "paid_message_star_count",
@@ -7032,6 +7662,38 @@
                     "name": "layer",
                     "type": "int32",
                     "description": "Secret chat layer; determines features supported by the chat partner's application. Nested text entities and underline and strikethrough entities are supported if the layer \u003e= 101, files bigger than 2000MB are supported if the layer \u003e= 143, spoiler and custom emoji text entities are supported if the layer \u003e= 144"
+                }
+            ]
+        },
+        {
+            "name": "publicPostSearchLimits",
+            "description": "Contains information about public post search limits",
+            "class": "PublicPostSearchLimits",
+            "properties": [
+                {
+                    "name": "daily_free_query_count",
+                    "type": "int32",
+                    "description": "Number of queries that can be sent daily for free"
+                },
+                {
+                    "name": "remaining_free_query_count",
+                    "type": "int32",
+                    "description": "Number of remaining free queries today"
+                },
+                {
+                    "name": "next_free_query_in",
+                    "type": "int32",
+                    "description": "Amount of time till the next free query can be sent; 0 if it can be sent now"
+                },
+                {
+                    "name": "star_count",
+                    "type": "int64",
+                    "description": "Number of Telegram Stars that must be paid for each non-free query"
+                },
+                {
+                    "name": "is_current_query_free",
+                    "type": "Bool",
+                    "description": "True, if the search for the specified query isn't charged"
                 }
             ]
         },
@@ -7751,6 +8413,11 @@
                     "description": "Chosen quote from the replied message; may be null if none"
                 },
                 {
+                    "name": "checklist_task_id",
+                    "type": "int32",
+                    "description": "Identifier of the checklist task in the original message that was replied; 0 if none"
+                },
+                {
                     "name": "origin",
                     "type": "MessageOrigin",
                     "description": "Information about origin of the message if the message was from another chat or topic; may be null for messages from the same chat"
@@ -7798,6 +8465,11 @@
                     "name": "quote",
                     "type": "inputTextQuote",
                     "description": "Quote from the message to be replied; pass null if none. Must always be null for replies in secret chats"
+                },
+                {
+                    "name": "checklist_task_id",
+                    "type": "int32",
+                    "description": "Identifier of the checklist task in the message to be replied; pass 0 to reply to the whole message"
                 }
             ]
         },
@@ -7820,6 +8492,11 @@
                     "name": "quote",
                     "type": "inputTextQuote",
                     "description": "Quote from the message to be replied; pass null if none"
+                },
+                {
+                    "name": "checklist_task_id",
+                    "type": "int32",
+                    "description": "Identifier of the checklist task in the message to be replied; pass 0 to reply to the whole message"
                 }
             ]
         },
@@ -7918,6 +8595,16 @@
                     "description": "True, if the message is a channel post. All messages to channels are channel posts, all other messages are not channel posts"
                 },
                 {
+                    "name": "is_paid_star_suggested_post",
+                    "type": "Bool",
+                    "description": "True, if the message is a suggested channel post which was paid in Telegram Stars; a warning must be shown if the message is deleted in less than getOption(\"suggested_post_lifetime_min\") seconds after sending"
+                },
+                {
+                    "name": "is_paid_ton_suggested_post",
+                    "type": "Bool",
+                    "description": "True, if the message is a suggested channel post which was paid in Toncoins; a warning must be shown if the message is deleted in less than getOption(\"suggested_post_lifetime_min\") seconds after sending"
+                },
+                {
                     "name": "contains_unread_mention",
                     "type": "Bool",
                     "description": "True, if the message contains an unread mention for the current user"
@@ -7956,6 +8643,11 @@
                     "name": "fact_check",
                     "type": "factCheck",
                     "description": "Information about fact-check added to the message; may be null if none"
+                },
+                {
+                    "name": "suggested_post_info",
+                    "type": "suggestedPostInfo",
+                    "description": "Information about the suggested post; may be null if the message isn't a suggested post"
                 },
                 {
                     "name": "reply_to",
@@ -8023,14 +8715,9 @@
                     "description": "Unique identifier of the effect added to the message; 0 if none"
                 },
                 {
-                    "name": "has_sensitive_content",
-                    "type": "Bool",
-                    "description": "True, if media content of the message must be hidden with 18+ spoiler"
-                },
-                {
-                    "name": "restriction_reason",
-                    "type": "string",
-                    "description": "If non-empty, contains a human-readable description of the reason why access to this message must be restricted"
+                    "name": "restriction_info",
+                    "type": "restrictionInfo",
+                    "description": "Information about the restrictions that must be applied to the message content; may be null if none"
                 },
                 {
                     "name": "content",
@@ -8102,6 +8789,33 @@
                     "name": "next_from_message_id",
                     "type": "int53",
                     "description": "The offset for the next request. If 0, there are no more results"
+                }
+            ]
+        },
+        {
+            "name": "foundPublicPosts",
+            "description": "Contains a list of messages found by a public post search",
+            "class": "FoundPublicPosts",
+            "properties": [
+                {
+                    "name": "messages",
+                    "type": "vector\u003cmessage\u003e",
+                    "description": "List of found public posts"
+                },
+                {
+                    "name": "next_offset",
+                    "type": "string",
+                    "description": "The offset for the next request. If empty, then there are no more results"
+                },
+                {
+                    "name": "search_limits",
+                    "type": "publicPostSearchLimits",
+                    "description": "Updated public post search limits after the query; repeated requests with the same query will be free; may be null if they didn't change"
+                },
+                {
+                    "name": "are_limits_exceeded",
+                    "type": "Bool",
+                    "description": "True, if the query has failed because search limits are exceeded. In this case search_limits.daily_free_query_count will be equal to 0"
                 }
             ]
         },
@@ -8837,6 +9551,11 @@
                     "name": "effect_id",
                     "type": "int64",
                     "description": "Identifier of the effect to apply to the message when it is sent; 0 if none"
+                },
+                {
+                    "name": "suggested_post_info",
+                    "type": "inputSuggestedPostInfo",
+                    "description": "Information about the suggested post; may be null if none"
                 }
             ]
         },
@@ -9414,7 +10133,7 @@
                 {
                     "name": "chat_lists",
                     "type": "vector\u003cChatList\u003e",
-                    "description": "Chat lists to which the chat belongs. A chat can have a non-zero position in a chat list even it doesn't belong to the chat list and have no position in a chat list even it belongs to the chat list"
+                    "description": "Chat lists to which the chat belongs. A chat can have a non-zero position in a chat list even if it doesn't belong to the chat list and have no position in a chat list even if it belongs to the chat list"
                 },
                 {
                     "name": "message_sender_id",
@@ -10607,7 +11326,7 @@
                 {
                     "name": "is_closed",
                     "type": "Bool",
-                    "description": "True, if the topic is closed"
+                    "description": "True, if the topic is closed. If the topic is closed, then the user must have can_manage_topics administrator right in the supergroup or must be the creator of the topic to send messages there"
                 },
                 {
                     "name": "is_hidden",
@@ -11951,6 +12670,18 @@
             ]
         },
         {
+            "name": "linkPreviewTypeDirectMessagesChat",
+            "description": "The link is a link to a direct messages chat of a channel",
+            "class": "LinkPreviewType",
+            "properties": [
+                {
+                    "name": "photo",
+                    "type": "chatPhoto",
+                    "description": "Photo of the channel chat; may be null"
+                }
+            ]
+        },
+        {
             "name": "linkPreviewTypeDocument",
             "description": "The link is a link to a general file",
             "class": "LinkPreviewType",
@@ -12113,6 +12844,18 @@
             ]
         },
         {
+            "name": "linkPreviewTypeGiftCollection",
+            "description": "The link is a link to a gift collection",
+            "class": "LinkPreviewType",
+            "properties": [
+                {
+                    "name": "icons",
+                    "type": "vector\u003csticker\u003e",
+                    "description": "Icons for some gifts from the collection; may be empty"
+                }
+            ]
+        },
+        {
             "name": "linkPreviewTypeGroupCall",
             "description": "The link is a link to a group call that isn't bound to a chat",
             "class": "LinkPreviewType",
@@ -12192,6 +12935,23 @@
                     "name": "story_id",
                     "type": "int32",
                     "description": "Story identifier"
+                }
+            ]
+        },
+        {
+            "name": "linkPreviewTypeStoryAlbum",
+            "description": "The link is a link to an album of stories",
+            "class": "LinkPreviewType",
+            "properties": [
+                {
+                    "name": "photo_icon",
+                    "type": "photo",
+                    "description": "Icon of the album; may be null if none"
+                },
+                {
+                    "name": "video_icon",
+                    "type": "video",
+                    "description": "Video icon of the album; may be null if none"
                 }
             ]
         },
@@ -12295,6 +13055,11 @@
                     "name": "is_live_stream",
                     "type": "Bool",
                     "description": "True, if the video chat is expected to be a live stream in a channel or a broadcast group"
+                },
+                {
+                    "name": "joins_as_speaker",
+                    "type": "Bool",
+                    "description": "True, if the user can use the link to join the video chat without being muted by administrators"
                 }
             ]
         },
@@ -13256,7 +14021,7 @@
                 {
                     "name": "boosted_chat_id",
                     "type": "int53",
-                    "description": "Identifier of the supergroup or channel chat, which will be automatically boosted by the winners of the giveaway for duration of the Telegram Premium subscription, or for the specified time. If the chat is a channel, then can_post_messages right is required in the channel, otherwise, the user must be an administrator in the supergroup"
+                    "description": "Identifier of the supergroup or channel chat, which will be automatically boosted by the winners of the giveaway for duration of the Telegram Premium subscription, or for the specified time. If the chat is a channel, then can_post_messages administrator right is required in the channel, otherwise, the user must be an administrator in the supergroup"
                 },
                 {
                     "name": "additional_chat_ids",
@@ -15638,6 +16403,38 @@
             ]
         },
         {
+            "name": "messageGiftedTon",
+            "description": "Toncoins were gifted to a user",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "gifter_user_id",
+                    "type": "int53",
+                    "description": "The identifier of a user that gifted Toncoins; 0 if the gift was anonymous or is outgoing"
+                },
+                {
+                    "name": "receiver_user_id",
+                    "type": "int53",
+                    "description": "The identifier of a user that received Toncoins; 0 if the gift is incoming"
+                },
+                {
+                    "name": "ton_amount",
+                    "type": "int53",
+                    "description": "The received amount of Toncoins, in the smallest units of the cryptocurrency"
+                },
+                {
+                    "name": "transaction_id",
+                    "type": "string",
+                    "description": "Identifier of the transaction for Toncoin credit; for receiver only"
+                },
+                {
+                    "name": "sticker",
+                    "type": "sticker",
+                    "description": "A sticker to be shown in the message; may be null if unknown"
+                }
+            ]
+        },
+        {
             "name": "messageGiveawayPrizeStars",
             "description": "A Telegram Stars were received by the current user from a giveaway",
             "class": "MessageContent",
@@ -15687,7 +16484,7 @@
                 {
                     "name": "sender_id",
                     "type": "MessageSender",
-                    "description": "Sender of the gift"
+                    "description": "Sender of the gift; may be null for outgoing messages about prepaid upgrade of gifts from unknown users"
                 },
                 {
                     "name": "receiver_id",
@@ -15725,6 +16522,11 @@
                     "description": "True, if the gift is displayed on the user's or the channel's profile page; only for the receiver of the gift"
                 },
                 {
+                    "name": "is_prepaid_upgrade",
+                    "type": "Bool",
+                    "description": "True, if the message is about prepaid upgrade of the gift by another user"
+                },
+                {
                     "name": "can_be_upgraded",
                     "type": "Bool",
                     "description": "True, if the gift can be upgraded to a unique gift; only for the receiver of the gift"
@@ -15748,6 +16550,11 @@
                     "name": "upgraded_received_gift_id",
                     "type": "string",
                     "description": "Identifier of the corresponding upgraded gift; may be empty if unknown. Use getReceivedGift to get information about the gift"
+                },
+                {
+                    "name": "prepaid_upgrade_hash",
+                    "type": "string",
+                    "description": "If non-empty, then the user can pay for an upgrade of the gift using buyGiftUpgrade"
                 }
             ]
         },
@@ -15772,14 +16579,14 @@
                     "description": "Receiver of the gift"
                 },
                 {
+                    "name": "origin",
+                    "type": "UpgradedGiftOrigin",
+                    "description": "Origin of the upgraded gift"
+                },
+                {
                     "name": "received_gift_id",
                     "type": "string",
                     "description": "Unique identifier of the received gift for the current user; only for the receiver of the gift"
-                },
-                {
-                    "name": "is_upgrade",
-                    "type": "Bool",
-                    "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred or resold gift"
                 },
                 {
                     "name": "is_saved",
@@ -15794,12 +16601,7 @@
                 {
                     "name": "was_transferred",
                     "type": "Bool",
-                    "description": "True, if the gift was transferred to another owner; only for the receiver of the gift"
-                },
-                {
-                    "name": "last_resale_star_count",
-                    "type": "int53",
-                    "description": "Number of Telegram Stars that were paid by the sender for the gift; 0 if the gift was upgraded or transferred"
+                    "description": "True, if the gift has already been transferred to another owner; only for the receiver of the gift"
                 },
                 {
                     "name": "transfer_star_count",
@@ -15809,17 +16611,17 @@
                 {
                     "name": "next_transfer_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be transferred to another owner; 0 if the gift can be transferred immediately or transfer isn't possible; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to another owner; can be in the past; 0 if the gift can be transferred immediately or transfer isn't possible; only for the receiver of the gift"
                 },
                 {
                     "name": "next_resale_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be resold to another user; 0 if the gift can't be resold; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the gift can be resold to another user; can be in the past; 0 if the gift can't be resold; only for the receiver of the gift"
                 },
                 {
                     "name": "export_date",
                     "type": "int32",
-                    "description": "Point in time (Unix timestamp) when the gift can be transferred to the TON blockchain as an NFT; 0 if NFT export isn't possible; only for the receiver of the gift"
+                    "description": "Point in time (Unix timestamp) when the gift can be transferred to the TON blockchain as an NFT; can be in the past; 0 if NFT export isn't possible; only for the receiver of the gift"
                 }
             ]
         },
@@ -15932,6 +16734,101 @@
                     "name": "tasks",
                     "type": "vector\u003cchecklistTask\u003e",
                     "description": "List of tasks added to the checklist"
+                }
+            ]
+        },
+        {
+            "name": "messageSuggestedPostApprovalFailed",
+            "description": "Approval of suggested post has failed, because the user which proposed the post had no enough funds",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "suggested_post_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "price",
+                    "type": "SuggestedPostPrice",
+                    "description": "Price of the suggested post"
+                }
+            ]
+        },
+        {
+            "name": "messageSuggestedPostApproved",
+            "description": "A suggested post was approved",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "suggested_post_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "price",
+                    "type": "SuggestedPostPrice",
+                    "description": "Price of the suggested post; may be null if the post is non-paid"
+                },
+                {
+                    "name": "send_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the post is expected to be published"
+                }
+            ]
+        },
+        {
+            "name": "messageSuggestedPostDeclined",
+            "description": "A suggested post was declined",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "suggested_post_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "comment",
+                    "type": "string",
+                    "description": "Comment added by administrator of the channel when the post was declined"
+                }
+            ]
+        },
+        {
+            "name": "messageSuggestedPostPaid",
+            "description": "A suggested post was published for getOption(\"suggested_post_lifetime_min\") seconds and payment for the post was received",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "suggested_post_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "star_amount",
+                    "type": "starAmount",
+                    "description": "The amount of received Telegram Stars"
+                },
+                {
+                    "name": "ton_amount",
+                    "type": "int53",
+                    "description": "The amount of received Toncoins; in the smallest units of the cryptocurrency"
+                }
+            ]
+        },
+        {
+            "name": "messageSuggestedPostRefunded",
+            "description": "A suggested post was refunded",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "suggested_post_message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post; can be 0 if the message was deleted"
+                },
+                {
+                    "name": "reason",
+                    "type": "SuggestedPostRefundReason",
+                    "description": "Reason of the refund"
                 }
             ]
         },
@@ -16384,6 +17281,11 @@
                     "name": "direct_messages_chat_topic_id",
                     "type": "int53",
                     "description": "Unique identifier of the topic in a channel direct messages chat administered by the current user; pass 0 if the chat isn't a channel direct messages chat administered by the current user"
+                },
+                {
+                    "name": "suggested_post_info",
+                    "type": "inputSuggestedPostInfo",
+                    "description": "Information about the suggested post; pass null if none. For messages to channel direct messages chat only. Applicable only to sendMessage and addOffer"
                 },
                 {
                     "name": "disable_notification",
@@ -17125,9 +18027,19 @@
             "class": "MessageProperties",
             "properties": [
                 {
+                    "name": "can_add_offer",
+                    "type": "Bool",
+                    "description": "True, if an offer can be added to the message using addOffer"
+                },
+                {
                     "name": "can_add_tasks",
                     "type": "Bool",
                     "description": "True, if tasks can be added to the message's checklist using addChecklistTasks if the current user has Telegram Premium subscription"
+                },
+                {
+                    "name": "can_be_approved",
+                    "type": "Bool",
+                    "description": "True, if the message is a suggested post that can be approved by the user using approveSuggestedPost"
                 },
                 {
                     "name": "can_be_copied",
@@ -17138,6 +18050,11 @@
                     "name": "can_be_copied_to_secret_chat",
                     "type": "Bool",
                     "description": "True, if content of the message can be copied to a secret chat using inputMessageForwarded or forwardMessages with copy options"
+                },
+                {
+                    "name": "can_be_declined",
+                    "type": "Bool",
+                    "description": "True, if the message is a suggested post that can be declined by the user using declineSuggestedPost"
                 },
                 {
                     "name": "can_be_deleted_only_for_self",
@@ -17198,6 +18115,11 @@
                     "name": "can_edit_scheduling_state",
                     "type": "Bool",
                     "description": "True, if scheduling state of the message can be edited"
+                },
+                {
+                    "name": "can_edit_suggested_post_info",
+                    "type": "Bool",
+                    "description": "True, if another price or post send time can be suggested using addOffer"
                 },
                 {
                     "name": "can_get_author",
@@ -18562,6 +19484,11 @@
                     "description": "True, if the story is visible only for the current user"
                 },
                 {
+                    "name": "can_be_added_to_album",
+                    "type": "Bool",
+                    "description": "True, if the story can be added to an album"
+                },
+                {
                     "name": "can_be_deleted",
                     "type": "Bool",
                     "description": "True, if the story can be deleted"
@@ -18635,6 +19562,11 @@
                     "name": "caption",
                     "type": "formattedText",
                     "description": "Caption of the story"
+                },
+                {
+                    "name": "album_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of story albums to which the story is added; only for manageable stories"
                 }
             ]
         },
@@ -18679,6 +19611,45 @@
                     "name": "next_offset",
                     "type": "string",
                     "description": "The offset for the next request. If empty, then there are no more results"
+                }
+            ]
+        },
+        {
+            "name": "storyAlbum",
+            "description": "Describes album of stories",
+            "class": "StoryAlbum",
+            "properties": [
+                {
+                    "name": "id",
+                    "type": "int32",
+                    "description": "Unique identifier of the album"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the album"
+                },
+                {
+                    "name": "photo_icon",
+                    "type": "photo",
+                    "description": "Icon of the album; may be null if none"
+                },
+                {
+                    "name": "video_icon",
+                    "type": "video",
+                    "description": "Video icon of the album; may be null if none"
+                }
+            ]
+        },
+        {
+            "name": "storyAlbums",
+            "description": "Represents a list of story albums",
+            "class": "StoryAlbums",
+            "properties": [
+                {
+                    "name": "albums",
+                    "type": "vector\u003cstoryAlbum\u003e",
+                    "description": "List of story albums"
                 }
             ]
         },
@@ -18740,6 +19711,11 @@
                     "name": "order",
                     "type": "int53",
                     "description": "A parameter used to determine order of the stories in the story list; 0 if the stories doesn't need to be shown in the story list. Stories must be sorted by the pair (order, story_poster_chat_id) in descending order"
+                },
+                {
+                    "name": "can_be_archived",
+                    "type": "Bool",
+                    "description": "True, if the stories are shown in the main story list and can be archived; otherwise, the stories can be hidden from the main story list only by calling removeTopChat with topChatCategoryUsers and the chat_id. Stories of the current user can't be archived nor hidden using removeTopChat"
                 },
                 {
                     "name": "max_read_story_id",
@@ -23330,7 +24306,7 @@
         },
         {
             "name": "premiumFeatureLastSeenTimes",
-            "description": "The ability to view last seen and read times of other users even they can't view last seen or read time for the current user",
+            "description": "The ability to view last seen and read times of other users even if they can't view last seen or read time for the current user",
             "class": "PremiumFeature",
             "properties": []
         },
@@ -26613,6 +27589,18 @@
             "properties": []
         },
         {
+            "name": "internalLinkTypeDirectMessagesChat",
+            "description": "The link is a link to a channel direct messages chat by username of the channel. Call searchPublicChat with the given chat username to process the link. If the chat is found and is channel, open the direct messages chat of the channel",
+            "class": "InternalLinkType",
+            "properties": [
+                {
+                    "name": "channel_username",
+                    "type": "string",
+                    "description": "Username of the channel"
+                }
+            ]
+        },
+        {
             "name": "internalLinkTypeEditProfileSettings",
             "description": "The link is a link to the edit profile section of the application settings",
             "class": "InternalLinkType",
@@ -26632,6 +27620,23 @@
                     "name": "game_short_name",
                     "type": "string",
                     "description": "Short name of the game"
+                }
+            ]
+        },
+        {
+            "name": "internalLinkTypeGiftCollection",
+            "description": "The link is a link to a gift collection. Call searchPublicChat with the given username, then call getReceivedGifts with the received gift owner identifier and the given collection identifier, then show the collection if received",
+            "class": "InternalLinkType",
+            "properties": [
+                {
+                    "name": "gift_owner_username",
+                    "type": "string",
+                    "description": "Username of the owner of the gift collection"
+                },
+                {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Gift collection identifier"
                 }
             ]
         },
@@ -26748,6 +27753,12 @@
         {
             "name": "internalLinkTypeMyStars",
             "description": "The link is a link to the screen with information about Telegram Star balance and transactions of the current user",
+            "class": "InternalLinkType",
+            "properties": []
+        },
+        {
+            "name": "internalLinkTypeMyToncoins",
+            "description": "The link is a link to the screen with information about Toncoin balance and transactions of the current user",
             "class": "InternalLinkType",
             "properties": []
         },
@@ -26935,6 +27946,23 @@
                     "name": "story_id",
                     "type": "int32",
                     "description": "Story identifier"
+                }
+            ]
+        },
+        {
+            "name": "internalLinkTypeStoryAlbum",
+            "description": "The link is a link to an album of stories. Call searchPublicChat with the given username, then call getStoryAlbumStories with the received chat identifier and the given story album identifier, then show the story album if received",
+            "class": "InternalLinkType",
+            "properties": [
+                {
+                    "name": "story_album_owner_username",
+                    "type": "string",
+                    "description": "Username of the owner of the story album"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Story album identifier"
                 }
             ]
         },
@@ -27722,6 +28750,28 @@
             "description": "There is a working connection to the Telegram servers",
             "class": "ConnectionState",
             "properties": []
+        },
+        {
+            "name": "ageVerificationParameters",
+            "description": "Describes parameters for age verification of the current user",
+            "class": "AgeVerificationParameters",
+            "properties": [
+                {
+                    "name": "min_age",
+                    "type": "int32",
+                    "description": "The minimum age required to view restricted content"
+                },
+                {
+                    "name": "verification_bot_username",
+                    "type": "string",
+                    "description": "Username of the bot which main Web App may be used to verify age of the user"
+                },
+                {
+                    "name": "country",
+                    "type": "string",
+                    "description": "Unique name for the country or region, which legislation required age verification. May be used to get the corresponding localization key"
+                }
+            ]
         },
         {
             "name": "topChatCategoryUsers",
@@ -28769,7 +29819,13 @@
             "properties": []
         },
         {
-            "name": "chatRevenueTransactionTypeEarnings",
+            "name": "chatRevenueTransactionTypeUnsupported",
+            "description": "Describes an unsupported transaction",
+            "class": "ChatRevenueTransactionType",
+            "properties": []
+        },
+        {
+            "name": "chatRevenueTransactionTypeSponsoredMessageEarnings",
             "description": "Describes earnings from sponsored messages in a chat in some time frame",
             "class": "ChatRevenueTransactionType",
             "properties": [
@@ -28786,19 +29842,26 @@
             ]
         },
         {
-            "name": "chatRevenueTransactionTypeWithdrawal",
-            "description": "Describes a withdrawal of earnings",
+            "name": "chatRevenueTransactionTypeSuggestedPostEarnings",
+            "description": "Describes earnings from a published suggested post",
+            "class": "ChatRevenueTransactionType",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "Identifier of the user that paid for the suggested post"
+                }
+            ]
+        },
+        {
+            "name": "chatRevenueTransactionTypeFragmentWithdrawal",
+            "description": "Describes a withdrawal of earnings through Fragment",
             "class": "ChatRevenueTransactionType",
             "properties": [
                 {
                     "name": "withdrawal_date",
                     "type": "int32",
                     "description": "Point in time (Unix timestamp) when the earnings withdrawal started"
-                },
-                {
-                    "name": "provider",
-                    "type": "string",
-                    "description": "Name of the payment provider"
                 },
                 {
                     "name": "state",
@@ -28808,19 +29871,14 @@
             ]
         },
         {
-            "name": "chatRevenueTransactionTypeRefund",
-            "description": "Describes a refund for failed withdrawal of earnings",
+            "name": "chatRevenueTransactionTypeFragmentRefund",
+            "description": "Describes a refund for failed withdrawal of earnings through Fragment",
             "class": "ChatRevenueTransactionType",
             "properties": [
                 {
                     "name": "refund_date",
                     "type": "int32",
                     "description": "Point in time (Unix timestamp) when the transaction was refunded"
-                },
-                {
-                    "name": "provider",
-                    "type": "string",
-                    "description": "Name of the payment provider"
                 }
             ]
         },
@@ -28852,14 +29910,19 @@
             "class": "ChatRevenueTransactions",
             "properties": [
                 {
-                    "name": "total_count",
-                    "type": "int32",
-                    "description": "Total number of transactions"
+                    "name": "ton_amount",
+                    "type": "int53",
+                    "description": "The amount of owned Toncoins; in the smallest units of the cryptocurrency"
                 },
                 {
                     "name": "transactions",
                     "type": "vector\u003cchatRevenueTransaction\u003e",
                     "description": "List of transactions"
+                },
+                {
+                    "name": "next_offset",
+                    "type": "string",
+                    "description": "The offset for the next request. If empty, then there are no more results"
                 }
             ]
         },
@@ -29315,6 +30378,28 @@
                     "name": "fact_check",
                     "type": "factCheck",
                     "description": "The new fact-check"
+                }
+            ]
+        },
+        {
+            "name": "updateMessageSuggestedPostInfo",
+            "description": "Information about suggested post of a message was changed",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Message identifier"
+                },
+                {
+                    "name": "suggested_post_info",
+                    "type": "suggestedPostInfo",
+                    "description": "The new information about the suggested post"
                 }
             ]
         },
@@ -30031,7 +31116,7 @@
                 {
                     "name": "message_count",
                     "type": "int32",
-                    "description": "Approximate number of messages in the topics"
+                    "description": "Approximate number of messages in the topic"
                 }
             ]
         },
@@ -30688,7 +31773,7 @@
                 {
                     "name": "participant_user_ids",
                     "type": "vector\u003cint64\u003e",
-                    "description": "New list of group call participant user identifiers. The identifiers may be invalid or the corresponding users may be unknown. The participants must be shown in the list of group call participants even there is no information about them"
+                    "description": "New list of group call participant user identifiers. The identifiers may be invalid or the corresponding users may be unknown. The participants must be shown in the list of group call participants even if there is no information about them"
                 }
             ]
         },
@@ -31162,6 +32247,18 @@
             ]
         },
         {
+            "name": "updateAgeVerificationParameters",
+            "description": "The parameters for age verification of the current user's account has changed",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "parameters",
+                    "type": "ageVerificationParameters",
+                    "description": "Parameters for the age verification; may be null if age verification isn't needed"
+                }
+            ]
+        },
+        {
             "name": "updateTermsOfService",
             "description": "New terms of service must be accepted by the user. If the terms of service are declined, then the deleteAccount method must be called with the reason \"Decline ToS update\"",
             "class": "Update",
@@ -31305,6 +32402,18 @@
                     "name": "star_amount",
                     "type": "starAmount",
                     "description": "The new amount of owned Telegram Stars"
+                }
+            ]
+        },
+        {
+            "name": "updateOwnedTonCount",
+            "description": "The number of Toncoins owned by the current user has changed",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "ton_amount",
+                    "type": "int53",
+                    "description": "The new amount of owned Toncoins; in the smallest units of the cryptocurrency"
                 }
             ]
         },
@@ -32273,6 +33382,22 @@
             "description": "Describes a photo to be set as a user profile or chat photo"
         },
         {
+            "name": "GiftResalePrice",
+            "description": "Describes price of a resold gift"
+        },
+        {
+            "name": "SuggestedPostPrice",
+            "description": "Describes price of a suggested post"
+        },
+        {
+            "name": "SuggestedPostState",
+            "description": "Describes state of a suggested post"
+        },
+        {
+            "name": "SuggestedPostRefundReason",
+            "description": "Describes reason for refund of the payment for a suggested post"
+        },
+        {
             "name": "StarSubscriptionType",
             "description": "Describes type of subscription paid in Telegram Stars"
         },
@@ -32285,6 +33410,10 @@
             "description": "Describes the order of the found affiliate programs"
         },
         {
+            "name": "UpgradedGiftOrigin",
+            "description": "Describes origin from which the upgraded gift was obtained"
+        },
+        {
             "name": "UpgradedGiftAttributeId",
             "description": "Contains identifier of an upgraded gift attribute to search for"
         },
@@ -32293,16 +33422,24 @@
             "description": "Describes order in which upgraded gifts for resale will be sorted"
         },
         {
+            "name": "GiftResaleResult",
+            "description": "Describes result of sending a resold gift"
+        },
+        {
             "name": "SentGift",
             "description": "Represents content of a gift received by a user or a channel chat"
         },
         {
-            "name": "StarTransactionDirection",
-            "description": "Describes direction of a transaction with Telegram Stars"
+            "name": "TransactionDirection",
+            "description": "Describes direction of transactions in a transaction list"
         },
         {
             "name": "StarTransactionType",
             "description": "Describes type of transaction with Telegram Stars"
+        },
+        {
+            "name": "TonTransactionType",
+            "description": "Describes type of transaction with Toncoins"
         },
         {
             "name": "GiveawayParticipantStatus",
@@ -33706,7 +34843,7 @@
         },
         {
             "name": "getRepliedMessage",
-            "description": "Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message, the game message, the invoice message, the message with a previously set same background, the giveaway message, the checklist message, and the topic creation message for messages of the types messagePinMessage, messageGameScore, messagePaymentSuccessful, messageChatSetBackground, messageGiveawayCompleted, messageChecklistTasksDone and messageChecklistTasksAdded, and topic messages without non-bundled replied message respectively. Returns a 404 error if the message doesn't exist",
+            "description": "Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message for messagePinMessage, the game message for messageGameScore, the invoice message for messagePaymentSuccessful, the message with a previously set same background for messageChatSetBackground, the giveaway message for messageGiveawayCompleted, the checklist message for messageChecklistTasksDone, messageChecklistTasksAdded, the message with suggested post information for messageSuggestedPostApprovalFailed, messageSuggestedPostApproved, messageSuggestedPostDeclined, messageSuggestedPostPaid, messageSuggestedPostRefunded, the message with the regular gift that was upgraded for messageUpgradedGift with origin of the type upgradedGiftOriginUpgrade, and the topic creation message for topic messages without non-bundled replied message. Returns a 404 error if the message doesn't exist",
             "class": "Message",
             "properties": [
                 {
@@ -34363,12 +35500,12 @@
                 {
                     "name": "offset",
                     "type": "int32",
-                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages"
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
                 }
             ],
             "is_synchronous": false,
@@ -34612,12 +35749,12 @@
                 {
                     "name": "offset",
                     "type": "int32",
-                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages"
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
                 }
             ],
             "is_synchronous": false,
@@ -34755,12 +35892,12 @@
                 {
                     "name": "offset",
                     "type": "int32",
-                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages"
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
                 },
                 {
                     "name": "only_local",
@@ -34794,12 +35931,12 @@
                 {
                     "name": "offset",
                     "type": "int32",
-                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset up to 99 to get additionally some newer messages"
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative number from -99 to -1 to get additionally -offset newer messages"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than or equal to -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
                 }
             ],
             "is_synchronous": false,
@@ -34876,12 +36013,12 @@
                 {
                     "name": "offset",
                     "type": "int32",
-                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset to get the specified message and some newer messages"
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative number to get the specified message and some newer messages"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
                 },
                 {
                     "name": "filter",
@@ -35003,12 +36140,12 @@
                 {
                     "name": "offset",
                     "type": "int32",
-                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative offset to get the specified message and some newer messages"
+                    "description": "Specify 0 to get results from exactly the message from_message_id or a negative number to get the specified message and some newer messages"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                    "description": "The maximum number of messages to be returned; must be positive and can't be greater than 100. If the offset is negative, then the limit must be greater than -offset. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
                 }
             ],
             "is_synchronous": false,
@@ -35052,6 +36189,49 @@
                     "name": "limit",
                     "type": "int32",
                     "description": "The maximum number of messages to be returned; up to 100"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getPublicPostSearchLimits",
+            "description": "Checks public post search limits without actually performing the search",
+            "class": "PublicPostSearchLimits",
+            "properties": [
+                {
+                    "name": "query",
+                    "type": "string",
+                    "description": "Query that will be searched for"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "searchPublicPosts",
+            "description": "Searches for public channel posts using the given query. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit",
+            "class": "FoundPublicPosts",
+            "properties": [
+                {
+                    "name": "query",
+                    "type": "string",
+                    "description": "Query to search for"
+                },
+                {
+                    "name": "offset",
+                    "type": "string",
+                    "description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit"
+                },
+                {
+                    "name": "star_count",
+                    "type": "int53",
+                    "description": "The amount of Telegram Stars the user agreed to pay for the search; pass 0 for free searches"
                 }
             ],
             "is_synchronous": false,
@@ -37068,7 +38248,7 @@
                 {
                     "name": "is_public",
                     "type": "Bool",
-                    "description": "Pass true to set the public photo, which will be visible even the main photo is hidden by privacy settings"
+                    "description": "Pass true to set the public photo, which will be visible even if the main photo is hidden by privacy settings"
                 }
             ],
             "is_synchronous": false,
@@ -37406,7 +38586,7 @@
         },
         {
             "name": "editForumTopic",
-            "description": "Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics right in the supergroup unless the user is creator of the topic",
+            "description": "Edits title and icon of a topic in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic",
             "class": "Ok",
             "properties": [
                 {
@@ -37541,7 +38721,7 @@
         },
         {
             "name": "toggleForumTopicIsClosed",
-            "description": "Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics right in the supergroup unless the user is creator of the topic",
+            "description": "Toggles whether a topic is closed in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup unless the user is creator of the topic",
             "class": "Ok",
             "properties": [
                 {
@@ -37565,7 +38745,7 @@
         },
         {
             "name": "toggleGeneralForumTopicIsHidden",
-            "description": "Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics right in the supergroup",
+            "description": "Toggles whether a General topic is hidden in a forum supergroup chat; requires can_manage_topics administrator right in the supergroup",
             "class": "Ok",
             "properties": [
                 {
@@ -37584,7 +38764,7 @@
         },
         {
             "name": "toggleForumTopicIsPinned",
-            "description": "Changes the pinned state of a forum topic; requires can_manage_topics right in the supergroup. There can be up to getOption(\"pinned_forum_topic_count_max\") pinned forum topics",
+            "description": "Changes the pinned state of a forum topic; requires can_manage_topics administrator right in the supergroup. There can be up to getOption(\"pinned_forum_topic_count_max\") pinned forum topics",
             "class": "Ok",
             "properties": [
                 {
@@ -37608,7 +38788,7 @@
         },
         {
             "name": "setPinnedForumTopics",
-            "description": "Changes the order of pinned forum topics; requires can_manage_topics right in the supergroup",
+            "description": "Changes the order of pinned forum topics; requires can_manage_topics administrator right in the supergroup",
             "class": "Ok",
             "properties": [
                 {
@@ -40377,7 +41557,7 @@
         },
         {
             "name": "setChatSlowModeDelay",
-            "description": "Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members right",
+            "description": "Changes the slow mode delay of a chat. Available only for supergroups; requires can_restrict_members administrator right",
             "class": "Ok",
             "properties": [
                 {
@@ -40936,7 +42116,7 @@
         },
         {
             "name": "canPostStory",
-            "description": "Checks whether the current user can post a story on behalf of a chat; requires can_post_stories right for supergroup and channel chats",
+            "description": "Checks whether the current user can post a story on behalf of a chat; requires can_post_stories administrator right for supergroup and channel chats",
             "class": "CanPostStoryResult",
             "properties": [
                 {
@@ -40950,7 +42130,7 @@
         },
         {
             "name": "postStory",
-            "description": "Posts a new story on behalf of a chat; requires can_post_stories right for supergroup and channel chats. Returns a temporary story",
+            "description": "Posts a new story on behalf of a chat; requires can_post_stories administrator right for supergroup and channel chats. Returns a temporary story",
             "class": "Story",
             "properties": [
                 {
@@ -40977,6 +42157,11 @@
                     "name": "privacy_settings",
                     "type": "StoryPrivacySettings",
                     "description": "The privacy settings for the story; ignored for stories posted on behalf of supergroup and channel chats"
+                },
+                {
+                    "name": "album_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of story albums to which the story will be added upon posting. An album can have up to getOption(\"story_album_story_count_max\")"
                 },
                 {
                     "name": "active_period",
@@ -41203,7 +42388,7 @@
         },
         {
             "name": "getChatArchivedStories",
-            "description": "Returns the list of all stories posted by the given chat; requires can_edit_stories right in the chat. The stories are returned in reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib",
+            "description": "Returns the list of all stories posted by the given chat; requires can_edit_stories administrator right in the chat. The stories are returned in reverse chronological order (i.e., in order of decreasing story_id). For optimal performance, the number of returned stories is chosen by TDLib",
             "class": "Stories",
             "properties": [
                 {
@@ -41227,7 +42412,7 @@
         },
         {
             "name": "setChatPinnedStories",
-            "description": "Changes the list of pinned stories on a chat page; requires can_edit_stories right in the chat",
+            "description": "Changes the list of pinned stories on a chat page; requires can_edit_stories administrator right in the chat",
             "class": "Ok",
             "properties": [
                 {
@@ -41469,6 +42654,207 @@
                     "name": "limit",
                     "type": "int32",
                     "description": "The maximum number of messages and stories to be returned; must be positive and can't be greater than 100. For optimal performance, the number of returned objects is chosen by TDLib and can be smaller than the specified limit"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getChatStoryAlbums",
+            "description": "Returns the list of story albums owned by the given chat",
+            "class": "StoryAlbums",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getStoryAlbumStories",
+            "description": "Returns the list of stories added to the given story album. For optimal performance, the number of returned stories is chosen by TDLib",
+            "class": "Stories",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Story album identifier"
+                },
+                {
+                    "name": "offset",
+                    "type": "int32",
+                    "description": "Offset of the first entry to return; use 0 to get results from the first album story"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of stories to be returned. For optimal performance, the number of returned stories is chosen by TDLib and can be smaller than the specified limit"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "createStoryAlbum",
+            "description": "Creates an album of stories; requires can_edit_stories administrator right for supergroup and channel chats",
+            "class": "StoryAlbum",
+            "properties": [
+                {
+                    "name": "story_poster_chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that posted the stories"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the album; 1-12 characters"
+                },
+                {
+                    "name": "story_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifiers of stories to add to the album; 0-getOption(\"story_album_story_count_max\") identifiers"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "reorderStoryAlbums",
+            "description": "Changes order of story albums. If the albums are owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that owns the stories"
+                },
+                {
+                    "name": "story_album_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "New order of story albums"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "deleteStoryAlbum",
+            "description": "Deletes a story album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that owns the stories"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Identifier of the story album"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setStoryAlbumName",
+            "description": "Changes name of an album of stories. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album",
+            "class": "StoryAlbum",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that owns the stories"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Identifier of the story album"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "New name of the album; 1-12 characters"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "addStoryAlbumStories",
+            "description": "Adds stories to the beginning of a previously created story album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album",
+            "class": "StoryAlbum",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that owns the stories"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Identifier of the story album"
+                },
+                {
+                    "name": "story_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifier of the stories to add to the album; 1-getOption(\"story_album_story_count_max\") identifiers. If after addition the album has more than getOption(\"story_album_story_count_max\") stories, then the last one are removed from the album"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "removeStoryAlbumStories",
+            "description": "Removes stories from an album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album",
+            "class": "StoryAlbum",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that owns the stories"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Identifier of the story album"
+                },
+                {
+                    "name": "story_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifier of the stories to remove from the album"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "reorderStoryAlbumStories",
+            "description": "Changes order of stories in an album. If the album is owned by a supergroup or a channel chat, then requires can_edit_stories administrator right in the chat. Returns the changed album",
+            "class": "StoryAlbum",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that owns the stories"
+                },
+                {
+                    "name": "story_album_id",
+                    "type": "int32",
+                    "description": "Identifier of the story album"
+                },
+                {
+                    "name": "story_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "Identifier of the stories to move to the beginning of the album. All other stories are placed in the current order after the specified stories"
                 }
             ],
             "is_synchronous": false,
@@ -41720,7 +43106,7 @@
         },
         {
             "name": "getDisallowedChatEmojiStatuses",
-            "description": "Returns the list of emoji statuses, which can't be used as chat emoji status, even they are from a sticker set with is_allowed_as_chat_emoji_status == true",
+            "description": "Returns the list of emoji statuses, which can't be used as chat emoji status, even if they are from a sticker set with is_allowed_as_chat_emoji_status == true",
             "class": "EmojiStatusCustomEmojis",
             "properties": [],
             "is_synchronous": false,
@@ -42573,6 +43959,78 @@
                     "name": "approve",
                     "type": "Bool",
                     "description": "Pass true to approve all requests; pass false to decline them"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "approveSuggestedPost",
+            "description": "Approves a suggested post in a channel direct messages chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post. Use messageProperties.can_be_approved to check whether the suggested post can be approved"
+                },
+                {
+                    "name": "send_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the post is expected to be published; pass 0 if the date has already been chosen. If specified, then the date must be in the future, but at most getOption(\"suggested_post_send_delay_max\") seconds in the future"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "declineSuggestedPost",
+            "description": "Declines a suggested post in a channel direct messages chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Chat identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message with the suggested post. Use messageProperties.can_be_declined to check whether the suggested post can be declined"
+                },
+                {
+                    "name": "comment",
+                    "type": "string",
+                    "description": "Comment for the creator of the suggested post; 0-128 characters"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "addOffer",
+            "description": "Sent a suggested post based on a previously sent message in a channel direct messages chat. Can be also used to suggest price or time change for an existing suggested post. Returns the sent message",
+            "class": "Message",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the channel direct messages chat"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message in the chat which will be sent as suggested post. Use messageProperties.can_add_offer to check whether an offer can be added or messageProperties.can_edit_suggested_post_info to check whether price or time of sending of the post can be changed"
+                },
+                {
+                    "name": "options",
+                    "type": "messageSendOptions",
+                    "description": "Options to be used to send the message. New information about the suggested post must always be specified"
                 }
             ],
             "is_synchronous": false,
@@ -44570,7 +46028,7 @@
                 {
                     "name": "is_public",
                     "type": "Bool",
-                    "description": "Pass true to set the public photo, which will be visible even the main photo is hidden by privacy settings"
+                    "description": "Pass true to set the public photo, which will be visible even if the main photo is hidden by privacy settings"
                 }
             ],
             "is_synchronous": false,
@@ -46359,7 +47817,7 @@
                 {
                     "name": "owner_id",
                     "type": "MessageSender",
-                    "description": "Identifier of the user or the channel chat that will receive the gift"
+                    "description": "Identifier of the user or the channel chat that will receive the gift; limited gifts can't be sent to channel chats"
                 },
                 {
                     "name": "text",
@@ -46382,7 +47840,7 @@
         },
         {
             "name": "sellGift",
-            "description": "Sells a gift for Telegram Stars",
+            "description": "Sells a gift for Telegram Stars; requires owner privileges for gifts owned by a chat",
             "class": "Ok",
             "properties": [
                 {
@@ -46500,8 +47958,32 @@
             "type": 1
         },
         {
+            "name": "buyGiftUpgrade",
+            "description": "Pays for upgrade of a regular gift that is owned by another user or channel chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the gift"
+                },
+                {
+                    "name": "prepaid_upgrade_hash",
+                    "type": "string",
+                    "description": "Prepaid upgrade hash as received along with the gift"
+                },
+                {
+                    "name": "star_count",
+                    "type": "int53",
+                    "description": "The amount of Telegram Stars the user agreed to pay for the upgrade; must be equal to gift.upgrade_star_count"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "transferGift",
-            "description": "Sends an upgraded gift to another user or a channel chat",
+            "description": "Sends an upgraded gift to another user or channel chat",
             "class": "Ok",
             "properties": [
                 {
@@ -46531,7 +48013,7 @@
         {
             "name": "sendResoldGift",
             "description": "Sends an upgraded gift that is available for resale to another user or channel chat; gifts already owned by the current user must be transferred using transferGift and can't be passed to the method",
-            "class": "Ok",
+            "class": "GiftResaleResult",
             "properties": [
                 {
                     "name": "gift_name",
@@ -46544,9 +48026,9 @@
                     "description": "Identifier of the user or the channel chat that will receive the gift"
                 },
                 {
-                    "name": "star_count",
-                    "type": "int53",
-                    "description": "The amount of Telegram Stars required to pay for the gift"
+                    "name": "price",
+                    "type": "GiftResalePrice",
+                    "description": "The price that the user agreed to pay for the gift"
                 }
             ],
             "is_synchronous": false,
@@ -46568,6 +48050,11 @@
                     "description": "Identifier of the gift receiver"
                 },
                 {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Pass collection identifier to get gifts only from the specified collection; pass 0 to get gifts regardless of collections"
+                },
+                {
                     "name": "exclude_unsaved",
                     "type": "Bool",
                     "description": "Pass true to exclude gifts that aren't saved to the chat's profile page. Always true for gifts received by other users and channel chats without can_post_messages administrator right"
@@ -46583,9 +48070,14 @@
                     "description": "Pass true to exclude gifts that can be purchased unlimited number of times"
                 },
                 {
-                    "name": "exclude_limited",
+                    "name": "exclude_upgradable",
                     "type": "Bool",
-                    "description": "Pass true to exclude gifts that can be purchased limited number of times"
+                    "description": "Pass true to exclude gifts that can be purchased limited number of times and can be upgraded"
+                },
+                {
+                    "name": "exclude_non_upgradable",
+                    "type": "Bool",
+                    "description": "Pass true to exclude gifts that can be purchased limited number of times and can't be upgraded"
                 },
                 {
                     "name": "exclude_upgraded",
@@ -46640,6 +48132,20 @@
             "type": 1
         },
         {
+            "name": "getUpgradedGiftValueInfo",
+            "description": "Returns information about value of an upgraded gift by its name",
+            "class": "UpgradedGiftValueInfo",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Unique name of the upgraded gift"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "getUpgradedGiftWithdrawalUrl",
             "description": "Returns a URL for upgraded gift withdrawal in the TON blockchain as an NFT; requires owner privileges for gifts owned by a chat",
             "class": "HttpUrl",
@@ -46669,9 +48175,9 @@
                     "description": "Identifier of the unique gift"
                 },
                 {
-                    "name": "resale_star_count",
-                    "type": "int53",
-                    "description": "The new price for the unique gift; 0 or getOption(\"gift_resale_star_count_min\")-getOption(\"gift_resale_star_count_max\"). Pass 0 to disallow gift resale. The current user will receive getOption(\"gift_resale_earnings_per_mille\") Telegram Stars for each 1000 Telegram Stars paid for the gift"
+                    "name": "price",
+                    "type": "GiftResalePrice",
+                    "description": "The new price for the unique gift; pass null to disallow gift resale. The current user will receive getOption(\"gift_resale_star_earnings_per_mille\") Telegram Stars for each 1000 Telegram Stars paid for the gift if the gift price is in Telegram Stars or getOption(\"gift_resale_ton_earnings_per_mille\") Toncoins for each 1000 Toncoins paid for the gift if the gift price is in Toncoins"
                 }
             ],
             "is_synchronous": false,
@@ -46679,7 +48185,7 @@
         },
         {
             "name": "searchGiftsForResale",
-            "description": "Returns upgraded gifts that can be bought from other owners",
+            "description": "Returns upgraded gifts that can be bought from other owners using sendResoldGift",
             "class": "GiftsForResale",
             "properties": [
                 {
@@ -46706,6 +48212,178 @@
                     "name": "limit",
                     "type": "int32",
                     "description": "The maximum number of gifts to return"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getGiftCollections",
+            "description": "Returns collections of gifts owned by the given user or chat",
+            "class": "GiftCollections",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that received the gifts"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "createGiftCollection",
+            "description": "Creates a collection from gifts on the current user's or a channel's profile page; requires can_post_messages administrator right in the channel chat. An owner can have up to getOption(\"gift_collection_count_max\") gift collections. The new collection will be added to the end of the gift collection list of the owner. Returns the created collection",
+            "class": "GiftCollection",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that received the gifts"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the collection; 1-12 characters"
+                },
+                {
+                    "name": "received_gift_ids",
+                    "type": "vector\u003cstring\u003e",
+                    "description": "Identifier of the gifts to add to the collection; 0-getOption(\"gift_collection_gift_count_max\") identifiers"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "reorderGiftCollections",
+            "description": "Changes order of gift collections. If the collections are owned by a channel chat, then requires can_post_messages administrator right in the channel chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the collection"
+                },
+                {
+                    "name": "collection_ids",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "New order of gift collections"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "deleteGiftCollection",
+            "description": "Deletes a gift collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the collection"
+                },
+                {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Identifier of the gift collection"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setGiftCollectionName",
+            "description": "Changes name of a gift collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection",
+            "class": "GiftCollection",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the collection"
+                },
+                {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Identifier of the gift collection"
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "New name of the collection; 1-12 characters"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "addGiftCollectionGifts",
+            "description": "Adds gifts to the beginning of a previously created collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection",
+            "class": "GiftCollection",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the collection"
+                },
+                {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Identifier of the gift collection"
+                },
+                {
+                    "name": "received_gift_ids",
+                    "type": "vector\u003cstring\u003e",
+                    "description": "Identifier of the gifts to add to the collection; 1-getOption(\"gift_collection_gift_count_max\") identifiers. If after addition the collection has more than getOption(\"gift_collection_gift_count_max\") gifts, then the last one are removed from the collection"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "removeGiftCollectionGifts",
+            "description": "Removes gifts from a collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection",
+            "class": "GiftCollection",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the collection"
+                },
+                {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Identifier of the gift collection"
+                },
+                {
+                    "name": "received_gift_ids",
+                    "type": "vector\u003cstring\u003e",
+                    "description": "Identifier of the gifts to remove from the collection"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "reorderGiftCollectionGifts",
+            "description": "Changes order of gifts in a collection. If the collection is owned by a channel chat, then requires can_post_messages administrator right in the channel chat. Returns the changed collection",
+            "class": "GiftCollection",
+            "properties": [
+                {
+                    "name": "owner_id",
+                    "type": "MessageSender",
+                    "description": "Identifier of the user or the channel chat that owns the collection"
+                },
+                {
+                    "name": "collection_id",
+                    "type": "int32",
+                    "description": "Identifier of the gift collection"
+                },
+                {
+                    "name": "received_gift_ids",
+                    "type": "vector\u003cstring\u003e",
+                    "description": "Identifier of the gifts to move to the beginning of the collection. All other gifts are placed in the current order after the specified gifts"
                 }
             ],
             "is_synchronous": false,
@@ -47456,13 +49134,37 @@
                 },
                 {
                     "name": "offset",
-                    "type": "int32",
-                    "description": "Number of transactions to skip"
+                    "type": "string",
+                    "description": "Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results"
                 },
                 {
                     "name": "limit",
                     "type": "int32",
-                    "description": "The maximum number of transactions to be returned; up to 200"
+                    "description": "The maximum number of transactions to be returned; up to 100"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getTonTransactions",
+            "description": "Returns the list of Toncoin transactions of the current user",
+            "class": "TonTransactions",
+            "properties": [
+                {
+                    "name": "direction",
+                    "type": "TransactionDirection",
+                    "description": "Direction of the transactions to receive; pass null to get all transactions"
+                },
+                {
+                    "name": "offset",
+                    "type": "string",
+                    "description": "Offset of the first transaction to return as received from the previous request; use empty string to get the first chunk of results"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of transactions to return"
                 }
             ],
             "is_synchronous": false,
@@ -47500,7 +49202,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The number of Telegram Stars to withdraw. Must be at least getOption(\"star_withdrawal_count_min\")"
+                    "description": "The number of Telegram Stars to withdraw; must be between getOption(\"star_withdrawal_count_min\") and getOption(\"star_withdrawal_count_max\")"
                 },
                 {
                     "name": "password",
@@ -48708,7 +50410,7 @@
                 },
                 {
                     "name": "direction",
-                    "type": "StarTransactionDirection",
+                    "type": "TransactionDirection",
                     "description": "Direction of the transactions to receive; pass null to get all transactions"
                 },
                 {
