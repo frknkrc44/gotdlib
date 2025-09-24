@@ -10832,11 +10832,40 @@ func (client *Client) DeleteChatBackground(req *DeleteChatBackgroundRequest) (*O
 	return UnmarshalOk(result.Data)
 }
 
+type GetGiftChatThemesRequest struct {
+	// Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
+	Offset string `json:"offset"`
+	// The maximum number of chat themes to return
+	Limit int32 `json:"limit"`
+}
+
+// Returns available to the current user gift chat themes
+func (client *Client) GetGiftChatThemes(req *GetGiftChatThemesRequest) (*GiftChatThemes, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getGiftChatThemes",
+		},
+		Data: map[string]interface{}{
+			"offset": req.Offset,
+			"limit":  req.Limit,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalGiftChatThemes(result.Data)
+}
+
 type SetChatThemeRequest struct {
 	// Chat identifier
 	ChatId int64 `json:"chat_id"`
-	// Name of the new chat theme; pass an empty string to return the default theme
-	ThemeName string `json:"theme_name"`
+	// New chat theme; pass null to return the default theme
+	Theme InputChatTheme `json:"theme"`
 }
 
 // Changes the chat theme. Supported only in private and secret chats
@@ -10846,8 +10875,8 @@ func (client *Client) SetChatTheme(req *SetChatThemeRequest) (*Ok, error) {
 			Type: "setChatTheme",
 		},
 		Data: map[string]interface{}{
-			"chat_id":    req.ChatId,
-			"theme_name": req.ThemeName,
+			"chat_id": req.ChatId,
+			"theme":   req.Theme,
 		},
 	})
 	if err != nil {
@@ -16832,6 +16861,145 @@ func (client *Client) GetUserProfilePhotos(req *GetUserProfilePhotosRequest) (*C
 	return UnmarshalChatPhotos(result.Data)
 }
 
+type GetUserProfileAudiosRequest struct {
+	// User identifier
+	UserId int64 `json:"user_id"`
+	// The number of audio files to skip; must be non-negative
+	Offset int32 `json:"offset"`
+	// The maximum number of audio files to be returned; up to 100
+	Limit int32 `json:"limit"`
+}
+
+// Returns the list of profile audio files of a user
+func (client *Client) GetUserProfileAudios(req *GetUserProfileAudiosRequest) (*Audios, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getUserProfileAudios",
+		},
+		Data: map[string]interface{}{
+			"user_id": req.UserId,
+			"offset":  req.Offset,
+			"limit":   req.Limit,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalAudios(result.Data)
+}
+
+type IsProfileAudioRequest struct {
+	// Identifier of the audio file to check
+	FileId int32 `json:"file_id"`
+}
+
+// Checks whether a file is in the profile audio files of the current user. Returns a 404 error if it isn't
+func (client *Client) IsProfileAudio(req *IsProfileAudioRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "isProfileAudio",
+		},
+		Data: map[string]interface{}{
+			"file_id": req.FileId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type AddProfileAudioRequest struct {
+	// Identifier of the audio file to be added. The file must have been uploaded to the server
+	FileId int32 `json:"file_id"`
+}
+
+// Adds an audio file to the beginning of the profile audio files of the current user
+func (client *Client) AddProfileAudio(req *AddProfileAudioRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "addProfileAudio",
+		},
+		Data: map[string]interface{}{
+			"file_id": req.FileId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type SetProfileAudioPositionRequest struct {
+	// Identifier of the file from profile audio files, which position will be changed
+	FileId int32 `json:"file_id"`
+	// Identifier of the file from profile audio files after which the file will be positioned; pass 0 to move the file to the beginning of the list
+	AfterFileId int32 `json:"after_file_id"`
+}
+
+// Changes position of an audio file in the profile audio files of the current user
+func (client *Client) SetProfileAudioPosition(req *SetProfileAudioPositionRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "setProfileAudioPosition",
+		},
+		Data: map[string]interface{}{
+			"file_id":       req.FileId,
+			"after_file_id": req.AfterFileId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type RemoveProfileAudioRequest struct {
+	// Identifier of the audio file to be removed
+	FileId int32 `json:"file_id"`
+}
+
+// Removes an audio file from the profile audio files of the current user
+func (client *Client) RemoveProfileAudio(req *RemoveProfileAudioRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "removeProfileAudio",
+		},
+		Data: map[string]interface{}{
+			"file_id": req.FileId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
 type GetStickerOutlineRequest struct {
 	// File identifier of the sticker
 	StickerFileId int32 `json:"sticker_file_id"`
@@ -18275,6 +18443,32 @@ func (client *Client) SetBirthdate(req *SetBirthdateRequest) (*Ok, error) {
 		},
 		Data: map[string]interface{}{
 			"birthdate": req.Birthdate,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
+type SetMainProfileTabRequest struct {
+	// The new value of the main profile tab
+	MainProfileTab ProfileTab `json:"main_profile_tab"`
+}
+
+// Changes the main profile tab of the current user
+func (client *Client) SetMainProfileTab(req *SetMainProfileTabRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "setMainProfileTab",
+		},
+		Data: map[string]interface{}{
+			"main_profile_tab": req.MainProfileTab,
 		},
 	})
 	if err != nil {
@@ -20171,6 +20365,35 @@ func (client *Client) SetSupergroupUnrestrictBoostCount(req *SetSupergroupUnrest
 	return UnmarshalOk(result.Data)
 }
 
+type SetSupergroupMainProfileTabRequest struct {
+	// Identifier of the channel
+	SupergroupId int64 `json:"supergroup_id"`
+	// The new value of the main profile tab
+	MainProfileTab ProfileTab `json:"main_profile_tab"`
+}
+
+// Changes the main profile tab of the channel; requires can_change_info administrator right
+func (client *Client) SetSupergroupMainProfileTab(req *SetSupergroupMainProfileTabRequest) (*Ok, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "setSupergroupMainProfileTab",
+		},
+		Data: map[string]interface{}{
+			"supergroup_id":    req.SupergroupId,
+			"main_profile_tab": req.MainProfileTab,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalOk(result.Data)
+}
+
 type ToggleSupergroupSignMessagesRequest struct {
 	// Identifier of the channel
 	SupergroupId int64 `json:"supergroup_id"`
@@ -20874,6 +21097,41 @@ func (client *Client) GetAvailableGifts() (*AvailableGifts, error) {
 	}
 
 	return UnmarshalAvailableGifts(result.Data)
+}
+
+type CanSendGiftRequest struct {
+	// Identifier of the gift to send
+	GiftId JsonInt64 `json:"gift_id"`
+}
+
+// Checks whether a gift with next_send_date in the future can be sent already
+func (client *Client) CanSendGift(req *CanSendGiftRequest) (CanSendGiftResult, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "canSendGift",
+		},
+		Data: map[string]interface{}{
+			"gift_id": req.GiftId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	switch result.Type {
+	case TypeCanSendGiftResultOk:
+		return UnmarshalCanSendGiftResultOk(result.Data)
+
+	case TypeCanSendGiftResultFail:
+		return UnmarshalCanSendGiftResultFail(result.Data)
+
+	default:
+		return nil, errors.New("invalid type")
+	}
 }
 
 type SendGiftRequest struct {
@@ -23100,6 +23358,58 @@ func (client *Client) GetStarAdAccountUrl(req *GetStarAdAccountUrlRequest) (*Htt
 		},
 		Data: map[string]interface{}{
 			"owner_id": req.OwnerId,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalHttpUrl(result.Data)
+}
+
+type GetTonRevenueStatisticsRequest struct {
+	// Pass true if a dark theme is used by the application
+	IsDark bool `json:"is_dark"`
+}
+
+// Returns detailed Toncoin revenue statistics of the current user
+func (client *Client) GetTonRevenueStatistics(req *GetTonRevenueStatisticsRequest) (*TonRevenueStatistics, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getTonRevenueStatistics",
+		},
+		Data: map[string]interface{}{
+			"is_dark": req.IsDark,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalTonRevenueStatistics(result.Data)
+}
+
+type GetTonWithdrawalUrlRequest struct {
+	// The 2-step verification password of the current user
+	Password string `json:"password"`
+}
+
+// Returns a URL for Toncoin withdrawal from the current user's account. The user must have at least 10 toncoins to withdraw and can withdraw up to 100000 Toncoins in one transaction
+func (client *Client) GetTonWithdrawalUrl(req *GetTonWithdrawalUrlRequest) (*HttpUrl, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getTonWithdrawalUrl",
+		},
+		Data: map[string]interface{}{
+			"password": req.Password,
 		},
 	})
 	if err != nil {
@@ -27068,8 +27378,8 @@ func (client *Client) TestUseUpdate() (Update, error) {
 	case TypeUpdateDefaultBackground:
 		return UnmarshalUpdateDefaultBackground(result.Data)
 
-	case TypeUpdateChatThemes:
-		return UnmarshalUpdateChatThemes(result.Data)
+	case TypeUpdateEmojiChatThemes:
+		return UnmarshalUpdateEmojiChatThemes(result.Data)
 
 	case TypeUpdateAccentColors:
 		return UnmarshalUpdateAccentColors(result.Data)
@@ -27130,6 +27440,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
 	case TypeUpdateStarRevenueStatus:
 		return UnmarshalUpdateStarRevenueStatus(result.Data)
+
+	case TypeUpdateTonRevenueStatus:
+		return UnmarshalUpdateTonRevenueStatus(result.Data)
 
 	case TypeUpdateSpeechRecognitionTrial:
 		return UnmarshalUpdateSpeechRecognitionTrial(result.Data)

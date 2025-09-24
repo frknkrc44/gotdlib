@@ -420,6 +420,16 @@
                     "name": "store_product_id",
                     "type": "string",
                     "description": "Identifier of the store product that must be bought"
+                },
+                {
+                    "name": "support_email_address",
+                    "type": "string",
+                    "description": "Email address to use for support if the user has issues with Telegram Premium purchase"
+                },
+                {
+                    "name": "support_email_subject",
+                    "type": "string",
+                    "description": "Subject for the email sent to the support email address"
                 }
             ]
         },
@@ -1372,6 +1382,23 @@
             ]
         },
         {
+            "name": "audios",
+            "description": "Contains a list of audio files",
+            "class": "Audios",
+            "properties": [
+                {
+                    "name": "total_count",
+                    "type": "int32",
+                    "description": "Approximate total number of audio files found"
+                },
+                {
+                    "name": "audios",
+                    "type": "vector\u003caudio\u003e",
+                    "description": "List of audio files"
+                }
+            ]
+        },
+        {
             "name": "document",
             "description": "Describes a document of any type",
             "class": "Document",
@@ -2060,6 +2087,54 @@
                     "description": "True, if the photo is visible only for the current user"
                 }
             ]
+        },
+        {
+            "name": "profileTabPosts",
+            "description": "A tab with stories posted by the user or the channel chat and saved to profile",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabGifts",
+            "description": "A tab with gifts received by the user or the channel chat",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabMedia",
+            "description": "A tab with photos and videos posted by the channel",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabFiles",
+            "description": "A tab with documents posted by the channel",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabLinks",
+            "description": "A tab with messages posted by the channel and containing links",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabMusic",
+            "description": "A tab with audio messages posted by the channel",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabVoice",
+            "description": "A tab with voice notes posted by the channel",
+            "class": "ProfileTab",
+            "properties": []
+        },
+        {
+            "name": "profileTabGifs",
+            "description": "A tab with animations posted by the channel",
+            "class": "ProfileTab",
+            "properties": []
         },
         {
             "name": "userTypeRegular",
@@ -4062,6 +4137,24 @@
             ]
         },
         {
+            "name": "canSendGiftResultOk",
+            "description": "The gift can be sent now by the current user",
+            "class": "CanSendGiftResult",
+            "properties": []
+        },
+        {
+            "name": "canSendGiftResultFail",
+            "description": "The gift can't be sent now by the current user",
+            "class": "CanSendGiftResult",
+            "properties": [
+                {
+                    "name": "reason",
+                    "type": "formattedText",
+                    "description": "Reason to be shown to the user"
+                }
+            ]
+        },
+        {
             "name": "upgradedGiftOriginUpgrade",
             "description": "The gift was obtained by upgrading of a previously received gift",
             "class": "UpgradedGiftOrigin",
@@ -4268,6 +4361,11 @@
                     "description": "True, if the gift can be bought only by Telegram Premium subscribers"
                 },
                 {
+                    "name": "next_send_date",
+                    "type": "int32",
+                    "description": "Point in time (Unix timestamp) when the gift can be sent next time by the current user; can be 0 or a date in the past. If the date is in the future, then call canSendGift to get the reason, why the gift can't be sent now"
+                },
+                {
                     "name": "user_limits",
                     "type": "giftPurchaseLimits",
                     "description": "Number of times the gift can be purchased by the current user; may be null if not limited"
@@ -4338,6 +4436,16 @@
                     "name": "is_premium",
                     "type": "Bool",
                     "description": "True, if the original gift could have been bought only by Telegram Premium subscribers"
+                },
+                {
+                    "name": "is_theme_available",
+                    "type": "Bool",
+                    "description": "True, if the gift can be used to set a theme in a chat"
+                },
+                {
+                    "name": "used_theme_chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat for which the gift is used to set a theme; 0 if none or the gift isn't owned by the current user"
                 },
                 {
                     "name": "owner_id",
@@ -4834,6 +4942,11 @@
                     "name": "prepaid_upgrade_star_count",
                     "type": "int53",
                     "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift"
+                },
+                {
+                    "name": "is_upgrade_separate",
+                    "type": "Bool",
+                    "description": "True, if the upgrade was bought after the gift was sent. In this case, prepaid upgrade cost must not be added to the gift cost"
                 },
                 {
                     "name": "transfer_star_count",
@@ -6487,6 +6600,16 @@
                     "description": "Information about verification status of the user provided by a bot; may be null if none or unknown"
                 },
                 {
+                    "name": "main_profile_tab",
+                    "type": "ProfileTab",
+                    "description": "The main tab chosen by the user; may be null if not chosen manually"
+                },
+                {
+                    "name": "first_profile_audio",
+                    "type": "audio",
+                    "description": "The first audio file added to the user's profile; may be null if none"
+                },
+                {
                     "name": "rating",
                     "type": "userRating",
                     "description": "The current rating of the user; may be null if none"
@@ -7597,6 +7720,11 @@
                     "name": "bot_verification",
                     "type": "botVerification",
                     "description": "Information about verification status of the supergroup or the channel provided by a bot; may be null if none or unknown"
+                },
+                {
+                    "name": "main_profile_tab",
+                    "type": "ProfileTab",
+                    "description": "The main tab chosen by the administrators of the channel; may be null if not chosen manually"
                 },
                 {
                     "name": "upgraded_from_basic_group_id",
@@ -10241,9 +10369,9 @@
                     "description": "Background set for the chat; may be null if none"
                 },
                 {
-                    "name": "theme_name",
-                    "type": "string",
-                    "description": "If non-empty, name of a theme, set for the chat"
+                    "name": "theme",
+                    "type": "ChatTheme",
+                    "description": "Theme set for the chat; may be null if none"
                 },
                 {
                     "name": "action_bar",
@@ -11521,10 +11649,45 @@
             ]
         },
         {
+            "name": "builtInThemeClassic",
+            "description": "Classic light theme",
+            "class": "BuiltInTheme",
+            "properties": []
+        },
+        {
+            "name": "builtInThemeDay",
+            "description": "Regular light theme",
+            "class": "BuiltInTheme",
+            "properties": []
+        },
+        {
+            "name": "builtInThemeNight",
+            "description": "Regular dark theme",
+            "class": "BuiltInTheme",
+            "properties": []
+        },
+        {
+            "name": "builtInThemeTinted",
+            "description": "Tinted dark theme",
+            "class": "BuiltInTheme",
+            "properties": []
+        },
+        {
+            "name": "builtInThemeArctic",
+            "description": "Arctic light theme",
+            "class": "BuiltInTheme",
+            "properties": []
+        },
+        {
             "name": "themeSettings",
             "description": "Describes theme settings",
             "class": "ThemeSettings",
             "properties": [
+                {
+                    "name": "base_theme",
+                    "type": "BuiltInTheme",
+                    "description": "Base theme for this theme"
+                },
                 {
                     "name": "accent_color",
                     "type": "int32",
@@ -11538,7 +11701,7 @@
                 {
                     "name": "outgoing_message_fill",
                     "type": "BackgroundFill",
-                    "description": "The fill to be used as a background for outgoing messages"
+                    "description": "The fill to be used as a background for outgoing messages; may be null if the fill from the base theme must be used instead"
                 },
                 {
                     "name": "animate_outgoing_message_fill",
@@ -15823,9 +15986,9 @@
             "class": "MessageContent",
             "properties": [
                 {
-                    "name": "theme_name",
-                    "type": "string",
-                    "description": "If non-empty, name of a new theme, set for the chat. Otherwise, chat theme was reset to the default one"
+                    "name": "theme",
+                    "type": "ChatTheme",
+                    "description": "New theme for the chat; may be null if chat theme was reset to the default one"
                 }
             ]
         },
@@ -16512,6 +16675,11 @@
                     "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift"
                 },
                 {
+                    "name": "is_upgrade_separate",
+                    "type": "Bool",
+                    "description": "True, if the upgrade was bought after the gift was sent. In this case, prepaid upgrade cost must not be added to the gift cost"
+                },
+                {
                     "name": "is_private",
                     "type": "Bool",
                     "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"
@@ -16646,9 +16814,9 @@
                     "description": "Receiver of the gift"
                 },
                 {
-                    "name": "is_upgrade",
-                    "type": "Bool",
-                    "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred or resold gift"
+                    "name": "origin",
+                    "type": "UpgradedGiftOrigin",
+                    "description": "Origin of the upgraded gift"
                 }
             ]
         },
@@ -24768,6 +24936,11 @@
                     "name": "star_count",
                     "type": "int53",
                     "description": "Number of bought Telegram Stars"
+                },
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that is supposed to receive the Telegram Stars; pass 0 if none"
                 }
             ]
         },
@@ -24952,6 +25125,11 @@
                     "name": "star_count",
                     "type": "int53",
                     "description": "Number of bought Telegram Stars"
+                },
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat that is supposed to receive the Telegram Stars; pass 0 if none"
                 }
             ]
         },
@@ -25321,13 +25499,13 @@
         },
         {
             "name": "backgroundTypeChatTheme",
-            "description": "A background from a chat theme; can be used only as a chat background in channels",
+            "description": "A background from a chat theme based on an emoji; can be used only as a chat background in channels",
             "class": "BackgroundType",
             "properties": [
                 {
                     "name": "theme_name",
                     "type": "string",
-                    "description": "Name of the chat theme"
+                    "description": "Name of the emoji chat theme"
                 }
             ]
         },
@@ -25368,9 +25546,9 @@
             ]
         },
         {
-            "name": "chatTheme",
-            "description": "Describes a chat theme",
-            "class": "ChatTheme",
+            "name": "emojiChatTheme",
+            "description": "Describes a chat theme based on an emoji",
+            "class": "EmojiChatTheme",
             "properties": [
                 {
                     "name": "name",
@@ -25386,6 +25564,93 @@
                     "name": "dark_settings",
                     "type": "themeSettings",
                     "description": "Theme settings for a dark chat theme"
+                }
+            ]
+        },
+        {
+            "name": "giftChatTheme",
+            "description": "Describes a chat theme based on an upgraded gift",
+            "class": "GiftChatTheme",
+            "properties": [
+                {
+                    "name": "gift",
+                    "type": "upgradedGift",
+                    "description": "The gift"
+                },
+                {
+                    "name": "light_settings",
+                    "type": "themeSettings",
+                    "description": "Theme settings for a light chat theme"
+                },
+                {
+                    "name": "dark_settings",
+                    "type": "themeSettings",
+                    "description": "Theme settings for a dark chat theme"
+                }
+            ]
+        },
+        {
+            "name": "giftChatThemes",
+            "description": "Contains a list of chat themes based on upgraded gifts",
+            "class": "GiftChatThemes",
+            "properties": [
+                {
+                    "name": "themes",
+                    "type": "vector\u003cgiftChatTheme\u003e",
+                    "description": "A list of chat themes"
+                },
+                {
+                    "name": "next_offset",
+                    "type": "string",
+                    "description": "The offset for the next request. If empty, then there are no more results"
+                }
+            ]
+        },
+        {
+            "name": "chatThemeEmoji",
+            "description": "A chat theme based on an emoji",
+            "class": "ChatTheme",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the theme; full theme description is received through updateEmojiChatThemes"
+                }
+            ]
+        },
+        {
+            "name": "chatThemeGift",
+            "description": "A chat theme based on an upgraded gift",
+            "class": "ChatTheme",
+            "properties": [
+                {
+                    "name": "gift_theme",
+                    "type": "giftChatTheme",
+                    "description": "The chat theme"
+                }
+            ]
+        },
+        {
+            "name": "inputChatThemeEmoji",
+            "description": "A theme based on an emoji",
+            "class": "InputChatTheme",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the theme"
+                }
+            ]
+        },
+        {
+            "name": "inputChatThemeGift",
+            "description": "A theme based on an upgraded gift",
+            "class": "InputChatTheme",
+            "properties": [
+                {
+                    "name": "name",
+                    "type": "string",
+                    "description": "Name of the upgraded gift. A gift can be used only in one chat in a time. When the same gift is used in another chat, theme in the previous chat is reset to default"
                 }
             ]
         },
@@ -25711,7 +25976,13 @@
             "name": "pushMessageContentContactRegistered",
             "description": "A contact has registered with Telegram",
             "class": "PushMessageContent",
-            "properties": []
+            "properties": [
+                {
+                    "name": "as_premium_account",
+                    "type": "Bool",
+                    "description": "True, if the user joined Telegram as a Telegram Premium account"
+                }
+            ]
         },
         {
             "name": "pushMessageContentDocument",
@@ -25912,6 +26183,11 @@
                     "name": "star_count",
                     "type": "int53",
                     "description": "Number of Telegram Stars that sender paid for the gift"
+                },
+                {
+                    "name": "is_prepaid_upgrade",
+                    "type": "Bool",
+                    "description": "True, if the message is about prepaid upgrade of the gift by another user instead of actual receiving of a new gift"
                 }
             ]
         },
@@ -25923,7 +26199,12 @@
                 {
                     "name": "is_upgrade",
                     "type": "Bool",
-                    "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, this is a transferred or resold gift"
+                    "description": "True, if the gift was obtained by upgrading of a previously received gift; otherwise, if is_prepaid_upgrade == false, then this is a transferred or resold gift"
+                },
+                {
+                    "name": "is_prepaid_upgrade",
+                    "type": "Bool",
+                    "description": "True, if the message is about completion of prepaid upgrade of the gift instead of actual receiving of a new gift"
                 }
             ]
         },
@@ -26155,9 +26436,9 @@
             "class": "PushMessageContent",
             "properties": [
                 {
-                    "name": "theme_name",
+                    "name": "name",
                     "type": "string",
-                    "description": "If non-empty, name of a new theme, set for the chat. Otherwise, the chat theme was reset to the default one"
+                    "description": "If non-empty, human-readable name of the new theme. Otherwise, the chat theme was reset to the default one"
                 }
             ]
         },
@@ -29928,7 +30209,7 @@
         },
         {
             "name": "starRevenueStatus",
-            "description": "Contains information about Telegram Stars earned by a bot or a chat",
+            "description": "Contains information about Telegram Stars earned by a user or a chat",
             "class": "StarRevenueStatus",
             "properties": [
                 {
@@ -29960,7 +30241,7 @@
         },
         {
             "name": "starRevenueStatistics",
-            "description": "A detailed statistics about Telegram Stars earned by a bot or a chat",
+            "description": "A detailed statistics about Telegram Stars earned by a user or a chat",
             "class": "StarRevenueStatistics",
             "properties": [
                 {
@@ -29977,6 +30258,55 @@
                     "name": "usd_rate",
                     "type": "double",
                     "description": "Current conversion rate of a Telegram Star to USD"
+                }
+            ]
+        },
+        {
+            "name": "tonRevenueStatus",
+            "description": "Contains information about Toncoins earned by the current user",
+            "class": "TonRevenueStatus",
+            "properties": [
+                {
+                    "name": "total_amount",
+                    "type": "int64",
+                    "description": "Total amount of Toncoins earned; in the smallest units of the cryptocurrency"
+                },
+                {
+                    "name": "balance_amount",
+                    "type": "int64",
+                    "description": "Amount of Toncoins that aren't withdrawn yet; in the smallest units of the cryptocurrency"
+                },
+                {
+                    "name": "available_amount",
+                    "type": "int64",
+                    "description": "Amount of Toncoins that are available for withdrawal; in the smallest units of the cryptocurrency"
+                },
+                {
+                    "name": "withdrawal_enabled",
+                    "type": "Bool",
+                    "description": "True, if Toncoins can be withdrawn"
+                }
+            ]
+        },
+        {
+            "name": "tonRevenueStatistics",
+            "description": "A detailed statistics about Toncoins earned by the current user",
+            "class": "TonRevenueStatistics",
+            "properties": [
+                {
+                    "name": "revenue_by_day_graph",
+                    "type": "StatisticalGraph",
+                    "description": "A graph containing amount of revenue in a given day"
+                },
+                {
+                    "name": "status",
+                    "type": "tonRevenueStatus",
+                    "description": "Amount of earned revenue"
+                },
+                {
+                    "name": "usd_rate",
+                    "type": "double",
+                    "description": "Current conversion rate of nanotoncoin to USD cents"
                 }
             ]
         },
@@ -30847,9 +31177,9 @@
                     "description": "Chat identifier"
                 },
                 {
-                    "name": "theme_name",
-                    "type": "string",
-                    "description": "The new name of the chat theme; may be empty if theme was reset to default"
+                    "name": "theme",
+                    "type": "ChatTheme",
+                    "description": "The new theme of the chat; may be null if theme was reset to default"
                 }
             ]
         },
@@ -32140,14 +32470,14 @@
             ]
         },
         {
-            "name": "updateChatThemes",
-            "description": "The list of available chat themes has changed",
+            "name": "updateEmojiChatThemes",
+            "description": "The list of available emoji chat themes has changed",
             "class": "Update",
             "properties": [
                 {
                     "name": "chat_themes",
-                    "type": "vector\u003cchatTheme\u003e",
-                    "description": "The new list of chat themes"
+                    "type": "vector\u003cemojiChatTheme\u003e",
+                    "description": "The new list of emoji chat themes"
                 }
             ]
         },
@@ -32436,7 +32766,7 @@
         },
         {
             "name": "updateStarRevenueStatus",
-            "description": "The Telegram Star revenue earned by a bot or a chat has changed. If Telegram Star transaction screen of the chat is opened, then getStarTransactions may be called to fetch new transactions",
+            "description": "The Telegram Star revenue earned by a user or a chat has changed. If Telegram Star transaction screen of the chat is opened, then getStarTransactions may be called to fetch new transactions",
             "class": "Update",
             "properties": [
                 {
@@ -32448,6 +32778,18 @@
                     "name": "status",
                     "type": "starRevenueStatus",
                     "description": "New Telegram Star revenue status"
+                }
+            ]
+        },
+        {
+            "name": "updateTonRevenueStatus",
+            "description": "The Toncoin revenue earned by the current user has changed. If Toncoin transaction screen of the chat is opened, then getTonTransactions may be called to fetch new transactions",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "status",
+                    "type": "tonRevenueStatus",
+                    "description": "New Toncoin revenue status"
                 }
             ]
         },
@@ -33366,6 +33708,10 @@
             "description": "Describes the type of poll"
         },
         {
+            "name": "ProfileTab",
+            "description": "Describes a tab shown in a user or a chat profile"
+        },
+        {
             "name": "UserType",
             "description": "Represents the type of user. The following types are possible: regular users, deleted users and bots"
         },
@@ -33408,6 +33754,10 @@
         {
             "name": "AffiliateProgramSortOrder",
             "description": "Describes the order of the found affiliate programs"
+        },
+        {
+            "name": "CanSendGiftResult",
+            "description": "Describes whether a gift can be sent now by the current user"
         },
         {
             "name": "UpgradedGiftOrigin",
@@ -33580,6 +33930,10 @@
         {
             "name": "SavedMessagesTopicType",
             "description": "Describes type of Saved Messages topic"
+        },
+        {
+            "name": "BuiltInTheme",
+            "description": "Describes a built-in theme of an official app"
         },
         {
             "name": "RichText",
@@ -33868,6 +34222,14 @@
         {
             "name": "InputBackground",
             "description": "Contains information about background to set"
+        },
+        {
+            "name": "ChatTheme",
+            "description": "Describes a chat theme"
+        },
+        {
+            "name": "InputChatTheme",
+            "description": "Describes a chat theme to set"
         },
         {
             "name": "CanPostStoryResult",
@@ -41280,6 +41642,25 @@
             "type": 1
         },
         {
+            "name": "getGiftChatThemes",
+            "description": "Returns available to the current user gift chat themes",
+            "class": "GiftChatThemes",
+            "properties": [
+                {
+                    "name": "offset",
+                    "type": "string",
+                    "description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of chat themes to return"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "setChatTheme",
             "description": "Changes the chat theme. Supported only in private and secret chats",
             "class": "Ok",
@@ -41290,9 +41671,9 @@
                     "description": "Chat identifier"
                 },
                 {
-                    "name": "theme_name",
-                    "type": "string",
-                    "description": "Name of the new chat theme; pass an empty string to return the default theme"
+                    "name": "theme",
+                    "type": "InputChatTheme",
+                    "description": "New chat theme; pass null to return the default theme"
                 }
             ],
             "is_synchronous": false,
@@ -45293,6 +45674,91 @@
             "type": 1
         },
         {
+            "name": "getUserProfileAudios",
+            "description": "Returns the list of profile audio files of a user",
+            "class": "Audios",
+            "properties": [
+                {
+                    "name": "user_id",
+                    "type": "int53",
+                    "description": "User identifier"
+                },
+                {
+                    "name": "offset",
+                    "type": "int32",
+                    "description": "The number of audio files to skip; must be non-negative"
+                },
+                {
+                    "name": "limit",
+                    "type": "int32",
+                    "description": "The maximum number of audio files to be returned; up to 100"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "isProfileAudio",
+            "description": "Checks whether a file is in the profile audio files of the current user. Returns a 404 error if it isn't",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "file_id",
+                    "type": "int32",
+                    "description": "Identifier of the audio file to check"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "addProfileAudio",
+            "description": "Adds an audio file to the beginning of the profile audio files of the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "file_id",
+                    "type": "int32",
+                    "description": "Identifier of the audio file to be added. The file must have been uploaded to the server"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setProfileAudioPosition",
+            "description": "Changes position of an audio file in the profile audio files of the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "file_id",
+                    "type": "int32",
+                    "description": "Identifier of the file from profile audio files, which position will be changed"
+                },
+                {
+                    "name": "after_file_id",
+                    "type": "int32",
+                    "description": "Identifier of the file from profile audio files after which the file will be positioned; pass 0 to move the file to the beginning of the list"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "removeProfileAudio",
+            "description": "Removes an audio file from the profile audio files of the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "file_id",
+                    "type": "int32",
+                    "description": "Identifier of the audio file to be removed"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "getStickerOutline",
             "description": "Returns outline of a sticker. This is an offline method. Returns a 404 error if the outline isn't known",
             "class": "Outline",
@@ -46175,6 +46641,20 @@
                     "name": "birthdate",
                     "type": "birthdate",
                     "description": "The new value of the current user's birthdate; pass null to remove the birthdate"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "setMainProfileTab",
+            "description": "Changes the main profile tab of the current user",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "main_profile_tab",
+                    "type": "ProfileTab",
+                    "description": "The new value of the main profile tab"
                 }
             ],
             "is_synchronous": false,
@@ -47335,6 +47815,25 @@
             "type": 1
         },
         {
+            "name": "setSupergroupMainProfileTab",
+            "description": "Changes the main profile tab of the channel; requires can_change_info administrator right",
+            "class": "Ok",
+            "properties": [
+                {
+                    "name": "supergroup_id",
+                    "type": "int53",
+                    "description": "Identifier of the channel"
+                },
+                {
+                    "name": "main_profile_tab",
+                    "type": "ProfileTab",
+                    "description": "The new value of the main profile tab"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
             "name": "toggleSupergroupSignMessages",
             "description": "Toggles whether sender signature or link to the account is added to sent messages in a channel; requires can_change_info member right",
             "class": "Ok",
@@ -47801,6 +48300,20 @@
             "description": "Returns gifts that can be sent to other users and channel chats",
             "class": "AvailableGifts",
             "properties": [],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "canSendGift",
+            "description": "Checks whether a gift with next_send_date in the future can be sent already",
+            "class": "CanSendGiftResult",
+            "properties": [
+                {
+                    "name": "gift_id",
+                    "type": "int64",
+                    "description": "Identifier of the gift to send"
+                }
+            ],
             "is_synchronous": false,
             "type": 1
         },
@@ -49222,6 +49735,34 @@
                     "name": "owner_id",
                     "type": "MessageSender",
                     "description": "Identifier of the owner of the Telegram Stars; can be identifier of an owned bot, or identifier of an owned channel chat"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getTonRevenueStatistics",
+            "description": "Returns detailed Toncoin revenue statistics of the current user",
+            "class": "TonRevenueStatistics",
+            "properties": [
+                {
+                    "name": "is_dark",
+                    "type": "Bool",
+                    "description": "Pass true if a dark theme is used by the application"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getTonWithdrawalUrl",
+            "description": "Returns a URL for Toncoin withdrawal from the current user's account. The user must have at least 10 toncoins to withdraw and can withdraw up to 100000 Toncoins in one transaction",
+            "class": "HttpUrl",
+            "properties": [
+                {
+                    "name": "password",
+                    "type": "string",
+                    "description": "The 2-step verification password of the current user"
                 }
             ],
             "is_synchronous": false,
