@@ -4060,6 +4060,9 @@ func UnmarshalMessageContent(data json.RawMessage) (MessageContent, error) {
 	case TypeMessagePoll:
 		return UnmarshalMessagePoll(data)
 
+	case TypeMessageStakeDice:
+		return UnmarshalMessageStakeDice(data)
+
 	case TypeMessageStory:
 		return UnmarshalMessageStory(data)
 
@@ -4210,8 +4213,8 @@ func UnmarshalMessageContent(data json.RawMessage) (MessageContent, error) {
 	case TypeMessageUpgradedGiftPurchaseOffer:
 		return UnmarshalMessageUpgradedGiftPurchaseOffer(data)
 
-	case TypeMessageUpgradedGiftPurchaseOfferDeclined:
-		return UnmarshalMessageUpgradedGiftPurchaseOfferDeclined(data)
+	case TypeMessageUpgradedGiftPurchaseOfferRejected:
+		return UnmarshalMessageUpgradedGiftPurchaseOfferRejected(data)
 
 	case TypeMessagePaidMessagesRefunded:
 		return UnmarshalMessagePaidMessagesRefunded(data)
@@ -4550,6 +4553,9 @@ func UnmarshalInputMessageContent(data json.RawMessage) (InputMessageContent, er
 
 	case TypeInputMessagePoll:
 		return UnmarshalInputMessagePoll(data)
+
+	case TypeInputMessageStakeDice:
+		return UnmarshalInputMessageStakeDice(data)
 
 	case TypeInputMessageStory:
 		return UnmarshalInputMessageStory(data)
@@ -9481,6 +9487,9 @@ func UnmarshalUpdate(data json.RawMessage) (Update, error) {
 	case TypeUpdateDiceEmojis:
 		return UnmarshalUpdateDiceEmojis(data)
 
+	case TypeUpdateStakeDiceState:
+		return UnmarshalUpdateStakeDiceState(data)
+
 	case TypeUpdateAnimatedEmojiMessageClicked:
 		return UnmarshalUpdateAnimatedEmojiMessageClicked(data)
 
@@ -10388,6 +10397,14 @@ func UnmarshalVenue(data json.RawMessage) (*Venue, error) {
 
 func UnmarshalGame(data json.RawMessage) (*Game, error) {
 	var resp Game
+
+	err := json.Unmarshal(data, &resp)
+
+	return &resp, err
+}
+
+func UnmarshalStakeDiceState(data json.RawMessage) (*StakeDiceState, error) {
+	var resp StakeDiceState
 
 	err := json.Unmarshal(data, &resp)
 
@@ -16138,6 +16155,14 @@ func UnmarshalMessagePoll(data json.RawMessage) (*MessagePoll, error) {
 	return &resp, err
 }
 
+func UnmarshalMessageStakeDice(data json.RawMessage) (*MessageStakeDice, error) {
+	var resp MessageStakeDice
+
+	err := json.Unmarshal(data, &resp)
+
+	return &resp, err
+}
+
 func UnmarshalMessageStory(data json.RawMessage) (*MessageStory, error) {
 	var resp MessageStory
 
@@ -16538,8 +16563,8 @@ func UnmarshalMessageUpgradedGiftPurchaseOffer(data json.RawMessage) (*MessageUp
 	return &resp, err
 }
 
-func UnmarshalMessageUpgradedGiftPurchaseOfferDeclined(data json.RawMessage) (*MessageUpgradedGiftPurchaseOfferDeclined, error) {
-	var resp MessageUpgradedGiftPurchaseOfferDeclined
+func UnmarshalMessageUpgradedGiftPurchaseOfferRejected(data json.RawMessage) (*MessageUpgradedGiftPurchaseOfferRejected, error) {
+	var resp MessageUpgradedGiftPurchaseOfferRejected
 
 	err := json.Unmarshal(data, &resp)
 
@@ -17100,6 +17125,14 @@ func UnmarshalInputMessageInvoice(data json.RawMessage) (*InputMessageInvoice, e
 
 func UnmarshalInputMessagePoll(data json.RawMessage) (*InputMessagePoll, error) {
 	var resp InputMessagePoll
+
+	err := json.Unmarshal(data, &resp)
+
+	return &resp, err
+}
+
+func UnmarshalInputMessageStakeDice(data json.RawMessage) (*InputMessageStakeDice, error) {
+	var resp InputMessageStakeDice
 
 	err := json.Unmarshal(data, &resp)
 
@@ -24802,6 +24835,14 @@ func UnmarshalUpdateDiceEmojis(data json.RawMessage) (*UpdateDiceEmojis, error) 
 	return &resp, err
 }
 
+func UnmarshalUpdateStakeDiceState(data json.RawMessage) (*UpdateStakeDiceState, error) {
+	var resp UpdateStakeDiceState
+
+	err := json.Unmarshal(data, &resp)
+
+	return &resp, err
+}
+
 func UnmarshalUpdateAnimatedEmojiMessageClicked(data json.RawMessage) (*UpdateAnimatedEmojiMessageClicked, error) {
 	var resp UpdateAnimatedEmojiMessageClicked
 
@@ -25429,6 +25470,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
 	case TypeGame:
 		return UnmarshalGame(data)
+
+	case TypeStakeDiceState:
+		return UnmarshalStakeDiceState(data)
 
 	case TypeWebApp:
 		return UnmarshalWebApp(data)
@@ -27584,6 +27628,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 	case TypeMessagePoll:
 		return UnmarshalMessagePoll(data)
 
+	case TypeMessageStakeDice:
+		return UnmarshalMessageStakeDice(data)
+
 	case TypeMessageStory:
 		return UnmarshalMessageStory(data)
 
@@ -27734,8 +27781,8 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 	case TypeMessageUpgradedGiftPurchaseOffer:
 		return UnmarshalMessageUpgradedGiftPurchaseOffer(data)
 
-	case TypeMessageUpgradedGiftPurchaseOfferDeclined:
-		return UnmarshalMessageUpgradedGiftPurchaseOfferDeclined(data)
+	case TypeMessageUpgradedGiftPurchaseOfferRejected:
+		return UnmarshalMessageUpgradedGiftPurchaseOfferRejected(data)
 
 	case TypeMessagePaidMessagesRefunded:
 		return UnmarshalMessagePaidMessagesRefunded(data)
@@ -27946,6 +27993,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
 	case TypeInputMessagePoll:
 		return UnmarshalInputMessagePoll(data)
+
+	case TypeInputMessageStakeDice:
+		return UnmarshalInputMessageStakeDice(data)
 
 	case TypeInputMessageStory:
 		return UnmarshalInputMessageStory(data)
@@ -30832,6 +30882,9 @@ func UnmarshalType(data json.RawMessage) (Type, error) {
 
 	case TypeUpdateDiceEmojis:
 		return UnmarshalUpdateDiceEmojis(data)
+
+	case TypeUpdateStakeDiceState:
+		return UnmarshalUpdateStakeDiceState(data)
 
 	case TypeUpdateAnimatedEmojiMessageClicked:
 		return UnmarshalUpdateAnimatedEmojiMessageClicked(data)

@@ -236,6 +236,7 @@ const (
 	ClassLocation                               = "Location"
 	ClassVenue                                  = "Venue"
 	ClassGame                                   = "Game"
+	ClassStakeDiceState                         = "StakeDiceState"
 	ClassWebApp                                 = "WebApp"
 	ClassPoll                                   = "Poll"
 	ClassAlternativeVideo                       = "AlternativeVideo"
@@ -785,6 +786,7 @@ const (
 	TypeLocation                                                = "location"
 	TypeVenue                                                   = "venue"
 	TypeGame                                                    = "game"
+	TypeStakeDiceState                                          = "stakeDiceState"
 	TypeWebApp                                                  = "webApp"
 	TypePoll                                                    = "poll"
 	TypeAlternativeVideo                                        = "alternativeVideo"
@@ -1503,6 +1505,7 @@ const (
 	TypeMessageDice                                             = "messageDice"
 	TypeMessageGame                                             = "messageGame"
 	TypeMessagePoll                                             = "messagePoll"
+	TypeMessageStakeDice                                        = "messageStakeDice"
 	TypeMessageStory                                            = "messageStory"
 	TypeMessageChecklist                                        = "messageChecklist"
 	TypeMessageInvoice                                          = "messageInvoice"
@@ -1553,7 +1556,7 @@ const (
 	TypeMessageUpgradedGift                                     = "messageUpgradedGift"
 	TypeMessageRefundedUpgradedGift                             = "messageRefundedUpgradedGift"
 	TypeMessageUpgradedGiftPurchaseOffer                        = "messageUpgradedGiftPurchaseOffer"
-	TypeMessageUpgradedGiftPurchaseOfferDeclined                = "messageUpgradedGiftPurchaseOfferDeclined"
+	TypeMessageUpgradedGiftPurchaseOfferRejected                = "messageUpgradedGiftPurchaseOfferRejected"
 	TypeMessagePaidMessagesRefunded                             = "messagePaidMessagesRefunded"
 	TypeMessagePaidMessagePriceChanged                          = "messagePaidMessagePriceChanged"
 	TypeMessageDirectMessagePriceChanged                        = "messageDirectMessagePriceChanged"
@@ -1624,6 +1627,7 @@ const (
 	TypeInputMessageGame                                        = "inputMessageGame"
 	TypeInputMessageInvoice                                     = "inputMessageInvoice"
 	TypeInputMessagePoll                                        = "inputMessagePoll"
+	TypeInputMessageStakeDice                                   = "inputMessageStakeDice"
 	TypeInputMessageStory                                       = "inputMessageStory"
 	TypeInputMessageChecklist                                   = "inputMessageChecklist"
 	TypeInputMessageForwarded                                   = "inputMessageForwarded"
@@ -2586,6 +2590,7 @@ const (
 	TypeUpdateSpeechRecognitionTrial                            = "updateSpeechRecognitionTrial"
 	TypeUpdateGroupCallMessageLevels                            = "updateGroupCallMessageLevels"
 	TypeUpdateDiceEmojis                                        = "updateDiceEmojis"
+	TypeUpdateStakeDiceState                                    = "updateStakeDiceState"
 	TypeUpdateAnimatedEmojiMessageClicked                       = "updateAnimatedEmojiMessageClicked"
 	TypeUpdateAnimationSearchParameters                         = "updateAnimationSearchParameters"
 	TypeUpdateSuggestedActions                                  = "updateSuggestedActions"
@@ -6165,7 +6170,7 @@ type Sticker struct {
 	Width int32 `json:"width"`
 	// Sticker height; as defined by the sender
 	Height int32 `json:"height"`
-	// Emoji corresponding to the sticker
+	// Emoji corresponding to the sticker; may be empty if unknown
 	Emoji string `json:"emoji"`
 	// Sticker format
 	Format StickerFormat `json:"format"`
@@ -6544,6 +6549,39 @@ func (*Game) GetClass() string {
 
 func (*Game) GetType() string {
 	return TypeGame
+}
+
+// Describes state of the stake dice
+type StakeDiceState struct {
+	meta
+	// Hash of the state to use for sending the next dice; may be empty if the stake dice can't be sent by the current user
+	StateHash string `json:"state_hash"`
+	// The Toncoin amount that was staked in the previous roll; in the smallest units of the currency
+	StakeToncoinAmount int64 `json:"stake_toncoin_amount"`
+	// The amounts of Toncoins that are suggested to be staked; in the smallest units of the currency
+	SuggestedStakeToncoinAmounts []int64 `json:"suggested_stake_toncoin_amounts"`
+	// The number of rolled sixes towards the streak; 0-2
+	CurrentStreak int32 `json:"current_streak"`
+	// The number of Toncoins received by the user for each 1000 Toncoins staked if the dice outcome is 1-6 correspondingly; may be empty if the stake dice can't be sent by the current user
+	PrizePerMille []int32 `json:"prize_per_mille"`
+	// The number of Toncoins received by the user for each 1000 Toncoins staked if the dice outcome is 6 three times in a row with the same stake
+	StreakPrizePerMille int32 `json:"streak_prize_per_mille"`
+}
+
+func (entity *StakeDiceState) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub StakeDiceState
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*StakeDiceState) GetClass() string {
+	return ClassStakeDiceState
+}
+
+func (*StakeDiceState) GetType() string {
+	return TypeStakeDiceState
 }
 
 // Describes a Web App. Use getInternalLink with internalLinkTypeWebApp to share the Web App
@@ -7685,7 +7723,7 @@ type BusinessBotRights struct {
 	CanEditProfilePhoto bool `json:"can_edit_profile_photo"`
 	// True, if the bot can edit username of the business account
 	CanEditUsername bool `json:"can_edit_username"`
-	// True, if the bot can view gifts and amount of Telegram Stars owned by the business account
+	// True, if the bot can view gifts and Telegram Star amount owned by the business account
 	CanViewGiftsAndStars bool `json:"can_view_gifts_and_stars"`
 	// True, if the bot can sell regular gifts received by the business account
 	CanSellGifts bool `json:"can_sell_gifts"`
@@ -8444,7 +8482,7 @@ func (*ChatAdministratorRights) GetType() string {
 // Describes price of a resold gift in Telegram Stars
 type GiftResalePriceStar struct {
 	meta
-	// The amount of Telegram Stars expected to be paid for the gift. Must be in range getOption("gift_resale_star_count_min")-getOption("gift_resale_star_count_max") for gifts put for resale
+	// The Telegram Star amount expected to be paid for the gift. Must be in the range getOption("gift_resale_star_count_min")-getOption("gift_resale_star_count_max") for gifts put for resale
 	StarCount int64 `json:"star_count"`
 }
 
@@ -8471,7 +8509,7 @@ func (*GiftResalePriceStar) GiftResalePriceType() string {
 // Describes price of a resold gift in Toncoins
 type GiftResalePriceTon struct {
 	meta
-	// The amount of 1/100 of Toncoin expected to be paid for the gift. Must be in range getOption("gift_resale_toncoin_cent_count_min")-getOption("gift_resale_toncoin_cent_count_max")
+	// The amount of 1/100 of Toncoin expected to be paid for the gift. Must be in the range getOption("gift_resale_toncoin_cent_count_min")-getOption("gift_resale_toncoin_cent_count_max")
 	ToncoinCentCount int64 `json:"toncoin_cent_count"`
 }
 
@@ -8573,7 +8611,7 @@ func (*GiftPurchaseOfferStateRejected) GiftPurchaseOfferStateType() string {
 // Describes price of a suggested post in Telegram Stars
 type SuggestedPostPriceStar struct {
 	meta
-	// The amount of Telegram Stars expected to be paid for the post; getOption("suggested_post_star_count_min")-getOption("suggested_post_star_count_max")
+	// The Telegram Star amount expected to be paid for the post; getOption("suggested_post_star_count_min")-getOption("suggested_post_star_count_max")
 	StarCount int64 `json:"star_count"`
 }
 
@@ -8851,10 +8889,10 @@ func (*SuggestedPostRefundReasonPaymentRefunded) SuggestedPostRefundReasonType()
 	return TypeSuggestedPostRefundReasonPaymentRefunded
 }
 
-// Describes a possibly non-integer amount of Telegram Stars
+// Describes a possibly non-integer Telegram Star amount
 type StarAmount struct {
 	meta
-	// The integer amount of Telegram Stars rounded to 0
+	// The integer Telegram Star amount rounded to 0
 	StarCount int64 `json:"star_count"`
 	// The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999
 	NanostarCount int32 `json:"nanostar_count"`
@@ -8943,7 +8981,7 @@ type StarSubscriptionPricing struct {
 	meta
 	// The number of seconds between consecutive Telegram Star debiting
 	Period int32 `json:"period"`
-	// The amount of Telegram Stars that must be paid for each period
+	// The Telegram Star amount that must be paid for each period
 	StarCount int64 `json:"star_count"`
 }
 
@@ -9269,7 +9307,7 @@ type AffiliateInfo struct {
 	CommissionPerMille int32 `json:"commission_per_mille"`
 	// Identifier of the chat which received the commission
 	AffiliateChatId int64 `json:"affiliate_chat_id"`
-	// The amount of Telegram Stars that were received by the affiliate; can be negative for refunds
+	// The Telegram Star amount that was received by the affiliate; can be negative for refunds
 	StarAmount *StarAmount `json:"star_amount"`
 }
 
@@ -9526,7 +9564,7 @@ type PremiumGiftPaymentOption struct {
 	Currency string `json:"currency"`
 	// The amount to pay, in the smallest units of the currency
 	Amount int64 `json:"amount"`
-	// The alternative amount of Telegram Stars to pay; 0 if payment in Telegram Stars is not possible
+	// The alternative Telegram Star amount to pay; 0 if payment in Telegram Stars is not possible
 	StarCount int64 `json:"star_count"`
 	// The discount associated with this option, as a percentage
 	DiscountPercentage int32 `json:"discount_percentage"`
@@ -10705,7 +10743,7 @@ type UpgradedGiftValueInfo struct {
 	IsValueAverage bool `json:"is_value_average"`
 	// Point in time (Unix timestamp) when the corresponding regular gift was originally purchased
 	InitialSaleDate int32 `json:"initial_sale_date"`
-	// Amount of Telegram Stars that were paid for the gift
+	// The Telegram Star amount that was paid for the gift
 	InitialSaleStarCount int64 `json:"initial_sale_star_count"`
 	// Initial price of the gift; in the smallest units of the currency
 	InitialSalePrice int64 `json:"initial_sale_price"`
@@ -10839,7 +10877,7 @@ type GiftUpgradePrice struct {
 	meta
 	// Point in time (Unix timestamp) when the price will be in effect
 	Date int32 `json:"date"`
-	// The amount of Telegram Stars required to pay to upgrade the gift
+	// The Telegram Star amount required to pay to upgrade the gift
 	StarCount int64 `json:"star_count"`
 }
 
@@ -12880,7 +12918,7 @@ type StarTransactionTypeUpgradedGiftSale struct {
 	Gift *UpgradedGift `json:"gift"`
 	// The number of Telegram Stars received by the Telegram for each 1000 Telegram Stars received by the seller of the gift
 	CommissionPerMille int32 `json:"commission_per_mille"`
-	// The amount of Telegram Stars that were received by Telegram; can be negative for refunds
+	// The Telegram Star amount that was received by Telegram; can be negative for refunds
 	CommissionStarAmount *StarAmount `json:"commission_star_amount"`
 	// True, if the gift was sold through a purchase offer
 	ViaOffer bool `json:"via_offer"`
@@ -13031,7 +13069,7 @@ type StarTransactionTypePaidMessageReceive struct {
 	MessageCount int32 `json:"message_count"`
 	// The number of Telegram Stars received by the Telegram for each 1000 Telegram Stars paid for message sending
 	CommissionPerMille int32 `json:"commission_per_mille"`
-	// The amount of Telegram Stars that were received by Telegram; can be negative for refunds
+	// The Telegram Star amount that was received by Telegram; can be negative for refunds
 	CommissionStarAmount *StarAmount `json:"commission_star_amount"`
 }
 
@@ -13112,7 +13150,7 @@ type StarTransactionTypePaidGroupCallMessageReceive struct {
 	SenderId MessageSender `json:"sender_id"`
 	// The number of Telegram Stars received by the Telegram for each 1000 Telegram Stars paid for message sending
 	CommissionPerMille int32 `json:"commission_per_mille"`
-	// The amount of Telegram Stars that were received by Telegram; can be negative for refunds
+	// The Telegram Star amount that was received by Telegram; can be negative for refunds
 	CommissionStarAmount *StarAmount `json:"commission_star_amount"`
 }
 
@@ -13191,7 +13229,7 @@ type StarTransactionTypePaidGroupCallReactionReceive struct {
 	SenderId MessageSender `json:"sender_id"`
 	// The number of Telegram Stars received by the Telegram for each 1000 Telegram Stars paid for reaction sending
 	CommissionPerMille int32 `json:"commission_per_mille"`
-	// The amount of Telegram Stars that were received by Telegram; can be negative for refunds
+	// The Telegram Star amount that was received by Telegram; can be negative for refunds
 	CommissionStarAmount *StarAmount `json:"commission_star_amount"`
 }
 
@@ -13672,7 +13710,7 @@ type TonTransactionTypeUpgradedGiftSale struct {
 	Gift *UpgradedGift `json:"gift"`
 	// The number of Toncoins received by the Telegram for each 1000 Toncoins received by the seller of the gift
 	CommissionPerMille int32 `json:"commission_per_mille"`
-	// The amount of Toncoins that were received by the Telegram; in the smallest units of the currency
+	// The Toncoin amount that was received by the Telegram; in the smallest units of the currency
 	CommissionToncoinAmount int64 `json:"commission_toncoin_amount"`
 	// True, if the gift was sold through a purchase offer
 	ViaOffer bool `json:"via_offer"`
@@ -14083,7 +14121,7 @@ type GiveawayInfoCompleted struct {
 	ActivationCount int32 `json:"activation_count"`
 	// Telegram Premium gift code that was received by the current user; empty if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Premium giveaway
 	GiftCode string `json:"gift_code"`
-	// The amount of Telegram Stars won by the current user; 0 if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Star giveaway
+	// The Telegram Star amount won by the current user; 0 if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Star giveaway
 	WonStarCount int64 `json:"won_star_count"`
 }
 
@@ -18143,7 +18181,7 @@ type MessageReplyToMessage struct {
 	Origin MessageOrigin `json:"origin"`
 	// Point in time (Unix timestamp) when the message was sent if the message was from another chat or topic; 0 for messages from the same chat
 	OriginSendDate int32 `json:"origin_send_date"`
-	// Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageChecklist, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote
+	// Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageChecklist, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageStakeDice, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote
 	Content MessageContent `json:"content"`
 }
 
@@ -18418,6 +18456,8 @@ type Message struct {
 	EffectId JsonInt64 `json:"effect_id"`
 	// Information about the restrictions that must be applied to the message content; may be null if none
 	RestrictionInfo *RestrictionInfo `json:"restriction_info"`
+	// IETF language tag of the message language on which it can be summarized; empty if summary isn't available for the message
+	SummaryLanguageCode string `json:"summary_language_code"`
 	// Content of the message
 	Content MessageContent `json:"content"`
 	// Reply markup for the message; may be null if none
@@ -18477,6 +18517,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 		MediaAlbumId            JsonInt64               `json:"media_album_id"`
 		EffectId                JsonInt64               `json:"effect_id"`
 		RestrictionInfo         *RestrictionInfo        `json:"restriction_info"`
+		SummaryLanguageCode     string                  `json:"summary_language_code"`
 		Content                 json.RawMessage         `json:"content"`
 		ReplyMarkup             json.RawMessage         `json:"reply_markup"`
 	}
@@ -18515,6 +18556,7 @@ func (message *Message) UnmarshalJSON(data []byte) error {
 	message.MediaAlbumId = tmp.MediaAlbumId
 	message.EffectId = tmp.EffectId
 	message.RestrictionInfo = tmp.RestrictionInfo
+	message.SummaryLanguageCode = tmp.SummaryLanguageCode
 
 	fieldSenderId, _ := UnmarshalMessageSender(tmp.SenderId)
 	message.SenderId = fieldSenderId
@@ -30664,7 +30706,7 @@ type MessageDice struct {
 	FinalState DiceStickers `json:"final_state"`
 	// Emoji on which the dice throw animation is based
 	Emoji string `json:"emoji"`
-	// The dice value. If the value is 0, the dice don't have final state yet
+	// The dice value. If the value is 0, then the dice don't have final state yet
 	Value int32 `json:"value"`
 	// Number of frame after which a success animation like a shower of confetti needs to be shown on updateMessageSendSucceeded
 	SuccessAnimationFrameNumber int32 `json:"success_animation_frame_number"`
@@ -30769,6 +30811,68 @@ func (*MessagePoll) GetType() string {
 
 func (*MessagePoll) MessageContentType() string {
 	return TypeMessagePoll
+}
+
+// A stake dice message. The dice value is randomly generated by the server
+type MessageStakeDice struct {
+	meta
+	// The animated stickers with the initial dice animation; may be null if unknown. The update updateMessageContent will be sent when the sticker became known
+	InitialState DiceStickers `json:"initial_state"`
+	// The animated stickers with the final dice animation; may be null if unknown. The update updateMessageContent will be sent when the sticker became known
+	FinalState DiceStickers `json:"final_state"`
+	// The dice value. If the value is 0, then the dice don't have final state yet
+	Value int32 `json:"value"`
+	// The Toncoin amount that was staked; in the smallest units of the currency
+	StakeToncoinAmount int64 `json:"stake_toncoin_amount"`
+	// The Toncoin amount that was gained from the roll; in the smallest units of the currency; -1 if the dice don't have final state yet
+	PrizeToncoinAmount int64 `json:"prize_toncoin_amount"`
+}
+
+func (entity *MessageStakeDice) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub MessageStakeDice
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*MessageStakeDice) GetClass() string {
+	return ClassMessageContent
+}
+
+func (*MessageStakeDice) GetType() string {
+	return TypeMessageStakeDice
+}
+
+func (*MessageStakeDice) MessageContentType() string {
+	return TypeMessageStakeDice
+}
+
+func (messageStakeDice *MessageStakeDice) UnmarshalJSON(data []byte) error {
+	var tmp struct {
+		InitialState       json.RawMessage `json:"initial_state"`
+		FinalState         json.RawMessage `json:"final_state"`
+		Value              int32           `json:"value"`
+		StakeToncoinAmount int64           `json:"stake_toncoin_amount"`
+		PrizeToncoinAmount int64           `json:"prize_toncoin_amount"`
+	}
+
+	err := json.Unmarshal(data, &tmp)
+	if err != nil {
+		return err
+	}
+
+	messageStakeDice.Value = tmp.Value
+	messageStakeDice.StakeToncoinAmount = tmp.StakeToncoinAmount
+	messageStakeDice.PrizeToncoinAmount = tmp.PrizeToncoinAmount
+
+	fieldInitialState, _ := UnmarshalDiceStickers(tmp.InitialState)
+	messageStakeDice.InitialState = fieldInitialState
+
+	fieldFinalState, _ := UnmarshalDiceStickers(tmp.FinalState)
+	messageStakeDice.FinalState = fieldFinalState
+
+	return nil
 }
 
 // A message with a forwarded story
@@ -32367,7 +32471,7 @@ type MessageGiftedTon struct {
 	GifterUserId int64 `json:"gifter_user_id"`
 	// The identifier of a user that received Toncoins; 0 if the gift is incoming
 	ReceiverUserId int64 `json:"receiver_user_id"`
-	// The received amount of Toncoins, in the smallest units of the cryptocurrency
+	// The received Toncoin amount, in the smallest units of the cryptocurrency
 	TonAmount int64 `json:"ton_amount"`
 	// Identifier of the transaction for Toncoin credit; for receiver only
 	TransactionId string `json:"transaction_id"`
@@ -32764,40 +32868,40 @@ func (messageUpgradedGiftPurchaseOffer *MessageUpgradedGiftPurchaseOffer) Unmars
 	return nil
 }
 
-// An offer to purchase a gift was declined or expired
-type MessageUpgradedGiftPurchaseOfferDeclined struct {
+// An offer to purchase a gift was rejected or expired
+type MessageUpgradedGiftPurchaseOfferRejected struct {
 	meta
 	// The gift
 	Gift *UpgradedGift `json:"gift"`
 	// The proposed price
 	Price GiftResalePrice `json:"price"`
-	// Identifier of the message with purchase offer which was declined or expired; may be 0 or an identifier of a deleted message
+	// Identifier of the message with purchase offer which was rejected or expired; may be 0 or an identifier of a deleted message
 	OfferMessageId int64 `json:"offer_message_id"`
-	// True, if the offer has expired; otherwise, the offer was explicitly declined
+	// True, if the offer has expired; otherwise, the offer was explicitly rejected
 	WasExpired bool `json:"was_expired"`
 }
 
-func (entity *MessageUpgradedGiftPurchaseOfferDeclined) MarshalJSON() ([]byte, error) {
+func (entity *MessageUpgradedGiftPurchaseOfferRejected) MarshalJSON() ([]byte, error) {
 	entity.meta.Type = entity.GetType()
 
-	type stub MessageUpgradedGiftPurchaseOfferDeclined
+	type stub MessageUpgradedGiftPurchaseOfferRejected
 
 	return json.Marshal((*stub)(entity))
 }
 
-func (*MessageUpgradedGiftPurchaseOfferDeclined) GetClass() string {
+func (*MessageUpgradedGiftPurchaseOfferRejected) GetClass() string {
 	return ClassMessageContent
 }
 
-func (*MessageUpgradedGiftPurchaseOfferDeclined) GetType() string {
-	return TypeMessageUpgradedGiftPurchaseOfferDeclined
+func (*MessageUpgradedGiftPurchaseOfferRejected) GetType() string {
+	return TypeMessageUpgradedGiftPurchaseOfferRejected
 }
 
-func (*MessageUpgradedGiftPurchaseOfferDeclined) MessageContentType() string {
-	return TypeMessageUpgradedGiftPurchaseOfferDeclined
+func (*MessageUpgradedGiftPurchaseOfferRejected) MessageContentType() string {
+	return TypeMessageUpgradedGiftPurchaseOfferRejected
 }
 
-func (messageUpgradedGiftPurchaseOfferDeclined *MessageUpgradedGiftPurchaseOfferDeclined) UnmarshalJSON(data []byte) error {
+func (messageUpgradedGiftPurchaseOfferRejected *MessageUpgradedGiftPurchaseOfferRejected) UnmarshalJSON(data []byte) error {
 	var tmp struct {
 		Gift           *UpgradedGift   `json:"gift"`
 		Price          json.RawMessage `json:"price"`
@@ -32810,12 +32914,12 @@ func (messageUpgradedGiftPurchaseOfferDeclined *MessageUpgradedGiftPurchaseOffer
 		return err
 	}
 
-	messageUpgradedGiftPurchaseOfferDeclined.Gift = tmp.Gift
-	messageUpgradedGiftPurchaseOfferDeclined.OfferMessageId = tmp.OfferMessageId
-	messageUpgradedGiftPurchaseOfferDeclined.WasExpired = tmp.WasExpired
+	messageUpgradedGiftPurchaseOfferRejected.Gift = tmp.Gift
+	messageUpgradedGiftPurchaseOfferRejected.OfferMessageId = tmp.OfferMessageId
+	messageUpgradedGiftPurchaseOfferRejected.WasExpired = tmp.WasExpired
 
 	fieldPrice, _ := UnmarshalGiftResalePrice(tmp.Price)
-	messageUpgradedGiftPurchaseOfferDeclined.Price = fieldPrice
+	messageUpgradedGiftPurchaseOfferRejected.Price = fieldPrice
 
 	return nil
 }
@@ -34506,7 +34610,7 @@ type InputMessageText struct {
 	Text *FormattedText `json:"text"`
 	// Options to be used for generation of a link preview; may be null if none; pass null to use default link preview options
 	LinkPreviewOptions *LinkPreviewOptions `json:"link_preview_options"`
-	// True, if a chat message draft must be deleted
+	// True, if the chat message draft must be deleted
 	ClearDraft bool `json:"clear_draft"`
 }
 
@@ -35381,6 +35485,37 @@ func (inputMessagePoll *InputMessagePoll) UnmarshalJSON(data []byte) error {
 	inputMessagePoll.Type = fieldType
 
 	return nil
+}
+
+// A stake dice message
+type InputMessageStakeDice struct {
+	meta
+	// Hash of the stake dice state. The state hash can be used only if it was received recently enough. Otherwise, a new state must be requested using getStakeDiceState
+	StateHash string `json:"state_hash"`
+	// The Toncoin amount that will be staked; in the smallest units of the currency. Must be in the range getOption("stake_dice_stake_amount_min")-getOption("stake_dice_stake_amount_max")
+	StakeToncoinAmount int64 `json:"stake_toncoin_amount"`
+	// True, if the chat message draft must be deleted
+	ClearDraft bool `json:"clear_draft"`
+}
+
+func (entity *InputMessageStakeDice) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub InputMessageStakeDice
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*InputMessageStakeDice) GetClass() string {
+	return ClassInputMessageContent
+}
+
+func (*InputMessageStakeDice) GetType() string {
+	return TypeInputMessageStakeDice
+}
+
+func (*InputMessageStakeDice) InputMessageContentType() string {
+	return TypeInputMessageStakeDice
 }
 
 // A message with a forwarded story. Stories can't be forwarded to secret chats. A story can be forwarded only if story.can_be_forwarded
@@ -60076,11 +60211,11 @@ func (*ChatRevenueTransactions) GetType() string {
 // Contains information about Telegram Stars earned by a user or a chat
 type StarRevenueStatus struct {
 	meta
-	// Total amount of Telegram Stars earned
+	// Total Telegram Star amount earned
 	TotalAmount *StarAmount `json:"total_amount"`
-	// The amount of Telegram Stars that aren't withdrawn yet
+	// The Telegram Star amount that isn't withdrawn yet
 	CurrentAmount *StarAmount `json:"current_amount"`
-	// The amount of Telegram Stars that are available for withdrawal
+	// The Telegram Star amount that is available for withdrawal
 	AvailableAmount *StarAmount `json:"available_amount"`
 	// True, if Telegram Stars can be withdrawn now or later
 	WithdrawalEnabled bool `json:"withdrawal_enabled"`
@@ -60155,11 +60290,11 @@ func (starRevenueStatistics *StarRevenueStatistics) UnmarshalJSON(data []byte) e
 // Contains information about Toncoins earned by the current user
 type TonRevenueStatus struct {
 	meta
-	// Total amount of Toncoins earned; in the smallest units of the cryptocurrency
+	// Total Toncoin amount earned; in the smallest units of the cryptocurrency
 	TotalAmount JsonInt64 `json:"total_amount"`
-	// Amount of Toncoins that aren't withdrawn yet; in the smallest units of the cryptocurrency
+	// The Toncoin amount that isn't withdrawn yet; in the smallest units of the cryptocurrency
 	BalanceAmount JsonInt64 `json:"balance_amount"`
-	// Amount of Toncoins that are available for withdrawal; in the smallest units of the cryptocurrency
+	// The Toncoin amount that is available for withdrawal; in the smallest units of the cryptocurrency
 	AvailableAmount JsonInt64 `json:"available_amount"`
 	// True, if Toncoins can be withdrawn
 	WithdrawalEnabled bool `json:"withdrawal_enabled"`
@@ -65417,6 +65552,33 @@ func (*UpdateDiceEmojis) GetType() string {
 
 func (*UpdateDiceEmojis) UpdateType() string {
 	return TypeUpdateDiceEmojis
+}
+
+// The stake dice state has changed
+type UpdateStakeDiceState struct {
+	meta
+	// The new state. The state can be used only if it was received recently enough. Otherwise, a new state must be requested using getStakeDiceState
+	State *StakeDiceState `json:"state"`
+}
+
+func (entity *UpdateStakeDiceState) MarshalJSON() ([]byte, error) {
+	entity.meta.Type = entity.GetType()
+
+	type stub UpdateStakeDiceState
+
+	return json.Marshal((*stub)(entity))
+}
+
+func (*UpdateStakeDiceState) GetClass() string {
+	return ClassUpdate
+}
+
+func (*UpdateStakeDiceState) GetType() string {
+	return TypeUpdateStakeDiceState
+}
+
+func (*UpdateStakeDiceState) UpdateType() string {
+	return TypeUpdateStakeDiceState
 }
 
 // Some animated emoji message was clicked and a big animated sticker must be played if the message is visible on the screen. chatActionWatchingAnimations with the text of the message needs to be sent if the sticker is played

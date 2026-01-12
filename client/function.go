@@ -1505,7 +1505,7 @@ type GetRepliedMessageRequest struct {
 	MessageId int64 `json:"message_id"`
 }
 
-// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message for messagePinMessage, the game message for messageGameScore, the invoice message for messagePaymentSuccessful, the message with a previously set same background for messageChatSetBackground, the giveaway message for messageGiveawayCompleted, the checklist message for messageChecklistTasksDone, messageChecklistTasksAdded, the message with suggested post information for messageSuggestedPostApprovalFailed, messageSuggestedPostApproved, messageSuggestedPostDeclined, messageSuggestedPostPaid, messageSuggestedPostRefunded, the message with the regular gift that was upgraded for messageUpgradedGift with origin of the type upgradedGiftOriginUpgrade, the message with gift purchase offer for messageUpgradedGiftPurchaseOfferDeclined, and the topic creation message for topic messages without non-bundled replied message. Returns a 404 error if the message doesn't exist
+// Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message for messagePinMessage, the game message for messageGameScore, the invoice message for messagePaymentSuccessful, the message with a previously set same background for messageChatSetBackground, the giveaway message for messageGiveawayCompleted, the checklist message for messageChecklistTasksDone, messageChecklistTasksAdded, the message with suggested post information for messageSuggestedPostApprovalFailed, messageSuggestedPostApproved, messageSuggestedPostDeclined, messageSuggestedPostPaid, messageSuggestedPostRefunded, the message with the regular gift that was upgraded for messageUpgradedGift with origin of the type upgradedGiftOriginUpgrade, the message with gift purchase offer for messageUpgradedGiftPurchaseOfferRejected, and the topic creation message for topic messages without non-bundled replied message. Returns a 404 error if the message doesn't exist
 func (client *Client) GetRepliedMessage(req *GetRepliedMessageRequest) (*Message, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -3512,7 +3512,7 @@ type SearchPublicPostsRequest struct {
 	Offset string `json:"offset"`
 	// The maximum number of messages to be returned; up to 100. For optimal performance, the number of returned messages is chosen by TDLib and can be smaller than the specified limit
 	Limit int32 `json:"limit"`
-	// The amount of Telegram Stars the user agreed to pay for the search; pass 0 for free searches
+	// The Telegram Star amount the user agreed to pay for the search; pass 0 for free searches
 	StarCount int64 `json:"star_count"`
 }
 
@@ -4560,7 +4560,7 @@ type TranslateMessageTextRequest struct {
 	ChatId int64 `json:"chat_id"`
 	// Identifier of the message
 	MessageId int64 `json:"message_id"`
-	// Language code of the language to which the message is translated. Must be one of "af", "sq", "am", "ar", "hy", "az", "eu", "be", "bn", "bs", "bg", "ca", "ceb", "zh-CN", "zh", "zh-Hans", "zh-TW", "zh-Hant", "co", "hr", "cs", "da", "nl", "en", "eo", "et", "fi", "fr", "fy", "gl", "ka", "de", "el", "gu", "ht", "ha", "haw", "he", "iw", "hi", "hmn", "hu", "is", "ig", "id", "in", "ga", "it", "ja", "jv", "kn", "kk", "km", "rw", "ko", "ku", "ky", "lo", "la", "lv", "lt", "lb", "mk", "mg", "ms", "ml", "mt", "mi", "mr", "mn", "my", "ne", "no", "ny", "or", "ps", "fa", "pl", "pt", "pa", "ro", "ru", "sm", "gd", "sr", "st", "sn", "sd", "si", "sk", "sl", "so", "es", "su", "sw", "sv", "tl", "tg", "ta", "tt", "te", "th", "tr", "tk", "uk", "ur", "ug", "uz", "vi", "cy", "xh", "yi", "ji", "yo", "zu"
+	// Language code of the language to which the message is translated. See translateText.to_language_code for the list of supported values
 	ToLanguageCode string `json:"to_language_code"`
 }
 
@@ -4574,6 +4574,38 @@ func (client *Client) TranslateMessageText(req *TranslateMessageTextRequest) (*F
 			"chat_id":          req.ChatId,
 			"message_id":       req.MessageId,
 			"to_language_code": req.ToLanguageCode,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalFormattedText(result.Data)
+}
+
+type SummarizeMessageRequest struct {
+	// Identifier of the chat to which the message belongs
+	ChatId int64 `json:"chat_id"`
+	// Identifier of the message
+	MessageId int64 `json:"message_id"`
+	// Pass a language code to which the summary will be translated; may be empty if translation isn't needed. See translateText.to_language_code for the list of supported values
+	TranslateToLanguageCode string `json:"translate_to_language_code"`
+}
+
+// Summarizes content of the message with non-empty summary_language_code
+func (client *Client) SummarizeMessage(req *SummarizeMessageRequest) (*FormattedText, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "summarizeMessage",
+		},
+		Data: map[string]interface{}{
+			"chat_id":                    req.ChatId,
+			"message_id":                 req.MessageId,
+			"translate_to_language_code": req.TranslateToLanguageCode,
 		},
 	})
 	if err != nil {
@@ -6240,7 +6272,7 @@ type GetBusinessAccountStarAmountRequest struct {
 	BusinessConnectionId string `json:"business_connection_id"`
 }
 
-// Returns the amount of Telegram Stars owned by a business account; for bots only
+// Returns the Telegram Star amount owned by a business account; for bots only
 func (client *Client) GetBusinessAccountStarAmount(req *GetBusinessAccountStarAmountRequest) (*StarAmount, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -12006,6 +12038,25 @@ func (client *Client) ClearAllDraftMessages(req *ClearAllDraftMessagesRequest) (
 	}
 
 	return UnmarshalOk(result.Data)
+}
+
+// Returns the current state of stake dice
+func (client *Client) GetStakeDiceState() (*StakeDiceState, error) {
+	result, err := client.Send(Request{
+		meta: meta{
+			Type: "getStakeDiceState",
+		},
+		Data: map[string]interface{}{},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Type == "error" {
+		return nil, buildResponseError(result.Data)
+	}
+
+	return UnmarshalStakeDiceState(result.Data)
 }
 
 type GetSavedNotificationSoundRequest struct {
@@ -22338,7 +22389,7 @@ type UpgradeGiftRequest struct {
 	ReceivedGiftId string `json:"received_gift_id"`
 	// Pass true to keep the original gift text, sender and receiver in the upgraded gift
 	KeepOriginalDetails bool `json:"keep_original_details"`
-	// The amount of Telegram Stars required to pay for the upgrade. It the gift has prepaid_upgrade_star_count > 0, then pass 0, otherwise, pass gift.upgrade_star_count
+	// The Telegram Star amount required to pay for the upgrade. It the gift has prepaid_upgrade_star_count > 0, then pass 0, otherwise, pass gift.upgrade_star_count
 	StarCount int64 `json:"star_count"`
 }
 
@@ -22371,7 +22422,7 @@ type BuyGiftUpgradeRequest struct {
 	OwnerId MessageSender `json:"owner_id"`
 	// Prepaid upgrade hash as received along with the gift
 	PrepaidUpgradeHash string `json:"prepaid_upgrade_hash"`
-	// The amount of Telegram Stars the user agreed to pay for the upgrade; must be equal to gift.upgrade_star_count
+	// The Telegram Star amount the user agreed to pay for the upgrade; must be equal to gift.upgrade_star_count
 	StarCount int64 `json:"star_count"`
 }
 
@@ -22405,7 +22456,7 @@ type TransferGiftRequest struct {
 	ReceivedGiftId string `json:"received_gift_id"`
 	// Identifier of the user or the channel chat that will receive the gift
 	NewOwnerId MessageSender `json:"new_owner_id"`
-	// The amount of Telegram Stars required to pay for the transfer
+	// The Telegram Star amount required to pay for the transfer
 	StarCount int64 `json:"star_count"`
 }
 
@@ -22436,7 +22487,7 @@ func (client *Client) TransferGift(req *TransferGiftRequest) (*Ok, error) {
 type DropGiftOriginalDetailsRequest struct {
 	// Identifier of the gift
 	ReceivedGiftId string `json:"received_gift_id"`
-	// The amount of Telegram Stars required to pay for the operation
+	// The Telegram Star amount required to pay for the operation
 	StarCount int64 `json:"star_count"`
 }
 
@@ -22544,8 +22595,8 @@ func (client *Client) SendGiftPurchaseOffer(req *SendGiftPurchaseOfferRequest) (
 type ProcessGiftPurchaseOfferRequest struct {
 	// Identifier of the message with the gift purchase offer
 	MessageId int64 `json:"message_id"`
-	// Pass true to approve the request; pass false to decline it
-	Approve bool `json:"approve"`
+	// Pass true to accept the request; pass false to reject it
+	Accept bool `json:"accept"`
 }
 
 // Handles a pending gift purchase offer
@@ -22556,7 +22607,7 @@ func (client *Client) ProcessGiftPurchaseOffer(req *ProcessGiftPurchaseOfferRequ
 		},
 		Data: map[string]interface{}{
 			"message_id": req.MessageId,
-			"approve":    req.Approve,
+			"accept":     req.Accept,
 		},
 	})
 	if err != nil {
@@ -23896,7 +23947,7 @@ type SetChatPaidMessageStarCountRequest struct {
 	PaidMessageStarCount int64 `json:"paid_message_star_count"`
 }
 
-// Changes the amount of Telegram Stars that must be paid to send a message to a supergroup chat; requires can_restrict_members administrator right and supergroupFullInfo.can_enable_paid_messages
+// Changes the Telegram Star amount that must be paid to send a message to a supergroup chat; requires can_restrict_members administrator right and supergroupFullInfo.can_enable_paid_messages
 func (client *Client) SetChatPaidMessageStarCount(req *SetChatPaidMessageStarCountRequest) (*Ok, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -26871,7 +26922,7 @@ type GetConnectedAffiliateProgramRequest struct {
 	BotUserId int64 `json:"bot_user_id"`
 }
 
-// Returns an affiliate program that were connected to the given affiliate by identifier of the bot that created the program
+// Returns an affiliate program that was connected to the given affiliate by identifier of the bot that created the program
 func (client *Client) GetConnectedAffiliateProgram(req *GetConnectedAffiliateProgramRequest) (*ConnectedAffiliateProgram, error) {
 	result, err := client.Send(Request{
 		meta: meta{
@@ -28617,6 +28668,9 @@ func (client *Client) TestUseUpdate() (Update, error) {
 
 	case TypeUpdateDiceEmojis:
 		return UnmarshalUpdateDiceEmojis(result.Data)
+
+	case TypeUpdateStakeDiceState:
+		return UnmarshalUpdateStakeDiceState(result.Data)
 
 	case TypeUpdateAnimatedEmojiMessageClicked:
 		return UnmarshalUpdateAnimatedEmojiMessageClicked(result.Data)

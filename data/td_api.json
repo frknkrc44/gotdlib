@@ -1524,7 +1524,7 @@
                 {
                     "name": "emoji",
                     "type": "string",
-                    "description": "Emoji corresponding to the sticker"
+                    "description": "Emoji corresponding to the sticker; may be empty if unknown"
                 },
                 {
                     "name": "format",
@@ -1841,6 +1841,43 @@
                     "name": "animation",
                     "type": "animation",
                     "description": "Game animation; may be null"
+                }
+            ]
+        },
+        {
+            "name": "stakeDiceState",
+            "description": "Describes state of the stake dice",
+            "class": "StakeDiceState",
+            "properties": [
+                {
+                    "name": "state_hash",
+                    "type": "string",
+                    "description": "Hash of the state to use for sending the next dice; may be empty if the stake dice can't be sent by the current user"
+                },
+                {
+                    "name": "stake_toncoin_amount",
+                    "type": "int53",
+                    "description": "The Toncoin amount that was staked in the previous roll; in the smallest units of the currency"
+                },
+                {
+                    "name": "suggested_stake_toncoin_amounts",
+                    "type": "vector\u003cint53\u003e",
+                    "description": "The amounts of Toncoins that are suggested to be staked; in the smallest units of the currency"
+                },
+                {
+                    "name": "current_streak",
+                    "type": "int32",
+                    "description": "The number of rolled sixes towards the streak; 0-2"
+                },
+                {
+                    "name": "prize_per_mille",
+                    "type": "vector\u003cint32\u003e",
+                    "description": "The number of Toncoins received by the user for each 1000 Toncoins staked if the dice outcome is 1-6 correspondingly; may be empty if the stake dice can't be sent by the current user"
+                },
+                {
+                    "name": "streak_prize_per_mille",
+                    "type": "int32",
+                    "description": "The number of Toncoins received by the user for each 1000 Toncoins staked if the dice outcome is 6 three times in a row with the same stake"
                 }
             ]
         },
@@ -2628,7 +2665,7 @@
                 {
                     "name": "can_view_gifts_and_stars",
                     "type": "Bool",
-                    "description": "True, if the bot can view gifts and amount of Telegram Stars owned by the business account"
+                    "description": "True, if the bot can view gifts and Telegram Star amount owned by the business account"
                 },
                 {
                     "name": "can_sell_gifts",
@@ -3229,7 +3266,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars expected to be paid for the gift. Must be in range getOption(\"gift_resale_star_count_min\")-getOption(\"gift_resale_star_count_max\") for gifts put for resale"
+                    "description": "The Telegram Star amount expected to be paid for the gift. Must be in the range getOption(\"gift_resale_star_count_min\")-getOption(\"gift_resale_star_count_max\") for gifts put for resale"
                 }
             ]
         },
@@ -3241,7 +3278,7 @@
                 {
                     "name": "toncoin_cent_count",
                     "type": "int53",
-                    "description": "The amount of 1/100 of Toncoin expected to be paid for the gift. Must be in range getOption(\"gift_resale_toncoin_cent_count_min\")-getOption(\"gift_resale_toncoin_cent_count_max\")"
+                    "description": "The amount of 1/100 of Toncoin expected to be paid for the gift. Must be in the range getOption(\"gift_resale_toncoin_cent_count_min\")-getOption(\"gift_resale_toncoin_cent_count_max\")"
                 }
             ]
         },
@@ -3271,7 +3308,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars expected to be paid for the post; getOption(\"suggested_post_star_count_min\")-getOption(\"suggested_post_star_count_max\")"
+                    "description": "The Telegram Star amount expected to be paid for the post; getOption(\"suggested_post_star_count_min\")-getOption(\"suggested_post_star_count_max\")"
                 }
             ]
         },
@@ -3368,13 +3405,13 @@
         },
         {
             "name": "starAmount",
-            "description": "Describes a possibly non-integer amount of Telegram Stars",
+            "description": "Describes a possibly non-integer Telegram Star amount",
             "class": "StarAmount",
             "properties": [
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The integer amount of Telegram Stars rounded to 0"
+                    "description": "The integer Telegram Star amount rounded to 0"
                 },
                 {
                     "name": "nanostar_count",
@@ -3440,7 +3477,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars that must be paid for each period"
+                    "description": "The Telegram Star amount that must be paid for each period"
                 }
             ]
         },
@@ -3618,7 +3655,7 @@
                 {
                     "name": "star_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that were received by the affiliate; can be negative for refunds"
+                    "description": "The Telegram Star amount that was received by the affiliate; can be negative for refunds"
                 }
             ]
         },
@@ -3829,7 +3866,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The alternative amount of Telegram Stars to pay; 0 if payment in Telegram Stars is not possible"
+                    "description": "The alternative Telegram Star amount to pay; 0 if payment in Telegram Stars is not possible"
                 },
                 {
                     "name": "discount_percentage",
@@ -4753,7 +4790,7 @@
                 {
                     "name": "initial_sale_star_count",
                     "type": "int53",
-                    "description": "Amount of Telegram Stars that were paid for the gift"
+                    "description": "The Telegram Star amount that was paid for the gift"
                 },
                 {
                     "name": "initial_sale_price",
@@ -4906,7 +4943,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars required to pay to upgrade the gift"
+                    "description": "The Telegram Star amount required to pay to upgrade the gift"
                 }
             ]
         },
@@ -6071,7 +6108,7 @@
                 {
                     "name": "commission_star_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that were received by Telegram; can be negative for refunds"
+                    "description": "The Telegram Star amount that was received by Telegram; can be negative for refunds"
                 },
                 {
                     "name": "via_offer",
@@ -6171,7 +6208,7 @@
                 {
                     "name": "commission_star_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that were received by Telegram; can be negative for refunds"
+                    "description": "The Telegram Star amount that was received by Telegram; can be negative for refunds"
                 }
             ]
         },
@@ -6205,7 +6242,7 @@
                 {
                     "name": "commission_star_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that were received by Telegram; can be negative for refunds"
+                    "description": "The Telegram Star amount that was received by Telegram; can be negative for refunds"
                 }
             ]
         },
@@ -6239,7 +6276,7 @@
                 {
                     "name": "commission_star_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that were received by Telegram; can be negative for refunds"
+                    "description": "The Telegram Star amount that was received by Telegram; can be negative for refunds"
                 }
             ]
         },
@@ -6472,7 +6509,7 @@
                 {
                     "name": "commission_toncoin_amount",
                     "type": "int53",
-                    "description": "The amount of Toncoins that were received by the Telegram; in the smallest units of the currency"
+                    "description": "The Toncoin amount that was received by the Telegram; in the smallest units of the currency"
                 },
                 {
                     "name": "via_offer",
@@ -6678,7 +6715,7 @@
                 {
                     "name": "won_star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars won by the current user; 0 if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Star giveaway"
+                    "description": "The Telegram Star amount won by the current user; 0 if the user isn't a winner in the giveaway or the giveaway isn't a Telegram Star giveaway"
                 }
             ]
         },
@@ -9320,7 +9357,7 @@
                 {
                     "name": "content",
                     "type": "MessageContent",
-                    "description": "Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageChecklist, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote"
+                    "description": "Media content of the message if the message was from another chat or topic; may be null for messages from the same chat and messages without media. Can be only one of the following types: messageAnimation, messageAudio, messageChecklist, messageContact, messageDice, messageDocument, messageGame, messageGiveaway, messageGiveawayWinners, messageInvoice, messageLocation, messagePaidMedia, messagePhoto, messagePoll, messageStakeDice, messageSticker, messageStory, messageText (for link preview), messageVenue, messageVideo, messageVideoNote, or messageVoiceNote"
                 }
             ]
         },
@@ -9603,6 +9640,11 @@
                     "name": "restriction_info",
                     "type": "restrictionInfo",
                     "description": "Information about the restrictions that must be applied to the message content; may be null if none"
+                },
+                {
+                    "name": "summary_language_code",
+                    "type": "string",
+                    "description": "IETF language tag of the message language on which it can be summarized; empty if summary isn't available for the message"
                 },
                 {
                     "name": "content",
@@ -16381,7 +16423,7 @@
                 {
                     "name": "value",
                     "type": "int32",
-                    "description": "The dice value. If the value is 0, the dice don't have final state yet"
+                    "description": "The dice value. If the value is 0, then the dice don't have final state yet"
                 },
                 {
                     "name": "success_animation_frame_number",
@@ -16411,6 +16453,38 @@
                     "name": "poll",
                     "type": "poll",
                     "description": "The poll description"
+                }
+            ]
+        },
+        {
+            "name": "messageStakeDice",
+            "description": "A stake dice message. The dice value is randomly generated by the server",
+            "class": "MessageContent",
+            "properties": [
+                {
+                    "name": "initial_state",
+                    "type": "DiceStickers",
+                    "description": "The animated stickers with the initial dice animation; may be null if unknown. The update updateMessageContent will be sent when the sticker became known"
+                },
+                {
+                    "name": "final_state",
+                    "type": "DiceStickers",
+                    "description": "The animated stickers with the final dice animation; may be null if unknown. The update updateMessageContent will be sent when the sticker became known"
+                },
+                {
+                    "name": "value",
+                    "type": "int32",
+                    "description": "The dice value. If the value is 0, then the dice don't have final state yet"
+                },
+                {
+                    "name": "stake_toncoin_amount",
+                    "type": "int53",
+                    "description": "The Toncoin amount that was staked; in the smallest units of the currency"
+                },
+                {
+                    "name": "prize_toncoin_amount",
+                    "type": "int53",
+                    "description": "The Toncoin amount that was gained from the roll; in the smallest units of the currency; -1 if the dice don't have final state yet"
                 }
             ]
         },
@@ -17406,7 +17480,7 @@
                 {
                     "name": "ton_amount",
                     "type": "int53",
-                    "description": "The received amount of Toncoins, in the smallest units of the cryptocurrency"
+                    "description": "The received Toncoin amount, in the smallest units of the cryptocurrency"
                 },
                 {
                     "name": "transaction_id",
@@ -17686,8 +17760,8 @@
             ]
         },
         {
-            "name": "messageUpgradedGiftPurchaseOfferDeclined",
-            "description": "An offer to purchase a gift was declined or expired",
+            "name": "messageUpgradedGiftPurchaseOfferRejected",
+            "description": "An offer to purchase a gift was rejected or expired",
             "class": "MessageContent",
             "properties": [
                 {
@@ -17703,12 +17777,12 @@
                 {
                     "name": "offer_message_id",
                     "type": "int53",
-                    "description": "Identifier of the message with purchase offer which was declined or expired; may be 0 or an identifier of a deleted message"
+                    "description": "Identifier of the message with purchase offer which was rejected or expired; may be 0 or an identifier of a deleted message"
                 },
                 {
                     "name": "was_expired",
                     "type": "Bool",
-                    "description": "True, if the offer has expired; otherwise, the offer was explicitly declined"
+                    "description": "True, if the offer has expired; otherwise, the offer was explicitly rejected"
                 }
             ]
         },
@@ -18444,7 +18518,7 @@
                 {
                     "name": "clear_draft",
                     "type": "Bool",
-                    "description": "True, if a chat message draft must be deleted"
+                    "description": "True, if the chat message draft must be deleted"
                 }
             ]
         },
@@ -19012,6 +19086,28 @@
                     "name": "is_closed",
                     "type": "Bool",
                     "description": "True, if the poll needs to be sent already closed; for bots only"
+                }
+            ]
+        },
+        {
+            "name": "inputMessageStakeDice",
+            "description": "A stake dice message",
+            "class": "InputMessageContent",
+            "properties": [
+                {
+                    "name": "state_hash",
+                    "type": "string",
+                    "description": "Hash of the stake dice state. The state hash can be used only if it was received recently enough. Otherwise, a new state must be requested using getStakeDiceState"
+                },
+                {
+                    "name": "stake_toncoin_amount",
+                    "type": "int53",
+                    "description": "The Toncoin amount that will be staked; in the smallest units of the currency. Must be in the range getOption(\"stake_dice_stake_amount_min\")-getOption(\"stake_dice_stake_amount_max\")"
+                },
+                {
+                    "name": "clear_draft",
+                    "type": "Bool",
+                    "description": "True, if the chat message draft must be deleted"
                 }
             ]
         },
@@ -31394,17 +31490,17 @@
                 {
                     "name": "total_amount",
                     "type": "starAmount",
-                    "description": "Total amount of Telegram Stars earned"
+                    "description": "Total Telegram Star amount earned"
                 },
                 {
                     "name": "current_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that aren't withdrawn yet"
+                    "description": "The Telegram Star amount that isn't withdrawn yet"
                 },
                 {
                     "name": "available_amount",
                     "type": "starAmount",
-                    "description": "The amount of Telegram Stars that are available for withdrawal"
+                    "description": "The Telegram Star amount that is available for withdrawal"
                 },
                 {
                     "name": "withdrawal_enabled",
@@ -31448,17 +31544,17 @@
                 {
                     "name": "total_amount",
                     "type": "int64",
-                    "description": "Total amount of Toncoins earned; in the smallest units of the cryptocurrency"
+                    "description": "Total Toncoin amount earned; in the smallest units of the cryptocurrency"
                 },
                 {
                     "name": "balance_amount",
                     "type": "int64",
-                    "description": "Amount of Toncoins that aren't withdrawn yet; in the smallest units of the cryptocurrency"
+                    "description": "The Toncoin amount that isn't withdrawn yet; in the smallest units of the cryptocurrency"
                 },
                 {
                     "name": "available_amount",
                     "type": "int64",
-                    "description": "Amount of Toncoins that are available for withdrawal; in the smallest units of the cryptocurrency"
+                    "description": "The Toncoin amount that is available for withdrawal; in the smallest units of the cryptocurrency"
                 },
                 {
                     "name": "withdrawal_enabled",
@@ -34192,6 +34288,18 @@
             ]
         },
         {
+            "name": "updateStakeDiceState",
+            "description": "The stake dice state has changed",
+            "class": "Update",
+            "properties": [
+                {
+                    "name": "state",
+                    "type": "stakeDiceState",
+                    "description": "The new state. The state can be used only if it was received recently enough. Otherwise, a new state must be requested using getStakeDiceState"
+                }
+            ]
+        },
+        {
             "name": "updateAnimatedEmojiMessageClicked",
             "description": "Some animated emoji message was clicked and a big animated sticker must be played if the message is visible on the screen. chatActionWatchingAnimations with the text of the message needs to be sent if the sticker is played",
             "class": "Update",
@@ -36630,7 +36738,7 @@
         },
         {
             "name": "getRepliedMessage",
-            "description": "Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message for messagePinMessage, the game message for messageGameScore, the invoice message for messagePaymentSuccessful, the message with a previously set same background for messageChatSetBackground, the giveaway message for messageGiveawayCompleted, the checklist message for messageChecklistTasksDone, messageChecklistTasksAdded, the message with suggested post information for messageSuggestedPostApprovalFailed, messageSuggestedPostApproved, messageSuggestedPostDeclined, messageSuggestedPostPaid, messageSuggestedPostRefunded, the message with the regular gift that was upgraded for messageUpgradedGift with origin of the type upgradedGiftOriginUpgrade, the message with gift purchase offer for messageUpgradedGiftPurchaseOfferDeclined, and the topic creation message for topic messages without non-bundled replied message. Returns a 404 error if the message doesn't exist",
+            "description": "Returns information about a non-bundled message that is replied by a given message. Also, returns the pinned message for messagePinMessage, the game message for messageGameScore, the invoice message for messagePaymentSuccessful, the message with a previously set same background for messageChatSetBackground, the giveaway message for messageGiveawayCompleted, the checklist message for messageChecklistTasksDone, messageChecklistTasksAdded, the message with suggested post information for messageSuggestedPostApprovalFailed, messageSuggestedPostApproved, messageSuggestedPostDeclined, messageSuggestedPostPaid, messageSuggestedPostRefunded, the message with the regular gift that was upgraded for messageUpgradedGift with origin of the type upgradedGiftOriginUpgrade, the message with gift purchase offer for messageUpgradedGiftPurchaseOfferRejected, and the topic creation message for topic messages without non-bundled replied message. Returns a 404 error if the message doesn't exist",
             "class": "Message",
             "properties": [
                 {
@@ -37994,7 +38102,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars the user agreed to pay for the search; pass 0 for free searches"
+                    "description": "The Telegram Star amount the user agreed to pay for the search; pass 0 for free searches"
                 }
             ],
             "is_synchronous": false,
@@ -38681,7 +38789,31 @@
                 {
                     "name": "to_language_code",
                     "type": "string",
-                    "description": "Language code of the language to which the message is translated. Must be one of \"af\", \"sq\", \"am\", \"ar\", \"hy\", \"az\", \"eu\", \"be\", \"bn\", \"bs\", \"bg\", \"ca\", \"ceb\", \"zh-CN\", \"zh\", \"zh-Hans\", \"zh-TW\", \"zh-Hant\", \"co\", \"hr\", \"cs\", \"da\", \"nl\", \"en\", \"eo\", \"et\", \"fi\", \"fr\", \"fy\", \"gl\", \"ka\", \"de\", \"el\", \"gu\", \"ht\", \"ha\", \"haw\", \"he\", \"iw\", \"hi\", \"hmn\", \"hu\", \"is\", \"ig\", \"id\", \"in\", \"ga\", \"it\", \"ja\", \"jv\", \"kn\", \"kk\", \"km\", \"rw\", \"ko\", \"ku\", \"ky\", \"lo\", \"la\", \"lv\", \"lt\", \"lb\", \"mk\", \"mg\", \"ms\", \"ml\", \"mt\", \"mi\", \"mr\", \"mn\", \"my\", \"ne\", \"no\", \"ny\", \"or\", \"ps\", \"fa\", \"pl\", \"pt\", \"pa\", \"ro\", \"ru\", \"sm\", \"gd\", \"sr\", \"st\", \"sn\", \"sd\", \"si\", \"sk\", \"sl\", \"so\", \"es\", \"su\", \"sw\", \"sv\", \"tl\", \"tg\", \"ta\", \"tt\", \"te\", \"th\", \"tr\", \"tk\", \"uk\", \"ur\", \"ug\", \"uz\", \"vi\", \"cy\", \"xh\", \"yi\", \"ji\", \"yo\", \"zu\""
+                    "description": "Language code of the language to which the message is translated. See translateText.to_language_code for the list of supported values"
+                }
+            ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "summarizeMessage",
+            "description": "Summarizes content of the message with non-empty summary_language_code",
+            "class": "FormattedText",
+            "properties": [
+                {
+                    "name": "chat_id",
+                    "type": "int53",
+                    "description": "Identifier of the chat to which the message belongs"
+                },
+                {
+                    "name": "message_id",
+                    "type": "int53",
+                    "description": "Identifier of the message"
+                },
+                {
+                    "name": "translate_to_language_code",
+                    "type": "string",
+                    "description": "Pass a language code to which the summary will be translated; may be empty if translation isn't needed. See translateText.to_language_code for the list of supported values"
                 }
             ],
             "is_synchronous": false,
@@ -40057,7 +40189,7 @@
         },
         {
             "name": "getBusinessAccountStarAmount",
-            "description": "Returns the amount of Telegram Stars owned by a business account; for bots only",
+            "description": "Returns the Telegram Star amount owned by a business account; for bots only",
             "class": "StarAmount",
             "properties": [
                 {
@@ -43778,6 +43910,14 @@
                     "description": "Pass true to keep local message drafts in secret chats"
                 }
             ],
+            "is_synchronous": false,
+            "type": 1
+        },
+        {
+            "name": "getStakeDiceState",
+            "description": "Returns the current state of stake dice",
+            "class": "StakeDiceState",
+            "properties": [],
             "is_synchronous": false,
             "type": 1
         },
@@ -50485,7 +50625,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars required to pay for the upgrade. It the gift has prepaid_upgrade_star_count \u003e 0, then pass 0, otherwise, pass gift.upgrade_star_count"
+                    "description": "The Telegram Star amount required to pay for the upgrade. It the gift has prepaid_upgrade_star_count \u003e 0, then pass 0, otherwise, pass gift.upgrade_star_count"
                 }
             ],
             "is_synchronous": false,
@@ -50509,7 +50649,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars the user agreed to pay for the upgrade; must be equal to gift.upgrade_star_count"
+                    "description": "The Telegram Star amount the user agreed to pay for the upgrade; must be equal to gift.upgrade_star_count"
                 }
             ],
             "is_synchronous": false,
@@ -50538,7 +50678,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars required to pay for the transfer"
+                    "description": "The Telegram Star amount required to pay for the transfer"
                 }
             ],
             "is_synchronous": false,
@@ -50557,7 +50697,7 @@
                 {
                     "name": "star_count",
                     "type": "int53",
-                    "description": "The amount of Telegram Stars required to pay for the operation"
+                    "description": "The Telegram Star amount required to pay for the operation"
                 }
             ],
             "is_synchronous": false,
@@ -50632,9 +50772,9 @@
                     "description": "Identifier of the message with the gift purchase offer"
                 },
                 {
-                    "name": "approve",
+                    "name": "accept",
                     "type": "Bool",
-                    "description": "Pass true to approve the request; pass false to decline it"
+                    "description": "Pass true to accept the request; pass false to reject it"
                 }
             ],
             "is_synchronous": false,
@@ -51480,7 +51620,7 @@
         },
         {
             "name": "setChatPaidMessageStarCount",
-            "description": "Changes the amount of Telegram Stars that must be paid to send a message to a supergroup chat; requires can_restrict_members administrator right and supergroupFullInfo.can_enable_paid_messages",
+            "description": "Changes the Telegram Star amount that must be paid to send a message to a supergroup chat; requires can_restrict_members administrator right and supergroupFullInfo.can_enable_paid_messages",
             "class": "Ok",
             "properties": [
                 {
@@ -53295,7 +53435,7 @@
         },
         {
             "name": "getConnectedAffiliateProgram",
-            "description": "Returns an affiliate program that were connected to the given affiliate by identifier of the bot that created the program",
+            "description": "Returns an affiliate program that was connected to the given affiliate by identifier of the bot that created the program",
             "class": "ConnectedAffiliateProgram",
             "properties": [
                 {
